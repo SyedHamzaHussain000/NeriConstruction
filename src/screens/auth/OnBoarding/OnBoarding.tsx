@@ -8,7 +8,7 @@ import { APPCOLORS } from '../../../utils/APPCOLORS';
 import AppButton from '../../../components/DailyUse/AppButton';
 import AppLineButton from '../../../components/DailyUse/AppLineButton';
 
-const OnBoarding = () => {
+const OnBoarding = ({ navigation }: { navigation: any }) => {
 
   const slides = [
     {
@@ -37,13 +37,14 @@ const OnBoarding = () => {
 
 
   return (
-    <LinearGradient colors={[APPCOLORS.PRIMARY_LIGHT,  APPCOLORS.WHITE]} style={{flex:1}}>
+    <LinearGradient colors={[APPCOLORS.PRIMARY_LIGHT, APPCOLORS.WHITE, APPCOLORS.WHITE]} style={{flex:1}}>
       <View style={{flex:0.9}}>
       <AppIntroSlider 
         data={slides}
         showPrevButton={false}
         showNextButton={false}
         showDoneButton={false}
+        activeDotStyle={{backgroundColor:APPCOLORS.ICON_TEXT_COLOUR}}
         renderItem={({item})=>{
 
           return(
@@ -59,7 +60,7 @@ const OnBoarding = () => {
       </View>
 
       <View style={{gap:10}}>
-        <AppButton title='Next' />
+        <AppButton title='Next' onPress={()=> navigation.navigate('Login')}/>
         <AppLineButton title='Skip' txtColorr={APPCOLORS.ICON_TEXT_COLOUR}/>
       </View>
 

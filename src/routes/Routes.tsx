@@ -8,7 +8,7 @@ import Auth from './Auth';
 const Stack = createStackNavigator();
 const Routes = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown:false}}>
+    <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName='Auth'> 
       <Stack.Screen name="Auth" component={Auth} />
       <Stack.Screen name="Profile" component={Auth} />
     </Stack.Navigator>

@@ -24,11 +24,11 @@ export const NormalText = ({title, fontSize = 1.4, textAligm,textDecorate,numofl
   );
 };
 
-export const BoldText = ({title, fontSize = 1.4, textAligm ,txtColour}: TextProps) => {
+export const BoldText = ({title, fontSize = 1.4, textAligm ,txtColour,textDecorate}: TextProps) => {
   return (
     <View>
       <Text
-        style={[styles.boldText, {color:txtColour ? txtColour : null, fontSize: responsiveFontSize(fontSize), textAlign: textAligm}]} >
+        style={[styles.boldText, {color:txtColour ? txtColour : null, fontSize: responsiveFontSize(fontSize), textAlign: textAligm, textDecorationLine : textDecorate == true ? "underline" : "none"}]} >
         {title}
       </Text>
     </View>
