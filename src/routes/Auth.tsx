@@ -8,6 +8,7 @@ import EnterEmail from '../screens/auth/ForgetPassword/EnterEmail';
 import EnterOtp from '../screens/auth/ForgetPassword/EnterOtp';
 import EnterNewPassword from '../screens/auth/ForgetPassword/EnterNewPassword';
 import PasswordCreated from '../screens/auth/ForgetPassword/PasswordCreated';
+import Signup from '../screens/auth/Signup';
 
 const Stack = createStackNavigator();
 const Auth = () => {
@@ -15,6 +16,8 @@ const Auth = () => {
     <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName='OnBoarding'>
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Signup" component={Signup} />
+      
 
       {/* Forget password flow */}
       <Stack.Screen name="EnterEmail" component={EnterEmail} />

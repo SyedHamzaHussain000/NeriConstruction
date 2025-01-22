@@ -105,7 +105,9 @@ const Login = ({navigation}: {navigation: any}) => {
 
               <View style={{flexDirection:'row', alignItems:'center', alignSelf:'center'}}>
                 <BoldText title='Don’t have an account? ' fontSize={1.7}/>
+                <TouchableOpacity onPress={()=> navigation.navigate("Signup")}>
                 <BoldText title='Sign Up Here' txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={1.7}/>
+                </TouchableOpacity>
               </View>
             </View>
 

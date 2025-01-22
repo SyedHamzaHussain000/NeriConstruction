@@ -5,5 +5,6 @@ export const AppImages = {
     person: require('./person.png'),
     BG: require('./BG.png'),
     Sheild: require('./Sheild.png'),
+    logo: require('./logo.png'),
 
 }
