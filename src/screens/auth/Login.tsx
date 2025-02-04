@@ -48,6 +48,7 @@ const Login = ({navigation}: {navigation: any}) => {
               textAligm={'center'}
               txtColour={APPCOLORS.BLACK}
               fontSize={3.5}
+              
             />
             <NormalText
               title="Sign in to my account"
@@ -95,7 +96,7 @@ const Login = ({navigation}: {navigation: any}) => {
                 </TouchableOpacity>
             </View>
      
-              <AppButton title='Sign In' />
+              <AppButton title='Sign In' onPress={()=> navigation.navigate("Main")} />
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
                   <Line  lineWidht={40}/>
                     <BoldText title='OR' fontSize={2} txtColour={APPCOLORS.BORDER_LINE_COLOR}/>

@@ -129,7 +129,7 @@ const Signup = ({navigation}: {navigation: any}) => {
 
         <CheckBoxWithText title="I agree with terms & conditions and privacy policy" />
 
-        <AppButton title="Sign Up" />
+        <AppButton title="Sign Up" onPress={()=> navigation.navigate("WorkProfile")}/>
 
         <View
           style={{

@@ -9,6 +9,7 @@ import EnterOtp from '../screens/auth/ForgetPassword/EnterOtp';
 import EnterNewPassword from '../screens/auth/ForgetPassword/EnterNewPassword';
 import PasswordCreated from '../screens/auth/ForgetPassword/PasswordCreated';
 import Signup from '../screens/auth/Signup';
+import WorkProfile from '../screens/auth/WorkProfile/WorkProfile';
 
 const Stack = createStackNavigator();
 const Auth = () => {
@@ -17,6 +18,7 @@ const Auth = () => {
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Signup" component={Signup} />
+      <Stack.Screen name="WorkProfile" component={WorkProfile} />
       
 
       {/* Forget password flow */}
@@ -24,6 +26,8 @@ const Auth = () => {
       <Stack.Screen name="EnterOtp" component={EnterOtp} />
       <Stack.Screen name="EnterNewPassword" component={EnterNewPassword} />
       <Stack.Screen name="PasswordCreated" component={PasswordCreated} />
+
+
       
     </Stack.Navigator>
   )
