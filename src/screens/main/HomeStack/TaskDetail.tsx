@@ -17,10 +17,10 @@ import {AppImages} from '../../../assets/AppImages';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AppButton from '../../../components/DailyUse/AppButton';
-const TaskDetail = () => {
+const TaskDetail = ({navigation}: {navigation: any}) => {
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
-      <NormalHeader title="Task Details" />
+      <NormalHeader title="Task Details" onPress={()=> navigation.goBack()}/>
 
       <View style={{padding: 20}}>
         <WhiteContainers>
@@ -162,7 +162,7 @@ const TaskDetail = () => {
 
               <View style={{marginTop:20}}>
         <AppButton
-        
+        onPress={()=> navigation.navigate("ClockIn")}
         title='Accept'
         />
         </View>  

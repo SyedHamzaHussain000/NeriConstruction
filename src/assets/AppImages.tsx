@@ -16,6 +16,7 @@ export const AppImages = {
     threecircle: require('./threecircle.png'),
     board: require('./board.png'),
     pfps: require('./pfps.png'),
+    clock: require('./clock.png')
     
 
 }

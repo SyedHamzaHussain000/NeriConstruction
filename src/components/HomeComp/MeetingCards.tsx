@@ -15,9 +15,9 @@ type props = {
     startTime: string,
     endTime: string,
     Members?: any,
-    
+    onPress: () => void,
 }
-const MeetingCards = ({Members, endTime,startTime,title}:props) => {
+const MeetingCards = ({Members, endTime,startTime,title, onPress}:props) => {
   return (
     <View style={{padding:10, backgroundColor:APPCOLORS.MORE_LIGHT_GRAY, borderWidth:0.2, borderRadius:10, gap:15}}>
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', }}>
@@ -47,7 +47,7 @@ const MeetingCards = ({Members, endTime,startTime,title}:props) => {
                 <NormalText title='+3' fontSize={2}/>
             </View>
 
-            <AppButton width={25} height={4}  title='Join Meet'/>
+            <AppButton width={25} height={4}  title='Join Meet' onPress={onPress}/>
         </View>
     </View>
   )

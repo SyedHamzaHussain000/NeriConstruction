@@ -30,8 +30,8 @@ const Home = ({navigation}: {navigation: any}) => {
             <NormalText title='Your schedule for the day' fontSize={1.8}/>
 
             <View style={{gap:10, marginTop:20}}>
-              <MeetingCards title='Townhall Meeting'  endTime={"02:00 AM"} startTime={"01:30 AM"}/>
-              <MeetingCards title='Townhall Meeting'  endTime={"02:00 AM"} startTime={"01:30 AM"}/>
+              <MeetingCards title='Townhall Meeting'  endTime={"02:00 AM"} startTime={"01:30 AM"} onPress={()=> navigation.navigate("TaskDetail")}/>
+              <MeetingCards title='Townhall Meeting'  endTime={"02:00 AM"} startTime={"01:30 AM"} onPress={()=> navigation.navigate("TaskDetail")}/>
             </View>
           </WhiteContainers>
 
