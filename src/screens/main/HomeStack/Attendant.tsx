@@ -28,12 +28,12 @@ const Attendant = ({ navigation }: { navigation: any }) => {
           />
         </View>
         <NormalText mrgnTop={2} txtColour={APPCOLORS.BLACK} fntWeight="700" fontSize={2.2} title="MY PROFILE" />
-        <View>
+        <View style={{flexDirection:'row',alignItems:'center'}}>
           <Image source={AppImages.person} style={{ height: responsiveHeight(10), width: responsiveWidth(10), borderRadius: responsiveHeight(1) }} />
         <View>
-          <NormalText txtColour={APPCOLORS.BLACK} title="Tonald Drump"/>
-          <NormalText txtColour={APPCOLORS.THEMEBLUETEXT} title="29 September 2024"/>
-          <NormalText txtColour={APPCOLORS.BLACK} title="Lat 45.43534 Long 97897.576"/>
+          <NormalText fontSize={2.2} fntWeight="600" txtColour={APPCOLORS.BLACK} title="Tonald Drump"/>
+          <NormalText fontSize={1.9} txtColour={APPCOLORS.THEMEBLUETEXT} title="29 September 2024"/>
+          <NormalText fontSize={1.7} txtColour={APPCOLORS.BLACK} title="Lat 45.43534 Long 97897.576"/>
         </View>
         </View>
       </WhiteContainers>
