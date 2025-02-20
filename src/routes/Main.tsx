@@ -14,6 +14,7 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Profile from '../screens/main/Profile';
 import ClockIn from '../screens/main/HomeStack/ClockIn';
+import Attendant from '../screens/main/HomeStack/Attendant';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -23,12 +24,9 @@ const Main = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="TabBar">
       <Stack.Screen name="TabBar" component={TabBar} />
-
       <Stack.Screen name="TaskDetail" component={TaskDetail} />
       <Stack.Screen name="ClockIn" component={ClockIn} />
-      
-
-
+      <Stack.Screen name="Attendant" component={Attendant} />
     </Stack.Navigator>
   );
 };

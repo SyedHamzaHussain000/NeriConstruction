@@ -1,18 +1,30 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
-import React from 'react'
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../../../utils/Responsive'
-import { APPCOLORS } from '../../../utils/APPCOLORS'
-import { BoldText, NormalText } from '../../../components/DailyUse/AppText/AppText'
-import { AppImages } from '../../../assets/AppImages'
-import WhiteContainers from '../../../components/WhiteContainers'
-import BannerBoxes from '../../../components/TaskManageComp/BannerBoxes'
-import Entypo from 'react-native-vector-icons/Entypo'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import AppButton from '../../../components/DailyUse/AppButton'
-const ClockIn = ({navigation}:{navigation: any}) => {
+/* eslint-disable react-native/no-inline-styles */
+import { View, StyleSheet, Image, FlatList, ScrollView } from 'react-native';
+import React from 'react';
+import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
+import { APPCOLORS } from '../../../utils/APPCOLORS';
+import { BoldText, NormalText } from '../../../components/DailyUse/AppText/AppText';
+import { AppImages } from '../../../assets/AppImages';
+import WhiteContainers from '../../../components/WhiteContainers';
+import AppButton from '../../../components/DailyUse/AppButton';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import ClockInCards from '../../../components/DailyUse/ClockInCards';
+const ClockIn = ({ navigation }: { navigation: any }) => {
+  const data = [
+    {
+      id: 1,
+      title1: 'Today',
+      title2: '00:00 Hrs',
+    },
+    {
+      id: 2,
+      title1: 'This Pay Period',
+      title2: '32:00 Hrs',
+    },
+  ];
   return (
-    <View style={{flex:1}}>
-           <View style={styles.ContainerHeader}>
+    <View style={{ flex: 1 }}>
+      <View style={styles.ContainerHeader}>
         <View
           style={{
             flexDirection: 'row',
@@ -41,29 +53,38 @@ const ClockIn = ({navigation}:{navigation: any}) => {
             }}
           />
         </View>
-        <WhiteContainers>
-                <View style={{width:responsiveWidth(90)}}>
-                    <BoldText title='Total Working Hour' fontSize={2}/>
-                    <NormalText title='Paid Period 1 Sept 2024 - 30 Sept 2024' fontSize={1.5}/>
-                </View>
-
-
-                <View style={{width:responsiveWidth(90), flexDirection:'row'}}>
-                    
-                </View>
-
-                <AppButton title='Clock In Now' />
-
-
-        </WhiteContainers>
       </View>
+      <ScrollView contentContainerStyle={{ padding: 20, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
+        <WhiteContainers>
+          <View style={{ width: responsiveWidth(90) }}>
+            <BoldText title="Total Working Hour" fontSize={2} />
+            <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
+          </View>
+          <View style={{ width: responsiveWidth(90), flexDirection: 'row' }}>
+            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item }) => (
+              <View style={{ gap: responsiveHeight(1), width: responsiveWidth(40), backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1) }}>
+                  <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
+                  <NormalText title={item.title1} fontSize={1.7} />
+                </View>
+                <BoldText title={item.title2} fontSize={2.5} />
+              </View>
+            )} />
+          </View>
+          <AppButton title="Clock In Now" onPress={() => navigation.navigate('Attendant')} height={8} fntSize={1.8} />
+        </WhiteContainers>
+        <View style={{ flex: 1 }}>
+          <ClockInCards />
+          <ClockInCards />
+          <ClockInCards />
+          <ClockInCards />
+        </View>
+      </ScrollView>
     </View>
-  )
-}
+  );
+};
 
-export default ClockIn
-
-
+export default ClockIn;
 
 const styles = StyleSheet.create({
   container: {

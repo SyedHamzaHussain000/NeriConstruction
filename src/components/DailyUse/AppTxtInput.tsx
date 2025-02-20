@@ -1,10 +1,11 @@
-import { View, Text, TextInput } from 'react-native'
-import React from 'react'
-import { APPCOLORS } from '../../utils/APPCOLORS'
-import Feather from 'react-native-vector-icons/Feather'
-import { responsiveFontSize, responsiveWidth } from '../../utils/Responsive'
-import { NormalText } from './AppText/AppText'
-import { TouchableOpacity } from 'react-native'
+/* eslint-disable react-native/no-inline-styles */
+import { View, TextInput } from 'react-native';
+import React from 'react';
+import { APPCOLORS } from '../../utils/APPCOLORS';
+import Feather from 'react-native-vector-icons/Feather';
+import { responsiveFontSize, responsiveWidth } from '../../utils/Responsive';
+import { NormalText } from './AppText/AppText';
+import { TouchableOpacity } from 'react-native';
 
 type props = {
     inputHeadig: string,
@@ -33,7 +34,7 @@ const AppTxtInput = ({icon,inputHeadig,password,passwordShown,placeholder,showPa
                 password && (
                     <TouchableOpacity onPress={setShowPassword}>
                     <Feather
-                        name={showPassword == true ? 'eye': 'eye-off'}
+                        name={showPassword === true ? 'eye' : 'eye-off'}
                         size={responsiveFontSize(3)}
                         color={APPCOLORS.ICON_TEXT_COLOUR}
                         />
@@ -42,7 +43,7 @@ const AppTxtInput = ({icon,inputHeadig,password,passwordShown,placeholder,showPa
             }
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default AppTxtInput
+export default AppTxtInput;
