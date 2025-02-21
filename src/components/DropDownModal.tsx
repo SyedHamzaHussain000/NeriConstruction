@@ -7,13 +7,10 @@ type DropdownProps = {
   height?: number; // Height of the dropdown
   duration?: number; // Animation duration
   isModalVisible?: boolean; //
-
 };
 
 const DropDownModal = ({ children, height = 300, duration = 500 ,isModalVisible}: DropdownProps) => {
-
   return (
-
       <Modal style={{margin:0,   }}  isVisible={isModalVisible}>
         <ScrollView contentContainerStyle={{flexGrow:1,justifyContent:'flex-end',}} showsVerticalScrollIndicator={false}>
         {

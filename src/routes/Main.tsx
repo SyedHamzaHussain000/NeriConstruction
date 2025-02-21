@@ -15,6 +15,9 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import Profile from '../screens/main/Profile';
 import ClockIn from '../screens/main/HomeStack/ClockIn';
 import Attendant from '../screens/main/HomeStack/Attendant';
+import AttendantSelfie from '../screens/main/HomeStack/AttendantSelfie';
+import SelfieToClockIn from '../screens/main/HomeStack/SelfieToClockIn';
+import ClockedIn from '../screens/main/HomeStack/ClockedIn';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -27,6 +30,9 @@ const Main = () => {
       <Stack.Screen name="TaskDetail" component={TaskDetail} />
       <Stack.Screen name="ClockIn" component={ClockIn} />
       <Stack.Screen name="Attendant" component={Attendant} />
+      <Stack.Screen name="AttendantSelfie" component={AttendantSelfie} />
+      <Stack.Screen name="SelfieToClockIn" component={SelfieToClockIn} />
+      <Stack.Screen name="ClockedIn" component={ClockedIn} />
     </Stack.Navigator>
   );
 };

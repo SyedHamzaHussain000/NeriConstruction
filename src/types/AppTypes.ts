@@ -19,4 +19,5 @@ export type SmallBtnTypes = {
     txtColor?:any,
     onPress?: () => void,
     icon?: any
+    borderRadious?: any
 };

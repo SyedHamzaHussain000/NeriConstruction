@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { ButtonTypes, SmallBtnTypes } from '../../types/AppTypes';
 import { BoldText, NormalText } from './AppText/AppText';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const AppButton = ({ title, txtColorr = APPCOLORS.WHITE, fntSize, btnColor, height = 6, width = 90, onPress }: ButtonTypes) => {
   return (
@@ -17,11 +18,11 @@ const AppButton = ({ title, txtColorr = APPCOLORS.WHITE, fntSize, btnColor, heig
     </TouchableOpacity>
   );
 };
-export const SmallAppButton = ({ title, txtColorr = APPCOLORS.WHITE, icon, fntSize,txtColor = APPCOLORS.WHITE, btnColor, height = 6, width = 90, onPress }: SmallBtnTypes) => {
+export const SmallAppButton = ({ title, txtColorr = APPCOLORS.WHITE, icon, fntSize,txtColor = APPCOLORS.WHITE, btnColor, height = 6, width = 90, borderRadious, onPress }: SmallBtnTypes) => {
   return (
-    <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', borderRadius: responsiveHeight(2), gap: responsiveHeight(1), height: responsiveHeight(height), width: responsiveWidth(width), alignSelf: 'center', backgroundColor: btnColor, alignItems: 'center', justifyContent: 'center' }}>
+    <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', borderRadius: borderRadious ? borderRadious : responsiveHeight(2), gap: responsiveHeight(1), height: responsiveHeight(height), width: responsiveWidth(width), alignSelf: 'center', backgroundColor: btnColor, alignItems: 'center', justifyContent: 'center' }}>
       {icon && (
-        <AntDesign name={icon} size={15} color={APPCOLORS.Clock_Bg} />
+        icon === 'rotate' ? <FontAwesome6 name={icon} size={15} color={APPCOLORS.Clock_Bg} /> : <AntDesign name={icon} size={15} color={APPCOLORS.Clock_Bg} />
       )}
       <NormalText fntWeight="500" title={title} fontSize={fntSize ? fntSize : 1.5} textAligm={'center'} txtColour={txtColor} />
     </TouchableOpacity>
