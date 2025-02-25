@@ -26,4 +26,6 @@ export const AppImages = {
     timer: require('./timer.png'),
     download: require('./download.png'),
     calendar: require('./calendar.png'),
+    file: require('./file.png'),
+    key: require('./key.png'),
 }

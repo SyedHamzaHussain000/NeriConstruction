@@ -23,6 +23,13 @@ import ClockedOut from '../screens/main/HomeStack/ClockedOut';
 import ClockedInDetails from '../screens/main/HomeStack/ClockedInDetails';
 import InAppCalendar from '../screens/main/HomeStack/InAppCalendar';
 import TaskMenu from '../screens/main/TaskManageStack/TaskMenu';
+import TaskMenuDetails from '../screens/main/TaskManageStack/TaskMenuDetails';
+import FinishTask from '../screens/main/TaskManageStack/FinishTask';
+import PersonalData from '../screens/main/ProfileStack/PersonalData';
+import Notification from '../screens/main/TaskManageStack/Notification';
+import Language from '../screens/main/ProfileStack/Language';
+import Faq from '../screens/main/ProfileStack/Faq';
+import Help from '../screens/main/ProfileStack/Help';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -42,6 +49,10 @@ const Main = () => {
       <Stack.Screen name="ClockedOut" component={ClockedOut} />
       <Stack.Screen name="ClockedInDetails" component={ClockedInDetails} />
       <Stack.Screen name="InAppCalendar" component={InAppCalendar} />
+      <Stack.Screen name="PersonalData" component={PersonalData} />
+      <Stack.Screen name="Language" component={Language} />
+      <Stack.Screen name="Faq" component={Faq} />
+      <Stack.Screen name="Help" component={Help} />
     </Stack.Navigator>
   );
 };
@@ -88,9 +99,11 @@ const TabBar = () => {
       />
       <Tab.Screen
         name="TaskManage"
-        // component={TaskManage}
-        component={TaskMenu}
-        // component={TaskDetail}
+        component={TaskManage}
+        // component={TaskMenu}
+        // component={TaskMenuDetails}
+        // component={FinishTask}
+        // component={Notification}
         options={{
           tabBarShowLabel: false,
           tabBarLabel: '',

@@ -14,11 +14,13 @@ type child = {
   top?: any,
   marginBottom?: any,
   borderRadius?: any,
+  padding?: any,
+  paddingHorizontal?: any,
 }
 
-const WhiteContainers = ({ children, bgColor, mrgnTop, marginHorizontal,position, top, marginBottom, borderRadius }: child) => {
+const WhiteContainers = ({ children, bgColor, mrgnTop, marginHorizontal,position, top, marginBottom, borderRadius,padding,paddingHorizontal }: child) => {
   return (
-    <View style={{ backgroundColor: bgColor ? bgColor : APPCOLORS.WHITE, marginTop: responsiveHeight(mrgnTop), borderRadius: borderRadius ? borderRadius : 10, padding: 10, marginHorizontal: responsiveWidth(marginHorizontal), position: position, top: responsiveHeight(top), marginBottom: responsiveHeight(marginBottom) }}>
+    <View style={{ backgroundColor: bgColor ? bgColor : APPCOLORS.WHITE, marginTop: responsiveHeight(mrgnTop), borderRadius: borderRadius ? borderRadius : 10, padding: padding ? padding : 10, marginHorizontal: responsiveWidth(marginHorizontal), position: position, top: responsiveHeight(top), marginBottom: responsiveHeight(marginBottom), paddingHorizontal: responsiveWidth(paddingHorizontal) }}>
       {children}
     </View>
   );

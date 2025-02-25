@@ -33,7 +33,7 @@ const data = [
   },
 ];
 
-const TaskMenuDetails = ({navigation}: {navigation: any}) => {
+const FinishTask = ({navigation}: {navigation: any}) => {
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <NormalHeader title="Task Details" onPress={()=> navigation.goBack()}/>
@@ -51,7 +51,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
                 }}>
                 <BoldText title="Create On Boarding Screen" fontSize={2} />
                 <SmallButtonsOrBg
-                  title="In Progress"
+                  title="Finish"
                   btnColor={APPCOLORS.GRAY_BORDER}
                   height={4}
                   icon={<Ionicons name='time' size={12} color={APPCOLORS.DARK_GRAY} />}
@@ -188,10 +188,19 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
         <View style={{marginTop:20}}>
         <AppButton
         onPress={()=> navigation.navigate("ClockIn")}
-        title='Check In Now'
+        title='Check Out'
         width={85}
         />
         </View>
+
+        <View style={{marginTop:20}}>
+        <AppButton
+        onPress={()=> navigation.navigate("ClockIn")}
+        title='View Details'
+        width={85}
+        />
+        </View>
+
         </View>
          </WhiteContainers>
       </View>
@@ -199,4 +208,4 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
   );
 };
 
-export default TaskMenuDetails;
+export default FinishTask;

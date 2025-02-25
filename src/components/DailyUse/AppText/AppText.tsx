@@ -15,6 +15,8 @@ interface TextProps {
   txtColour?: any,
   width?: number,
   mrgnTop?: number,
+  lineHeight?: any,
+  letterSpacing?:any,
 }
 
 export const NormalText = ({ title, mrgnTop, fontSize = 1.4, width, fntWeight, textAligm, textDecorate, numofline, txtColour }: TextProps) => {
@@ -28,11 +30,11 @@ export const NormalText = ({ title, mrgnTop, fontSize = 1.4, width, fntWeight, t
   );
 };
 
-export const BoldText = ({ title, mrgnTop, fontSize = 1.4, textAligm, fntWeight, txtColour, textDecorate, width }: TextProps) => {
+export const BoldText = ({ title, mrgnTop, fontSize = 1.4, textAligm, fntWeight, txtColour, textDecorate, width,lineHeight,letterSpacing }: TextProps) => {
   return (
     <View>
       <Text
-        style={[styles.boldText, { color: txtColour ? txtColour : null, marginTop: responsiveHeight(mrgnTop), width: responsiveWidth(width), fontWeight: fntWeight, fontSize: responsiveFontSize(fontSize), textAlign: textAligm, textDecorationLine: textDecorate == true ? "underline" : "none" }]} >
+        style={[styles.boldText, { color: txtColour ? txtColour : null, marginTop: responsiveHeight(mrgnTop), width: responsiveWidth(width), fontWeight: fntWeight, fontSize: responsiveFontSize(fontSize), textAlign: textAligm, letterSpacing: letterSpacing, lineHeight:responsiveFontSize(lineHeight),  textDecorationLine: textDecorate == true ? "underline" : "none" }]} >
         {title}
       </Text>
     </View>
