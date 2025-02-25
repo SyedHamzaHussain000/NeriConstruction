@@ -12,11 +12,12 @@ type props = {
     pfp?: any,
     Name: string,
     JobTitle: string,
+    paddingHorizontal?: number,
 }
 
-const HomeHeader = ({JobTitle,Name,pfp}:props) => {
+const HomeHeader = ({JobTitle,Name,pfp, paddingHorizontal}:props) => {
   return (
-    <View style={{paddingHorizontal:20, flexDirection:'row', alignItems:'center', gap:10, backgroundColor:APPCOLORS.WHITE, justifyContent:'space-between'}}>
+    <View style={{paddingHorizontal: paddingHorizontal ? paddingHorizontal : 20, flexDirection:'row', alignItems:'center', gap:10, backgroundColor:APPCOLORS.WHITE, justifyContent:'space-between'}}>
         <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
         <Image source={pfp} style={{height:responsiveHeight(10), width:responsiveWidth(10), borderRadius:200, resizeMode:'contain'}}/>
         <View style={{alignItems:'center'}}>

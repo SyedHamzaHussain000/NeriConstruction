@@ -9,12 +9,16 @@ type child = {
   children: React.ReactNode,
   bgColor?: any,
   mrgnTop?: any,
-  marginHorizontal?: any
+  marginHorizontal?: any,
+  position?:any,
+  top?: any,
+  marginBottom?: any,
+  borderRadius?: any,
 }
 
-const WhiteContainers = ({ children, bgColor, mrgnTop, marginHorizontal }: child) => {
+const WhiteContainers = ({ children, bgColor, mrgnTop, marginHorizontal,position, top, marginBottom, borderRadius }: child) => {
   return (
-    <View style={{ backgroundColor: bgColor ? bgColor : APPCOLORS.WHITE, marginTop: responsiveHeight(mrgnTop), borderRadius: 10, padding: 10, marginHorizontal: responsiveWidth(marginHorizontal) }}>
+    <View style={{ backgroundColor: bgColor ? bgColor : APPCOLORS.WHITE, marginTop: responsiveHeight(mrgnTop), borderRadius: borderRadius ? borderRadius : 10, padding: 10, marginHorizontal: responsiveWidth(marginHorizontal), position: position, top: responsiveHeight(top), marginBottom: responsiveHeight(marginBottom) }}>
       {children}
     </View>
   );

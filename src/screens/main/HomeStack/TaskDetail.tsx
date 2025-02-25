@@ -165,7 +165,7 @@ const TaskDetail = ({navigation}: {navigation: any}) => {
         onPress={()=> navigation.navigate("ClockIn")}
         title='Accept'
         />
-        </View>  
+        </View>
       </View>
     </ScrollView>
   );

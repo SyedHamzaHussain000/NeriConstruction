@@ -9,7 +9,7 @@ import WhiteContainers from '../../../components/WhiteContainers';
 import AppButton from '../../../components/DailyUse/AppButton';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
-const ClockIn = ({ navigation }: { navigation: any }) => {
+const ClockedOut = ({ navigation }: { navigation: any }) => {
   const data = [
     {
       id: 1,
@@ -69,23 +69,23 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
               </View>
             )} />
           </View>
-          <AppButton title="Clock In Now" onPress={() => navigation.navigate('Attendant')} height={8} fntSize={1.8} />
+          <AppButton title="Clocked Out" onPress={() => navigation.navigate('ClockedInDetails')} height={8} fntSize={1.8} />
         </WhiteContainers>
       </View>
       <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
        
         <View style={{ flex: 1 }}>
-          <ClockInCards headingDate="27 September 2024" inprogressTxt="In Progress" />
-          <ClockInCards headingDate="27 September 2024" inprogressTxt="In Progress" />
-          <ClockInCards headingDate="27 September 2024" inprogressTxt="In Progress" />
-          <ClockInCards headingDate="27 September 2024" inprogressTxt="In Progress" />
+          <ClockInCards headingDate="27 September 2024" />
+          <ClockInCards headingDate="27 September 2024" />
+          <ClockInCards headingDate="27 September 2024" />
+          <ClockInCards headingDate="27 September 2024" />
         </View>
       </ScrollView>
     </View>
   );
 };
 
-export default ClockIn;
+export default ClockedOut;
 
 const styles = StyleSheet.create({
   container: {

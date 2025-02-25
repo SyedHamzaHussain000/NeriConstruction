@@ -8,6 +8,7 @@ import { NormalText } from '../../../components/DailyUse/AppText/AppText';
 import { APPCOLORS } from '../../../utils/APPCOLORS';
 import AppButton, { SmallAppButton } from '../../../components/DailyUse/AppButton';
 import DropDownModal from '../../../components/DropDownModal';
+import ClockInSuccessModal from '../../../components/HomeComp/ClockInSuccessModal';
 
 const SelfieToClockIn = ({navigation}: any) => {
     const [isModalVisible, setModalVisible] = useState<Boolean>(false);
@@ -64,22 +65,12 @@ const SelfieToClockIn = ({navigation}: any) => {
             </WhiteContainers>
 
 {/* Modal */}
-            <DropDownModal isModalVisible={isModalVisible}>
-            <View style={{ backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', height: responsiveHeight(35), padding: 50, paddingBottom: 0, borderRadius: 15, position: 'relative' }}>
-            <Image source={AppImages.personBox} style={{position: 'absolute', top: '-50'}} />
-          <View style={{gap:15}}>
-          <NormalText txtColour={APPCOLORS.BLACK} title="Clock-In Successful!" fontSize={3} fntWeight='bold' textAligm='center'/>
-          <NormalText txtColour={APPCOLORS.DARK_GRAY} title="You’re all set! Your clock-in was successful. Head over to your dashboard to see your assigned tasks." fontSize={1.8} fntWeight='bold' textAligm='center'/>
-                    <AppButton
-                    onPress={()=> {
+            <ClockInSuccessModal isModalVisible={isModalVisible} imageSource={AppImages.personBox}  title="Clock-In Successful!" subTitle="You’re all set! Your clock-in was successful. Head over to your dashboard to see your assigned tasks." 
+            onPress={()=> {
                         setModalVisible(false);
                         navigation.navigate('ClockedIn');
-                    }}
-                    title='Go To Clock In Page'
-                    />
-                    </View>
-        </View>
-            </DropDownModal>
+                    }} 
+                    btnTitle='Go To Clock In Page' />
     </View>
   )
 }

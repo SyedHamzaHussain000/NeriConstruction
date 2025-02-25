@@ -23,4 +23,7 @@ export const AppImages = {
     CameraClick: require('./CameraClick.png'),
     FoucsCamera: require('./FoucsCamera.png'),
     personBox: require('./personBox.png'),
+    timer: require('./timer.png'),
+    download: require('./download.png'),
+    calendar: require('./calendar.png'),
 }

@@ -18,9 +18,9 @@ const AppButton = ({ title, txtColorr = APPCOLORS.WHITE, fntSize, btnColor, heig
     </TouchableOpacity>
   );
 };
-export const SmallAppButton = ({ title, txtColorr = APPCOLORS.WHITE, icon, fntSize,txtColor = APPCOLORS.WHITE, btnColor, height = 6, width = 90, borderRadious, onPress }: SmallBtnTypes) => {
+export const SmallAppButton = ({ title, txtColorr = APPCOLORS.WHITE, icon, fntSize,txtColor = APPCOLORS.WHITE, btnColor, height = 6, width = 90, borderRadious, borderWidth, borderColor, onPress }: SmallBtnTypes) => {
   return (
-    <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', borderRadius: borderRadious ? borderRadious : responsiveHeight(2), gap: responsiveHeight(1), height: responsiveHeight(height), width: responsiveWidth(width), alignSelf: 'center', backgroundColor: btnColor, alignItems: 'center', justifyContent: 'center' }}>
+    <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', borderRadius: borderRadious ? borderRadious : responsiveHeight(2), gap: responsiveHeight(1), height: responsiveHeight(height), width: responsiveWidth(width), alignSelf: 'center', backgroundColor: btnColor, alignItems: 'center', justifyContent: 'center', borderWidth: borderWidth, borderColor: borderColor }}>
       {icon && (
         icon === 'rotate' ? <FontAwesome6 name={icon} size={15} color={APPCOLORS.Clock_Bg} /> : <AntDesign name={icon} size={15} color={APPCOLORS.Clock_Bg} />
       )}

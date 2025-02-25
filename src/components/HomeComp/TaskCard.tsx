@@ -12,11 +12,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import SmallButtonsOrBg from '../DailyUse/SmallButtonsOrBg';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-type props = {
-  title: string;
-};
-
-const TaskCard = ({title}: props) => {
+const TaskCard = ({ title, status, priority, dueDate, comments }: any) => {
   return (
     <View
       style={{
@@ -36,7 +32,6 @@ const TaskCard = ({title}: props) => {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'space-between',
             gap: 5,
           }}>
           <CircleContainer
@@ -48,46 +43,53 @@ const TaskCard = ({title}: props) => {
               size={responsiveFontSize(1.3)}
             />
           </CircleContainer>
-
           <BoldText title={title} fontSize={2} />
         </View>
       </View>
 
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
         <SmallButtonsOrBg
-         icon={
+          icon={
             <Ionicons
               name={'time'}
               size={responsiveFontSize(2)}
-              color={APPCOLORS.DARK_GRAY}
+              color={status === 'New' ? 'green' : APPCOLORS.DARK_GRAY}
             />
           }
           btnColor={'#D0D5DD'}
           width={25}
           height={4}
-          title="In Progress"
-          txtColorr={APPCOLORS.BLACK}
+          title={status}
+          txtColorr={status === 'New' ? 'green' : APPCOLORS.BLACK}
         />
         <SmallButtonsOrBg
-         icon={
+          icon={
             <Ionicons
               name={'flag'}
               size={responsiveFontSize(2)}
               color={APPCOLORS.WHITE}
             />
           }
-          btnColor={'#F95555'}
+          btnColor={priority === 'High' ? '#F95555' : '#FFA500'}
           width={25}
           height={4}
-          title="High"
+          title={priority}
           txtColorr={APPCOLORS.WHITE}
         />
       </View>
 
-      <View style={{width:responsiveWidth(80), height:responsiveHeight(1), backgroundColor:APPCOLORS.ICON_TEXT_COLOUR, borderRadius:200, alignSelf:'center'}}/>
+      <View
+        style={{
+          width: responsiveWidth(80),
+          height: responsiveHeight(1),
+          backgroundColor: APPCOLORS.ICON_TEXT_COLOUR,
+          borderRadius: 200,
+          alignSelf: 'center',
+        }}
+      />
 
-      <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
-        <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
           <Image
             source={AppImages.Frame}
             style={{
@@ -98,7 +100,7 @@ const TaskCard = ({title}: props) => {
           />
         </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <SmallButtonsOrBg
             icon={
               <FontAwesome5
@@ -110,7 +112,7 @@ const TaskCard = ({title}: props) => {
             btnColor={APPCOLORS.WHITE}
             width={25}
             height={4}
-            title="27 April"
+            title={dueDate}
             txtColorr={APPCOLORS.BLACK}
           />
           <SmallButtonsOrBg
@@ -124,7 +126,7 @@ const TaskCard = ({title}: props) => {
             btnColor={APPCOLORS.WHITE}
             width={25}
             height={4}
-            title="2"
+            title={comments}
             txtColorr={APPCOLORS.BLACK}
           />
         </View>

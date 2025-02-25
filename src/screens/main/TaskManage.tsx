@@ -15,6 +15,42 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity} from 'react-native';
 import TaskCard from '../../components/HomeComp/TaskCard';
 
+const tasks = [
+  {
+    id: '1',
+    title: 'Complete UI Design',
+    status: 'In Progress',
+    priority: 'High',
+    dueDate: '27 April',
+    comments: '2',
+  },
+  {
+    id: '2',
+    title: 'Fix Backend API',
+    status: 'Pending',
+    priority: 'Medium',
+    dueDate: '28 April',
+    comments: '5',
+  },
+  {
+    id: '3',
+    title: 'Write Unit Tests',
+    status: 'Completed',
+    priority: 'Low',
+    dueDate: '30 April',
+    comments: '1',
+  },
+  {
+    id: '4',
+    title: 'Deploy to Staging',
+    status: 'In Progress',
+    priority: 'Critical',
+    dueDate: '1 May',
+    comments: '3',
+  },
+];
+
+
 const TaskManage = () => {
   return (
     <View style={styles.container}>
@@ -104,11 +140,11 @@ const TaskManage = () => {
       {/* FlatList Section */}
       <View style={styles.listContainer}>
         <FlatList
-          data={[{id: 1}, {id: 2}, {id: 3}, {id: 4}]}
+          data={tasks}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{gap: 20, paddingBottom: 20}}
           renderItem={({item}) => {
-            return <TaskCard title="Wiring Dashboard Analytics" />;
+            return <TaskCard title={item.title} status={item.status} priority={item.priority} dueDate={item.dueDate} comments={item.comments} />;
           }}
         />
       </View>

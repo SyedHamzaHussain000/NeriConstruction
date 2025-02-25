@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { BoldText, NormalText } from '../../../components/DailyUse/AppText/AppText';
@@ -9,6 +9,8 @@ import { FlatList } from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AppButton, { SmallAppButton } from '../../../components/DailyUse/AppButton';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
+import ClockInConfirmModal from '../../../components/HomeComp/ClockInConfirmModal';
+import ClockInSuccessModal from '../../../components/HomeComp/ClockInSuccessModal';
 
 const data = [
     {
@@ -23,7 +25,9 @@ const data = [
     },
   ];
 
-const ClockedIn = ({navigation}: any) => {
+const TakeABreak = ({navigation}: any) => {
+        const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState<Boolean>(false);
+        const [isSuccessModalVisible, setIsSuccessModalVisible] = useState<Boolean>(false);
   return (
     <View style={{ flex: 1, }}>
         <View style={styles.ContainerHeader}>
@@ -72,8 +76,8 @@ const ClockedIn = ({navigation}: any) => {
             )} />
           </View>
           <View style={{flexDirection: 'row', gap: 16, }}>
-          <SmallAppButton title="Take A Break" onPress={() => navigation.navigate('SelfieToClockIn')} height={8} fntSize={1.8} btnColor={APPCOLORS.WHITE} borderWidth={1} borderColor={APPCOLORS.ClockInBg} txtColor={APPCOLORS.ClockInBg} width={42} borderRadious={49} height={6.4} />
-          <SmallAppButton title="Clock Out" onPress={() => navigation.navigate('TakeABreak')} height={8} fntSize={1.8} btnColor={APPCOLORS.BLACK} width={42} borderRadious={49} height={6.4}/>
+          <SmallAppButton title="Back To Work" onPress={() => navigation.navigate('ClockedIn')} height={8} fntSize={1.8} btnColor={APPCOLORS.ClockInBg} txtColor={APPCOLORS.WHITE} width={42} borderRadious={49} height={6.4} />
+          <SmallAppButton title="Clock Out" onPress={() => setIsConfirmationModalVisible(true)} height={8} fntSize={1.8} btnColor={APPCOLORS.BLACK} width={42} borderRadious={49} height={6.4}/>
           </View>
         </WhiteContainers>
               </View>
@@ -86,11 +90,22 @@ const ClockedIn = ({navigation}: any) => {
           <ClockInCards headingDate="27 September 2024"  />
         </View>
       </ScrollView>
+
+      <ClockInConfirmModal isModalVisible={isConfirmationModalVisible} imageSource={AppImages.timer} yesBtnTitle='Yes, Clock Out' noBtnTitle='No, Let me check' yesBtnOnPress={() => {
+        setIsConfirmationModalVisible(false);
+        setIsSuccessModalVisible(true);
+      }} noBtnOnPress={() => setIsConfirmationModalVisible(false)}   title="Confirm Clockout" subTitle="Once you clock out, you won’t be able to edit this time. Please double-check your hours before proceeding."  />
+      <ClockInSuccessModal isModalVisible={isSuccessModalVisible} imageSource={AppImages.timer} btnTitle='Close Message'  title="Clockout Successful!" subTitle="You’ve officially clocked out for the day. Thank you for your hard work! Time to relax and enjoy your break." 
+      onPress={() => {
+        setIsSuccessModalVisible(false);
+        navigation.navigate('ClockedOut');
+      }} 
+      />
     </View>
   );
 };
 
-export default ClockedIn;
+export default TakeABreak;
 
 const styles = StyleSheet.create({
   container: {

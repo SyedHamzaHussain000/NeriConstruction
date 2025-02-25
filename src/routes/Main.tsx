@@ -18,6 +18,11 @@ import Attendant from '../screens/main/HomeStack/Attendant';
 import AttendantSelfie from '../screens/main/HomeStack/AttendantSelfie';
 import SelfieToClockIn from '../screens/main/HomeStack/SelfieToClockIn';
 import ClockedIn from '../screens/main/HomeStack/ClockedIn';
+import TakeABreak from '../screens/main/HomeStack/TakeABreak';
+import ClockedOut from '../screens/main/HomeStack/ClockedOut';
+import ClockedInDetails from '../screens/main/HomeStack/ClockedInDetails';
+import InAppCalendar from '../screens/main/HomeStack/InAppCalendar';
+import TaskMenu from '../screens/main/TaskManageStack/TaskMenu';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -33,6 +38,10 @@ const Main = () => {
       <Stack.Screen name="AttendantSelfie" component={AttendantSelfie} />
       <Stack.Screen name="SelfieToClockIn" component={SelfieToClockIn} />
       <Stack.Screen name="ClockedIn" component={ClockedIn} />
+      <Stack.Screen name="TakeABreak" component={TakeABreak} />
+      <Stack.Screen name="ClockedOut" component={ClockedOut} />
+      <Stack.Screen name="ClockedInDetails" component={ClockedInDetails} />
+      <Stack.Screen name="InAppCalendar" component={InAppCalendar} />
     </Stack.Navigator>
   );
 };
@@ -79,7 +88,9 @@ const TabBar = () => {
       />
       <Tab.Screen
         name="TaskManage"
-        component={TaskManage}
+        // component={TaskManage}
+        component={TaskMenu}
+        // component={TaskDetail}
         options={{
           tabBarShowLabel: false,
           tabBarLabel: '',

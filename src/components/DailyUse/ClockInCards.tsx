@@ -7,15 +7,21 @@ import { BoldText, NormalText } from './AppText/AppText';
 import { APPCOLORS } from '../../utils/APPCOLORS';
 import { SmallAppButton } from './AppButton';
 import { responsiveHeight } from '../../utils/Responsive';
-const ClockInCards = () => {
+
+type clockInProp = {
+  headingDate?: any,
+  inprogressTxt?: any,
+}
+
+const ClockInCards = ({headingDate, inprogressTxt}: clockInProp) => {
   return (
     <WhiteContainers mrgnTop={2}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: responsiveHeight(2) }}>
         <View style={{ flexDirection: 'row', gap: responsiveHeight(2), alignItems: 'center' }}>
           <AntDesign name="calendar" size={20} color={APPCOLORS.ICON_TEXT_COLOUR} />
-          <BoldText title="27 September 2024" fontSize={2} fntWeight="700" />
+          <BoldText title={headingDate} fontSize={2} fntWeight="700" />
         </View>
-        <SmallAppButton fntSize={1.7} txtColor={APPCOLORS.BLACK} height={4} width={30} icon={'clockcircle'} title="In Progress" btnColor={APPCOLORS.BACKGROUND_COLOR} />
+       {inprogressTxt && <SmallAppButton fntSize={1.7} txtColor={APPCOLORS.BLACK} height={4} width={30} icon={'clockcircle'} title={inprogressTxt} btnColor={APPCOLORS.BACKGROUND_COLOR} />}
       </View>
       <View style={{ flexDirection: 'row', marginTop: responsiveHeight(3), justifyContent: 'space-between', backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
         <View>
