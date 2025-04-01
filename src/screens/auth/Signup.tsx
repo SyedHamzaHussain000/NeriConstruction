@@ -138,7 +138,7 @@ const Signup = ({navigation}: {navigation: any}) => {
             alignSelf: 'center',
           }}>
           <BoldText title="Already have an account? " fontSize={1.7} />
-          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <BoldText
               title="Sign In Here"
               txtColour={APPCOLORS.ICON_TEXT_COLOUR}

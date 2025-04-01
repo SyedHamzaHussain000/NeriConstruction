@@ -25,8 +25,6 @@ const Login = ({navigation}: {navigation: any}) => {
   const [showPassword, setShowPassword] = useState(false)
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
 
-
-
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setVisible(true); // Open modal when the screen is focused
