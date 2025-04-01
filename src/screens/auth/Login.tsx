@@ -94,7 +94,10 @@ const Login = ({navigation}: {navigation: any}) => {
                 </TouchableOpacity>
             </View>
      
-              <AppButton title='Sign In' onPress={()=> navigation.navigate("Main")} />
+              <AppButton title='Sign In' onPress={()=> {
+                navigation.navigate("Main")
+                setVisible(false)
+              }} />
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
                   <Line  lineWidht={40}/>
                     <BoldText title='OR' fontSize={2} txtColour={APPCOLORS.BORDER_LINE_COLOR}/>

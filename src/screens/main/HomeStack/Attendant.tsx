@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
-import { View, Text, Image, FlatList } from 'react-native';
 import React from 'react';
+import { View, Text, Image, FlatList, Platform, Alert, PermissionsAndroid, Linking } from 'react-native';
+import { launchCamera as _launchCamera } from 'react-native-image-picker';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import WhiteContainers from '../../../components/WhiteContainers';
 import { NormalText, BoldText } from '../../../components/DailyUse/AppText/AppText';
@@ -8,13 +9,58 @@ import { APPCOLORS } from '../../../utils/APPCOLORS';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { AppImages } from '../../../assets/AppImages';
 import AppButton from '../../../components/DailyUse/AppButton';
-
 const scheduleData = [
   {text: 'CLOCK IN', time: '09:00', width: responsiveWidth(45)},
   {text: 'CLOCK OUT', time: '05:00', width: responsiveWidth(45)},
 ]
 
+let launchCamera = _launchCamera;
+
 const Attendant = ({ navigation }: { navigation: any }) => {
+
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          Alert.alert('Permission Denied', 'Camera permission is required');
+          Linking.openSettings();
+          return false;
+        }
+        return true;
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const selfieHandler = async () => {
+      const options = {
+        mediaType: 'photo',
+        includeBase64: false,
+        maxHeight: 2000,
+        maxWidth: 2000,
+      };
+
+      const hasPermission = await requestCameraPermission();
+      if (!hasPermission) return;
+  
+      launchCamera(options, handleResponse);
+  }
+
+  const handleResponse = (response: any) => {
+    if (response.didCancel) {
+      Alert.alert('Cancelled', 'User cancelled image picker');
+    } else if (response.errorCode) {
+      Alert.alert('Error', response.errorMessage);
+    } else {
+      let imageUri = response.uri || response.assets?.[0]?.uri;
+      navigation.navigate("SelfieToClockIn", {photo: imageUri})
+    }
+  }
+
   return (
     <View>
       <NormalHeader onPress={() => navigation.navigate('ClockIn')} title="Clock In Area" />
@@ -77,7 +123,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
       </WhiteContainers>
       <View style={{height:responsiveHeight(30), justifyContent: 'flex-end'}}>
         <AppButton
-        onPress={()=> navigation.navigate("AttendantSelfie")}
+        onPress={()=> selfieHandler()}
         title='Selfie To Clock In'
         />
         </View>
