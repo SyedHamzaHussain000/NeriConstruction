@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { launchImageLibrary as _launchImageLibrary } from 'react-native-image-picker';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import WhiteContainers from '../../../components/WhiteContainers';
@@ -11,10 +12,35 @@ import DropDownInput from '../../../components/PersonalDataComp/DropDownInput';
 import AppButton from '../../../components/DailyUse/AppButton';
 import UpdateProfileModal from '../../../components/PersonalDataComp/UpdateProfileModal';
 
+let launchImageLibrary = _launchImageLibrary;
+
 const PersonalData = ({navigation}: any) => {
             const [isUpdateModalVisible, setIsUpdateModalVisible] = useState<Boolean>(false);
             const [isSuccessModalVisible, setIsSuccessModalVisible] = useState<Boolean>(false);
-    
+            const [selectedImage, setSelectedImage] = useState(null);
+
+            const openImagePicker = () => {
+              const options = {
+                mediaType: 'photo',
+                includeBase64: false,
+                maxHeight: 2000,
+                maxWidth: 2000,
+              };
+          
+              launchImageLibrary(options, handleResponse);
+            };
+
+            const handleResponse = (response: any) => {
+              if (response.didCancel) {
+                console.log('User cancelled image picker');
+              } else if (response.error) {
+                console.log('Image picker error: ', response.error);
+              } else {
+                let imageUri = response.uri || response.assets?.[0]?.uri;
+                setSelectedImage(imageUri);
+              }
+            };
+
   return (
     <View style={{flex: 1}}>
       <NormalHeader onPress={() => navigation.goBack()} title="Personal Data" />
@@ -26,9 +52,9 @@ const PersonalData = ({navigation}: any) => {
                             <BoldText title='Details about my personal data' txtColour={APPCOLORS.DARK_GRAY} fontSize={1.7}/>
                 
                 <View style={{alignItems: 'center', marginTop: responsiveHeight(2)}}>
-                    <TouchableOpacity>
-                    <Image source={AppImages.pfps} />
-                        <BoldText title='Upload Photo' textAligm={'center'} txtColour={APPCOLORS.DARK_GRAY} fntWeight='bold' fontSize={2} mrgnTop={2}/>
+                    <TouchableOpacity onPress={() => openImagePicker()}>
+                    <Image source={selectedImage ? {uri: selectedImage} : AppImages.pfps} style={{width: 200, height: 200, borderRadius: 25}} />
+                        <BoldText title={selectedImage ? 'Change Photo' : 'Upload Photo'} textAligm={'center'} txtColour={APPCOLORS.DARK_GRAY} fntWeight='bold' fontSize={2} mrgnTop={2}/>
                     </TouchableOpacity>
                 <View style={{marginHorizontal: responsiveWidth(10)}}>
                 <BoldText title='Format should be in .jpeg .png atleast 800x800px and less than 5MB' mrgnTop={0.5} textAligm={'center'} txtColour={APPCOLORS.DARK_GRAY} fontSize={1.5}/>
@@ -58,7 +84,7 @@ const PersonalData = ({navigation}: any) => {
     { id: 2, label: 'Banana' },
     { id: 3, label: 'Orange' },
     { id: 4, label: 'Mango' }
-  ]} inputLable={'Date of Birth'} iconName={'calendar'} defaultVal={'Junior Full Stack Developer'} />
+  ]} inputLable={'Position'} iconName={'calendar'} defaultVal={'Junior Full Stack Developer'} />
                 </View>
             </View>
             </WhiteContainers>

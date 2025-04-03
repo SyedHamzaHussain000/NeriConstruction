@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Image } from 'react-native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../../utils/Responsive'
@@ -8,6 +8,7 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import CircleContainer from '../DailyUse/CircleContainer'
+import { useNavigation } from '@react-navigation/native'
 type props = {
     pfp?: any,
     Name: string,
@@ -16,6 +17,7 @@ type props = {
 }
 
 const HomeHeader = ({JobTitle,Name,pfp, paddingHorizontal}:props) => {
+    const nav = useNavigation();
   return (
     <View style={{paddingHorizontal: paddingHorizontal ? paddingHorizontal : 20, flexDirection:'row', alignItems:'center', gap:10, backgroundColor:APPCOLORS.WHITE, justifyContent:'space-between'}}>
         <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
@@ -34,6 +36,7 @@ const HomeHeader = ({JobTitle,Name,pfp, paddingHorizontal}:props) => {
         </View>
 
         <View style={{flexDirection:'row', gap:10}}>
+        <TouchableOpacity onPress={() => nav.navigate('Language')}>
         <CircleContainer>
             <Ionicons
             name={"language"}
@@ -41,14 +44,17 @@ const HomeHeader = ({JobTitle,Name,pfp, paddingHorizontal}:props) => {
             size={responsiveFontSize(2)}
             />
         </CircleContainer>
+        </TouchableOpacity>
 
-        <CircleContainer>
+            <TouchableOpacity onPress={() => nav.navigate('Notification')}>
+        <CircleContainer >
             <Fontisto
             name={"bell-alt"}
             color={APPCOLORS.ICON_TEXT_COLOUR}
             size={responsiveFontSize(2)}
             />
         </CircleContainer>
+            </TouchableOpacity>
         </View>
     </View>
   )

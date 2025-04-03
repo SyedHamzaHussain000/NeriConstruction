@@ -50,6 +50,7 @@ const Main = () => {
       <Stack.Screen name="ClockedInDetails" component={ClockedInDetails} />
       <Stack.Screen name="InAppCalendar" component={InAppCalendar} />
       <Stack.Screen name="PersonalData" component={PersonalData} />
+      <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Language" component={Language} />
       <Stack.Screen name="Faq" component={Faq} />
       <Stack.Screen name="Help" component={Help} />
