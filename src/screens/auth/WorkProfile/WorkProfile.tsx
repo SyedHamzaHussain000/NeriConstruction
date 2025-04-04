@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import {APPCOLORS} from '../../../utils/APPCOLORS';
 import {
@@ -15,7 +15,19 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AppButton from '../../../components/DailyUse/AppButton';
-const WorkProfile = ({navigation}: {navigation: any}) => {
+const WorkProfile = ({navigation, route}: any) => {
+const [formValues, setFormValues] = useState({
+    firstName: '',
+    lastName: '',
+    dateOfBirth: '',
+    position: '',
+    country: '',
+    state: '',
+    city: '',
+    fullAddress: '',
+  });
+  const id = route?.params?.employeeId
+
   return (
     <View>
       <NormalHeader onPress={()=> navigation.goBack()} title="My Work Profile" />
@@ -37,12 +49,16 @@ const WorkProfile = ({navigation}: {navigation: any}) => {
             inputHeadig='First Name'
             icon={<Octicons name='person' size={responsiveFontSize(2)} color={APPCOLORS.ICON_TEXT_COLOUR}/>}
             placeholder='Tonald'
+            value={formValues.firstName}
+            onChangeText={(text: any) => setFormValues({...formValues, firstName: text})}
             />
 
 <AppTxtInput
             inputHeadig='Last Name'
             icon={<Octicons name='person' size={responsiveFontSize(2)} color={APPCOLORS.ICON_TEXT_COLOUR}/>}
             placeholder='Drump'
+            value={formValues.lastName}
+            onChangeText={(text: any) => setFormValues({...formValues, lastName: text})}
             />
 
 

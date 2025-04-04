@@ -6,7 +6,8 @@ export type ButtonTypes = {
     btnColor?: any,
     txtColorr?: any,
     onPress?:() =>  void,
-    icon?: any
+    icon?: any,
+    disabled?:any,
 };
 
 export type SmallBtnTypes = {

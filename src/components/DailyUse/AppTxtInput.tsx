@@ -14,10 +14,13 @@ type props = {
     password?:boolean,
     passwordShown?: boolean,
     setShowPassword?: () => void;
-    showPassword?: boolean
+    showPassword?: boolean;
+    value?: string;
+    onChangeText?: any;
+    keyboardType?:any;
 }
 
-const AppTxtInput = ({icon,inputHeadig,password,passwordShown,placeholder,showPassword,setShowPassword, }: props) => {
+const AppTxtInput = ({icon,inputHeadig,password, value, onChangeText, keyboardType, passwordShown,placeholder,showPassword,setShowPassword, }: props) => {
   return (
     <View>
       <NormalText title={inputHeadig} txtColour={APPCOLORS.DARK_GRAY} fontSize={1.8}/>
@@ -26,9 +29,12 @@ const AppTxtInput = ({icon,inputHeadig,password,passwordShown,placeholder,showPa
             {icon}
             <TextInput
             placeholder={placeholder}
+            value={value}
+            onChangeText={onChangeText}
             placeholderTextColor={APPCOLORS.DARK_GRAY}
             style={{marginLeft:10, width:responsiveWidth(70)}}
             secureTextEntry={password && !showPassword}
+            keyboardType={keyboardType}
             />
             {
                 password && (

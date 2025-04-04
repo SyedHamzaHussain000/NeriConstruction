@@ -1,10 +1,10 @@
 import { Message } from './Alert';
 
-export const baseUrl = 'http://192.168.1.21:3000/api/';
+export const baseUrl = 'https://65q7j0s2-5020.inc1.devtunnels.ms';
 // export const baseUrl = 'http://localhost:3000/api/';
 
 export const endPoints = {
-    signUp: '/api/customer/auth/signup',
+    signUp: '/api/employee/signup',
 };
 
 export const errHandler = async (err: any,) => {

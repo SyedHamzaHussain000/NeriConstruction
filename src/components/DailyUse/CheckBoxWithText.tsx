@@ -18,6 +18,7 @@ const CheckBoxWithText = ({title,toggleCheckBox,setToggleCheckBox}:props) => {
         <View>
           <BouncyCheckbox onPress={setToggleCheckBox} 
            fillColor={APPCOLORS.PRIMARY_DARK}
+           isChecked={toggleCheckBox}
                 unFillColor="#FFFFFF" 
                 size={responsiveFontSize(2.5)}
                 style={{width:responsiveHeight(3)}} 

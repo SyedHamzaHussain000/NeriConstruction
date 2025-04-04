@@ -9,9 +9,9 @@ import { BoldText, NormalText } from './AppText/AppText';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
-const AppButton = ({ title, txtColorr = APPCOLORS.WHITE, fntSize, btnColor, height = 6, width = 90, onPress }: ButtonTypes) => {
+const AppButton = ({ title, txtColorr = APPCOLORS.WHITE, fntSize, disabled, btnColor, height = 6, width = 90, onPress }: ButtonTypes) => {
   return (
-    <TouchableOpacity onPress={onPress} style={{ alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
+    <TouchableOpacity disabled={disabled} onPress={onPress} style={{ alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
       <LinearGradient style={{ height: responsiveHeight(height), width: responsiveWidth(width), alignItems: 'center', justifyContent: 'center', borderRadius: 200 }} colors={[APPCOLORS.PRIMARY_DARK, APPCOLORS.PRIMARY_DARK, APPCOLORS.PRIMARY_DARK, APPCOLORS.PRIMARY_LIGHT]}>
         <BoldText title={title} fontSize={fntSize ? fntSize : 1.5} textAligm={'center'} txtColour={APPCOLORS.WHITE} />
       </LinearGradient>

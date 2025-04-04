@@ -20,4 +20,5 @@ export const APPCOLORS = {
     BACKGROUND_COLOR: '#EAECF0',
     Clock_Bg: '#D0D5DD',
     ClockInBg:'#795FFC',
+    Red:'red',
 };

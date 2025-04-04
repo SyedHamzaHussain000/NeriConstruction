@@ -1,8 +1,8 @@
-import { combineReducers, legacy_createStore as createStore } from 'redux';
+import { combineReducers, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import counterReducer from './reducers/reducer';
-// import rootReducer from './reducers';
+import {thunk} from 'redux-thunk'; // Import redux-thunk
+import AuthReducers from './reducers/AuthReducers.js';
 
 // Redux Persist Configuration
 const persistConfig = {
@@ -11,14 +11,19 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-    counter: counterReducer,
+  // counter: counterReducer,
+  auth: AuthReducers,
+  // Add other reducers here if necessary
 });
 
 // Persisted Reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Create Store
-export const store = createStore(persistedReducer);
+// Create Store with redux-thunk middleware
+export const store = createStore(
+  persistedReducer, // Use the persisted reducer
+  applyMiddleware(thunk) // Apply redux-thunk middleware
+);
 
 // Persistor
 export const persistor = persistStore(store);
