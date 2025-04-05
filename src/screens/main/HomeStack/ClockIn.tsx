@@ -9,19 +9,37 @@ import WhiteContainers from '../../../components/WhiteContainers';
 import AppButton from '../../../components/DailyUse/AppButton';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
+import { ClockInNowAction } from '../../../redux/actions/MainActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
+
+const data = [
+  {
+    id: 1,
+    title1: 'Today',
+    title2: '00:00 Hrs',
+  },
+  {
+    id: 2,
+    title1: 'This Pay Period',
+    title2: '32:00 Hrs',
+  },
+];
+
 const ClockIn = ({ navigation }: { navigation: any }) => {
-  const data = [
-    {
-      id: 1,
-      title1: 'Today',
-      title2: '00:00 Hrs',
-    },
-    {
-      id: 2,
-      title1: 'This Pay Period',
-      title2: '32:00 Hrs',
-    },
-  ];
+  const dispatch = useDispatch();
+  const authState = useSelector((state: any) => state.auth);
+  const mainState = useSelector((state: any) => state.main);
+
+  const clockInNowHandler = () => {
+    const timeValues = {
+      id: authState?.authData.data?._id,
+      date: getFormattedDate(),
+      timeIn: getFormattedTime(),
+    }
+    dispatch(ClockInNowAction(timeValues, navigation))
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.ContainerHeader}>
@@ -69,7 +87,7 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
               </View>
             )} />
           </View>
-          <AppButton title="Clock In Now" onPress={() => navigation.navigate('Attendant')} height={8} fntSize={1.8} />
+          <AppButton title={mainState?.loadingState ? "Waiting..." : "Clock In Now"} disabled={mainState?.loadingState} onPress={() => clockInNowHandler()} height={8} fntSize={1.8} />
         </WhiteContainers>
       </View>
       <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1 }} showsVerticalScrollIndicator={false}>

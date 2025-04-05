@@ -81,8 +81,6 @@ const Signup = ({ navigation }) => {
   
 
   const handleSignUp = () => {
-    // navigation.navigate('WorkProfile');
-
     if(!state?.loadingState){
       if (validateForm()) {
         if(isChecked){

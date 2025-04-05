@@ -1,5 +1,6 @@
-import { View, Text, Image, ScrollView } from 'react-native'
 import React, { useState } from 'react'
+import { View, Image, ScrollView } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux';
 import { responsiveFontSize, responsiveHeight } from '../../utils/Responsive'
 import { APPCOLORS } from '../../utils/APPCOLORS'
 import { BoldText } from '../../components/DailyUse/AppText/AppText'
@@ -11,10 +12,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import ChangePasswordModal from '../../components/ProfileComp/ChangePasswordModal'
 import LogOutModal from '../../components/LogOutModal'
+import { LogoutAction } from '../../redux/actions/AuthActions';
+
 const Profile = ({navigation}: {navigation: any}) => {
+    const state = useSelector((state: any) => state.auth);
+    const dispatch = useDispatch();
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState<Boolean>(false);
     const [isSuccessModalVisible, setIsSuccessModalVisible] = useState<Boolean>(false);
     const [isLogoutModalVisible, setIsLogoutModalVisible] = useState<Boolean>(false);
+
+    const logoutHandler = () => {
+            setIsLogoutModalVisible(false);
+            dispatch(LogoutAction(navigation))
+    }
 
   return (
     <View style={{flex:1, backgroundColor:APPCOLORS.WHITE}}>
@@ -41,7 +51,7 @@ const Profile = ({navigation}: {navigation: any}) => {
 
             <WhiteContainers bgColor={"#F4F6F9"}>
                     <View style={{padding:10, gap:10}}>
-                            <Bars icon={<Ionicons name={"mail"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title='Tonald@gmail.com'/>
+                            <Bars icon={<Ionicons name={"mail"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title={state?.authData?.data?.email}/>
                             <Bars icon={<Ionicons name={"location"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title='Taman Anggrek'/>
                     </View>
             </WhiteContainers>
@@ -87,10 +97,7 @@ const Profile = ({navigation}: {navigation: any}) => {
         <ChangePasswordModal isModalVisible={isSuccessModalVisible} onPress={() => setIsSuccessModalVisible(false)} imageSource={AppImages.key} title='Password Has Been Updated' subTitle='To log in to your account, click the Sign in button and enter your email along with your new password.' btnTitle='Go back' />
         
         <LogOutModal isModalVisible={isLogoutModalVisible}
-         onPress={() => {
-            setIsLogoutModalVisible(false);
-            navigation.navigate("Auth");
-            }}
+         onPress={() => logoutHandler()}
         imageSource={AppImages.download}
          title='Are You Sure You Want To Logout?' 
          subTitle='Since the 1500s, when an unknown printer took a galley of type and scrambled specimen book.' 

@@ -1,4 +1,4 @@
-import {View, Text, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import DropDownModal from '../../components/DropDownModal';
 import {APPCOLORS} from '../../utils/APPCOLORS';
@@ -19,11 +19,56 @@ import AppLineButton from '../../components/DailyUse/AppLineButton';
 import { AppImages } from '../../assets/AppImages';
 import Line from '../../components/DailyUse/Line';
 import AppImageBackground from '../../components/DailyUse/AppImageBackground';
+import { validateEmail } from '../../utils/ValidationsRegex';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleSignInAction } from '../../redux/actions/AuthActions';
 const Login = ({navigation}: {navigation: any}) => {
 
   const [visible, setVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false)
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [formValues, setFormValues] = useState({
+      email: '',
+      password: '',
+    });
+  const [errors, setErrors] = useState({});
+  const state = useSelector((state: any) => state.auth);
+  const dispatch = useDispatch();
+
+      const handleChange = (name, value) => {
+        setFormValues({ ...formValues, [name]: value.trim() });
+        setErrors({ ...errors, [name]: '' });
+      };
+    
+      const validateForm = () => {
+        let validationErrors: Record<string, string> = {};
+      
+        // Required field validations
+        if (!formValues.email.trim()) {
+          validationErrors.email = 'Email is required';
+        } else if (!validateEmail(formValues.email)) {
+          validationErrors.email = 'Invalid email format';
+        }
+      
+        if (!formValues.password.trim()) {
+          validationErrors.password = 'Password is required';
+        } 
+      
+        setErrors(validationErrors);
+        return Object.keys(validationErrors).length === 0;
+      };
+
+    const signInHandler = () => {
+       if(!state?.loadingState){
+            if (validateForm()) {
+              if(toggleCheckBox){
+                dispatch(handleSignInAction(formValues, navigation, setVisible, setFormValues));
+              }else{
+                Alert.alert('Please select checkbox');
+              }
+            }
+          }
+    }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -59,6 +104,7 @@ const Login = ({navigation}: {navigation: any}) => {
             <View style={{gap:30}}>
 
               <View style={{gap:10}}>
+            <View>
             <AppTxtInput
               inputHeadig="Email"
               icon={
@@ -69,8 +115,13 @@ const Login = ({navigation}: {navigation: any}) => {
                 />
               }
               placeholder="My Email"
+              value={formValues.email}
+              onChangeText={(text) => handleChange('email', text)}
             />
+            {errors.email && <NormalText title={errors.email} txtColour="red" fontSize={1.8} />}
+            </View>
 
+            <View>
             <AppTxtInput
               inputHeadig="Password"
               icon={
@@ -84,20 +135,21 @@ const Login = ({navigation}: {navigation: any}) => {
               password={true}
               setShowPassword={()=>setShowPassword(!showPassword)}
               showPassword={showPassword}
+              value={formValues.password}
+              onChangeText={(text) => handleChange('password', text)}
             />
+            {errors.password && <NormalText title={errors.password} txtColour="red" fontSize={1.8} />}
+            </View>
             </View>
 
             <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-              <CheckBoxWithText title='Remember me' setToggleCheckBox={(val) => setToggleCheckBox(val)}/>
+              <CheckBoxWithText title='Remember me' toggleCheckBox={toggleCheckBox} setToggleCheckBox={(check) => setToggleCheckBox(check)}/>
                 <TouchableOpacity onPress={()=> navigation.navigate("EnterEmail")}>
               <BoldText title='Forget Password?' textDecorate={true} fontSize={1.7} txtColour={APPCOLORS.ICON_TEXT_COLOUR}/>
                 </TouchableOpacity>
             </View>
      
-              <AppButton title='Sign In' onPress={()=> {
-                navigation.navigate("Main")
-                setVisible(false)
-              }} />
+              <AppButton title={state?.loadingState ? "Waiting..." : "Sign In"} disabled={state?.loadingState} onPress={()=> signInHandler()} />
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
                   <Line  lineWidht={40}/>
                     <BoldText title='OR' fontSize={2} txtColour={APPCOLORS.BORDER_LINE_COLOR}/>

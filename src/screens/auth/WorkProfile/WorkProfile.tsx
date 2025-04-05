@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import {APPCOLORS} from '../../../utils/APPCOLORS';
 import {
@@ -15,6 +15,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AppButton from '../../../components/DailyUse/AppButton';
+
 const WorkProfile = ({navigation, route}: any) => {
 const [formValues, setFormValues] = useState({
     firstName: '',
@@ -26,7 +27,13 @@ const [formValues, setFormValues] = useState({
     city: '',
     fullAddress: '',
   });
-  const id = route?.params?.employeeId
+  const id = route?.params?.employeeId;
+
+  // const getEmployeeData = (id) => {}
+
+  // useEffect(() => {
+  //   getEmployeeData(id)
+  // }, [id])
 
   return (
     <View>
@@ -113,7 +120,7 @@ const [formValues, setFormValues] = useState({
 
               <AppButton 
               title='Continue'
-              onPress={()=> navigation.navigate("Main")}
+              onPress={()=> navigation.navigate("Login")}
               />
 
 

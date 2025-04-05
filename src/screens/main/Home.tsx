@@ -12,6 +12,7 @@ import SquareContainer from '../../components/DailyUse/SquareContainer'
 import TaskCard from '../../components/HomeComp/TaskCard'
 import Slider from '@react-native-community/slider';
 import { responsiveWidth } from '../../utils/Responsive'
+import { useSelector } from 'react-redux';
 
 const Home = ({navigation}: {navigation: any}) => {
   return (

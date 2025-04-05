@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {thunk} from 'redux-thunk'; // Import redux-thunk
 import AuthReducers from './reducers/AuthReducers.js';
+import MainReducers from './reducers/MainReducers.js';
 
 // Redux Persist Configuration
 const persistConfig = {
@@ -13,6 +14,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   // counter: counterReducer,
   auth: AuthReducers,
+  main: MainReducers,
   // Add other reducers here if necessary
 });
 

@@ -2,7 +2,7 @@ import { AUTH_DATA, LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 
 const initialState = {
     loadingState: false,
-    authData: {},
+    authData: null,
 };
 
 const AuthReducers = (state = initialState, action) => {
