@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import { View, StyleSheet, Image, FlatList, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { APPCOLORS } from '../../../utils/APPCOLORS';
 import { BoldText, NormalText } from '../../../components/DailyUse/AppText/AppText';
@@ -9,9 +9,9 @@ import WhiteContainers from '../../../components/WhiteContainers';
 import AppButton from '../../../components/DailyUse/AppButton';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
-import { ClockInNowAction } from '../../../redux/actions/MainActions';
+import { ClockInNowAction, getTimeInAndTimeOutAction } from '../../../redux/actions/MainActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
+import { formatDateToHrs, getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
 
 const data = [
   {
@@ -22,7 +22,7 @@ const data = [
   {
     id: 2,
     title1: 'This Pay Period',
-    title2: '32:00 Hrs',
+    title2: '09:00 Hrs',
   },
 ];
 
@@ -30,15 +30,24 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
   const dispatch = useDispatch();
   const authState = useSelector((state: any) => state.auth);
   const mainState = useSelector((state: any) => state.main);
+  const timeInAndTimeOut = useSelector((state: any) => state.getTimeInTimeOut);
+  const [todayHrs, setTodayHrs] = useState('');
 
   const clockInNowHandler = () => {
-    const timeValues = {
-      id: authState?.authData.data?._id,
-      date: getFormattedDate(),
-      timeIn: getFormattedTime(),
-    }
-    dispatch(ClockInNowAction(timeValues, navigation))
+    navigation.navigate('Attendant');
   }
+
+  useEffect(() => {
+    dispatch(getTimeInAndTimeOutAction(authState?.authData.data?._id))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authState?.authData.data?._id]);
+
+  useEffect(() => {
+    const date = timeInAndTimeOut ? new Date(timeInAndTimeOut?.timeInTimeOutData?.data?.date) : null;
+    const resDate = date === null ? '00:00 Hrs' : formatDateToHrs(date)
+    setTodayHrs(resDate)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeInAndTimeOut]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -77,13 +86,13 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
             <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
           </View>
           <View style={{ width: responsiveWidth(90), flexDirection: 'row' }}>
-            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item }) => (
+            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
               <View style={{ gap: responsiveHeight(1), width: responsiveWidth(40), backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1) }}>
                   <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                   <NormalText title={item.title1} fontSize={1.7} />
                 </View>
-                <BoldText title={item.title2} fontSize={2.5} />
+                <BoldText title={index == 0 ? todayHrs : item.title2} fontSize={2.5} />
               </View>
             )} />
           </View>

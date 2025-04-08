@@ -11,13 +11,17 @@ import { APPCOLORS } from '../../../utils/APPCOLORS';
 import AppButton, { SmallAppButton } from '../../../components/DailyUse/AppButton';
 import DropDownModal from '../../../components/DropDownModal';
 import ClockInSuccessModal from '../../../components/HomeComp/ClockInSuccessModal';
+import { useSelector } from 'react-redux';
+import { baseUrl } from '../../../utils/Api_endPoints';
 
 let launchCamera = _launchCamera;
 
 const SelfieToClockIn = ({navigation, route}: any) => {
     const [isModalVisible, setModalVisible] = useState<Boolean>(false);
-    const {photo} = route?.params;
-    const [newPhoto, setNewPhoto] = useState<Boolean>(photo);
+    // const {photo} = route?.params;
+    const [newPhoto, setNewPhoto] = useState<Boolean>();
+    const mainState = useSelector((state: any) => state.main?.clockInData);
+    const data = mainState?.data
 
     const handleRetakePhoto = () => {
             const options = {
@@ -42,15 +46,15 @@ const SelfieToClockIn = ({navigation, route}: any) => {
 
   return (
     <View>
-      <NormalHeader onPress={() => navigation.navigate('Attendant')} title="Selfie To Clock In" />
+      <NormalHeader onPress={() => navigation.goBack()} title="Selfie To Clock In" />
       <WhiteContainers mrgnTop={2} marginHorizontal={4}>
         <View style={{padding: responsiveWidth(2)}}>
-            <ImageBackground source={{uri: newPhoto}} imageStyle={{ borderRadius: 15}} style={{width: '100%', height: responsiveHeight(55)}}>
+            <ImageBackground source={ {uri: `${baseUrl}/${data?.image}`} } imageStyle={{ borderRadius: 15}} style={{width: '100%', height: responsiveHeight(55)}}>
                     <View style={{flex: 1, justifyContent: 'flex-end', paddingHorizontal: 20}}>
                     <View style={{gap: 3}}>
-                    <NormalText txtColour={APPCOLORS.WHITE} title="Lat : 45.43534" fontSize={1.5} fntWeight="bold"/>
-                    <NormalText txtColour={APPCOLORS.WHITE} title="Long : 97897.576" fontSize={1.5} fntWeight="bold"/>
-                    <NormalText txtColour={APPCOLORS.WHITE} title="11/10/24 09:00AM GMT +07:00" fontSize={1.6} fntWeight="bold"/>
+                    <NormalText txtColour={APPCOLORS.WHITE} title={`Lat : ${data?.location?.coordinates[0]}`} fontSize={1.5} fntWeight="bold"/>
+                    <NormalText txtColour={APPCOLORS.WHITE} title={`Long : ${data?.location?.coordinates[1]}`} fontSize={1.5} fntWeight="bold"/>
+                    <NormalText txtColour={APPCOLORS.WHITE} title={data?.createdAt} fontSize={1.6} fntWeight="bold"/>
                     </View>
 
                     <View style={{padding: responsiveWidth(1), paddingVertical: responsiveHeight(3)}}>

@@ -1,17 +1,23 @@
 import { INCREMENT, DECREMENT, RESET } from '../actions/action';
+import { GET_TIMEIN_TIMEOUT, TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
 
 const initialState = {
-  count: 0,
+  timeInTimeOutLoadingState: false,
+  timeInTimeOutData: null,
 };
 
 const counterReducer = (state = initialState, action) => {
   switch (action.type) {
-    case INCREMENT:
-      return { ...state, count: state.count + action.payload };
-    case DECREMENT:
-      return { ...state, count: state.count - action.payload };
-    case RESET:
-      return { ...state, count: 0 };
+    case GET_TIMEIN_TIMEOUT:
+         return { 
+           ...state,
+           timeInTimeOutData: action.payload,
+         };
+         case TIMEIN_TIMEOUT_LOADING_STATE:
+         return { 
+           ...state,
+           timeInTimeOutLoadingState: action.payload,
+         };
     default:
       return state;
   }

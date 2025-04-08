@@ -14,7 +14,7 @@ const ClockedInDetails = ({navigation}: any) => {
     const [isModalVisible, setModalVisible] = useState<Boolean>(false);
   return (
     <View>
-      <NormalHeader onPress={() => navigation.navigate('ClockedOut')} title="Details" />
+      <NormalHeader onPress={() => navigation.goBack()} title="Details" />
       <WhiteContainers mrgnTop={2} marginHorizontal={4}>
          <View style={{ flexDirection: 'row', gap: responsiveHeight(1), marginHorizontal: responsiveWidth(1), paddingBottom: 10, marginTop: 5, alignItems: 'center' }}>
                   <AntDesign name="calendar" size={20} color={APPCOLORS.ICON_TEXT_COLOUR} />

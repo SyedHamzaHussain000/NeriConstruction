@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, FlatList, Platform, Alert, PermissionsAndroid, Linking } from 'react-native';
 import { launchCamera as _launchCamera } from 'react-native-image-picker';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
@@ -9,6 +9,9 @@ import { APPCOLORS } from '../../../utils/APPCOLORS';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { AppImages } from '../../../assets/AppImages';
 import AppButton from '../../../components/DailyUse/AppButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { ClockInNowAction, getTimeInAndTimeOutAction } from '../../../redux/actions/MainActions';
+import { getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
 const scheduleData = [
   {text: 'CLOCK IN', time: '09:00', width: responsiveWidth(45)},
   {text: 'CLOCK OUT', time: '05:00', width: responsiveWidth(45)},
@@ -17,6 +20,10 @@ const scheduleData = [
 let launchCamera = _launchCamera;
 
 const Attendant = ({ navigation }: { navigation: any }) => {
+    const timeInAndTimeOut = useSelector((state: any) => state.getTimeInTimeOut);
+      const mainState = useSelector((state: any) => state.main);
+    const authState = useSelector((state: any) => state.auth);
+    const dispatch = useDispatch();
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -56,14 +63,29 @@ const Attendant = ({ navigation }: { navigation: any }) => {
     } else if (response.errorCode) {
       Alert.alert('Error', response.errorMessage);
     } else {
-      let imageUri = response.uri || response.assets?.[0]?.uri;
-      navigation.navigate("SelfieToClockIn", {photo: imageUri})
+      const timeValues = {
+        id: authState?.authData.data?._id,
+        date: getFormattedDate(),
+        timeIn: getFormattedTime(),
+        image: {
+          uri: response.assets?.[0]?.uri,
+          name: response.assets?.[0]?.fileName,
+          type: response.assets?.[0]?.type || 'image/jpeg',
+        },
+      }
+      dispatch(ClockInNowAction(timeValues, navigation))
+      // navigation.navigate("SelfieToClockIn", {photo: imageUri})
     }
   }
 
+   useEffect(() => {
+      dispatch(getTimeInAndTimeOutAction(authState?.authData.data?._id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [authState?.authData.data?._id]);
+
   return (
     <View>
-      <NormalHeader onPress={() => navigation.navigate('ClockIn')} title="Clock In Area" />
+      <NormalHeader onPress={() => navigation.goBack()} title="Clock In Area" />
       <WhiteContainers mrgnTop={2}>
         <View style={{ backgroundColor: APPCOLORS.ClockInBg, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', padding: responsiveHeight(2), borderRadius: responsiveHeight(2) }}>
           <View>
@@ -109,11 +131,11 @@ const Attendant = ({ navigation }: { navigation: any }) => {
           contentContainerStyle={{gap: 16,}}
           horizontal
           scrollEnabled={false}
-          renderItem={({item}) => {
+          renderItem={({item, index}) => {
                       return (
                         <View style={{width: item.width, alignItems: 'center', borderRadius: 14, backgroundColor: APPCOLORS.LIGHTWHITE, borderWidth: 1, borderColor:APPCOLORS.GRAY_BORDER, padding: responsiveHeight(1.5), marginTop: responsiveHeight(1.5)}}>
                         <NormalText txtColour={APPCOLORS.DARK_GRAY} title={item.text} fontSize={2} fntWeight='bold'/>
-                        <NormalText txtColour={APPCOLORS.BLACK} title={item.time} fontSize={4} fntWeight='bold' />
+                        <NormalText txtColour={APPCOLORS.BLACK} title={index == 0 ? timeInAndTimeOut?.timeInTimeOutData?.data?.timeIn : timeInAndTimeOut?.timeInTimeOutData?.data?.timeOut || '00:00' } fontSize={4} fntWeight='bold' />
                       </View>
                       );
                     }}
@@ -124,7 +146,8 @@ const Attendant = ({ navigation }: { navigation: any }) => {
       <View style={{height:responsiveHeight(30), justifyContent: 'flex-end'}}>
         <AppButton
         onPress={()=> selfieHandler()}
-        title='Selfie To Clock In'
+        title={mainState?.loadingState ? "Waiting..." : 'Selfie To Clock In'}
+        disabled={mainState?.loadingState}
         />
         </View>
     </View>

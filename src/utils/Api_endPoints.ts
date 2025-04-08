@@ -8,11 +8,12 @@ export const endPoints = {
     signIn: '/api/employee/login',
     timeIn: '/api/attendance/timeIn',
     timeOut: '/api/attendance/timeOut',
+    attendance: '/api/attendance',
 };
 
 export const errHandler = async (err: any,) => {
     const status = err?.response?.status;
-    if (status === 417 || status === 500 || status === 406 || status === 502 || status === 401) {
+    if (status === 417 || status === 500 || status === 406 || status === 502 || status === 401 || status === 403) {
         Message(
             err.response.data?.title,
             err.response.data?.data?.error ? (typeof (err.response.data?.data?.error) === 'string' ? err.response.data?.data?.error : err.response.data?.data?.error[0]) : err.response.data?.message

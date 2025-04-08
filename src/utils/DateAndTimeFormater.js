@@ -14,3 +14,9 @@ export function getFormattedTime() {
     hours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
     return `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
 }
+
+export function formatDateToHrs(date: any) {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes} Hrs`;
+  }
