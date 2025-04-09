@@ -9,6 +9,7 @@ export const endPoints = {
     timeIn: '/api/attendance/timeIn',
     timeOut: '/api/attendance/timeOut',
     attendance: '/api/attendance',
+    takeBreak: '/api/attendance/break',
 };
 
 export const errHandler = async (err: any,) => {
@@ -25,6 +26,10 @@ export const errHandler = async (err: any,) => {
             Message(
                 'Unknown API Called',
                 'Please make sure that the API (' + calledAPI + ") you're calling is already exists!",
+            );
+        }else {
+            Message(
+                err?.message
             );
         }
     // else

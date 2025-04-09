@@ -11,9 +11,11 @@ import { responsiveHeight } from '../../utils/Responsive';
 type clockInProp = {
   headingDate?: any,
   inprogressTxt?: any,
+  timeIn?: any,
+  timeOut?: any,
 }
 
-const ClockInCards = ({headingDate, inprogressTxt}: clockInProp) => {
+const ClockInCards = ({headingDate, inprogressTxt, timeIn, timeOut}: clockInProp) => {
   return (
     <WhiteContainers mrgnTop={2}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: responsiveHeight(2) }}>
@@ -26,11 +28,11 @@ const ClockInCards = ({headingDate, inprogressTxt}: clockInProp) => {
       <View style={{ flexDirection: 'row', marginTop: responsiveHeight(3), justifyContent: 'space-between', backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
         <View>
           <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={2} title="Total Hours" />
-          <BoldText txtColour={APPCOLORS.ClockInBold} fntWeight="600" fontSize={2.2} title="08:00:00 hrs" />
+          <BoldText txtColour={APPCOLORS.ClockInBold} fntWeight="600" fontSize={2.2} title="09:00:00 hrs" />
         </View>
         <View>
           <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={2} title="Clock in & Out" />
-          <BoldText txtColour={APPCOLORS.ClockInBold} fntWeight="600" fontSize={2.2} title="09:00 AM  — 05:00 PM" />
+          <BoldText txtColour={APPCOLORS.ClockInBold} fntWeight="600" fontSize={2.2} title={`${timeIn || '00:00 AM'} — ${timeOut || '00:00 AM'}`} />
         </View>
       </View>
     </WhiteContainers>

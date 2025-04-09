@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import { View, StyleSheet, Image, FlatList, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
@@ -9,7 +10,7 @@ import WhiteContainers from '../../../components/WhiteContainers';
 import AppButton from '../../../components/DailyUse/AppButton';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
-import { ClockInNowAction, getTimeInAndTimeOutAction } from '../../../redux/actions/MainActions';
+import { ClockInNowAction, getTimeInAndTimeOutAction, getWeeklyTimeInAndTimeOutAction } from '../../../redux/actions/MainActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDateToHrs, getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
 
@@ -31,6 +32,7 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
   const authState = useSelector((state: any) => state.auth);
   const mainState = useSelector((state: any) => state.main);
   const timeInAndTimeOut = useSelector((state: any) => state.getTimeInTimeOut);
+  const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
   const [todayHrs, setTodayHrs] = useState('');
 
   const clockInNowHandler = () => {
@@ -44,10 +46,14 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
 
   useEffect(() => {
     const date = timeInAndTimeOut ? new Date(timeInAndTimeOut?.timeInTimeOutData?.data?.date) : null;
-    const resDate = date === null ? '00:00 Hrs' : formatDateToHrs(date)
+    const resDate = date ? formatDateToHrs(date) : '00:00 Hrs'
     setTodayHrs(resDate)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeInAndTimeOut]);
+
+  useEffect(() => {
+    dispatch(getWeeklyTimeInAndTimeOutAction(authState?.authData.data?._id))
+  }, [authState?.authData.data?._id])
 
   return (
     <View style={{ flex: 1 }}>
@@ -102,10 +108,14 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
       <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
        
         <View style={{ flex: 1 }}>
-          <ClockInCards headingDate="27 September 2024" inprogressTxt="In Progress" />
-          <ClockInCards headingDate="27 September 2024" inprogressTxt="In Progress" />
-          <ClockInCards headingDate="27 September 2024" inprogressTxt="In Progress" />
-          <ClockInCards headingDate="27 September 2024" inprogressTxt="In Progress" />
+          <FlatList 
+          data={weeklyTimeInTimeOut?.weeklyTimeInTimeOutData}
+          renderItem={({item}) => {
+            return (
+              <ClockInCards headingDate={item.date} inprogressTxt={item.status} timeIn={item.timeIn} timeOut={item.timeOut} />
+            )
+          }}
+          />
         </View>
       </ScrollView>
     </View>

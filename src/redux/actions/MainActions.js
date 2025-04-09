@@ -1,9 +1,9 @@
 import { Alert } from "react-native";
-import { CLOCK_IN, GET_TIMEIN_TIMEOUT, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE } from "../actionsTypes/MainActionsTypes";
+import { CLOCK_IN, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, LOADING_STATE, TAKE_BREAK_LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from "../actionsTypes/MainActionsTypes";
 import { baseUrl, endPoints, errHandler } from "../../utils/Api_endPoints";
 import axios from "axios";
 
-export const ClockInNowAction = (timeValues, navigation) => {
+export const ClockInNowAction = (timeValues, setModalVisible) => {
     return async (dispatch) => {
         dispatch({ type: LOADING_STATE, payload: true });
         try {
@@ -14,6 +14,9 @@ export const ClockInNowAction = (timeValues, navigation) => {
             formData.append('image', timeValues?.image);
             formData.append('longitude', '24.8607');
             formData.append('latitude', '67.0011');
+            formData.append('notes', timeValues?.clockInNotes);
+            
+            // return console.log(formData)
 
             const res = await axios.post(`${baseUrl}${endPoints.timeIn}`, formData, {
             headers: {
@@ -21,11 +24,11 @@ export const ClockInNowAction = (timeValues, navigation) => {
             },
             });
 
+
             if(res.data?.success){
-                console.log(res)
-                dispatch({ type: CLOCK_IN, payload: res.data });
+                // dispatch({ type: CLOCK_IN, payload: res.data });
                 dispatch({ type: LOADING_STATE, payload: false });
-                navigation.navigate('SelfieToClockIn');
+                setModalVisible(true);
             }else {
                 dispatch({ type: LOADING_STATE, payload: false });
                 Alert.alert(res.data?.msg);
@@ -38,6 +41,16 @@ export const ClockInNowAction = (timeValues, navigation) => {
     }
 }
 
+export const savedDataForClockIn = (timeValues, navTo) => {
+    return async (dispatch) => {
+            console.log(timeValues)
+                dispatch({ type: CLOCK_IN, payload: timeValues });
+                if(navTo()){
+                    navTo()
+                }
+    }
+}
+
 export const getTimeInAndTimeOutAction = (employeeId) => {
     return async (dispatch) => {
         dispatch({ type: TIMEIN_TIMEOUT_LOADING_STATE, payload: true });
@@ -45,11 +58,51 @@ export const getTimeInAndTimeOutAction = (employeeId) => {
             const res = await axios.get(`${baseUrl}${endPoints.attendance}/today?employeeId=${employeeId}`);
 
                 dispatch({ type: GET_TIMEIN_TIMEOUT, payload: res.data });
-                // dispatch({ type: TIMEIN_TIMEOUT_LOADING_STATE, payload: false });
+                dispatch({ type: TIMEIN_TIMEOUT_LOADING_STATE, payload: false });
         } catch (error) {
-            console.log(error)
-            errHandler(error);
+            // errHandler(error);
             dispatch({ type: TIMEIN_TIMEOUT_LOADING_STATE, payload: false });
+        }
+    }
+}
+
+export const getWeeklyTimeInAndTimeOutAction = (employeeId) => {
+    return async (dispatch) => {
+        dispatch({ type: WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, payload: true });
+        try {
+            const res = await axios.get(`${baseUrl}${endPoints.attendance}/weekly?employeeId=${employeeId}`);
+
+                dispatch({ type: GET_WEEKLY_TIMEIN_TIMEOUT, payload: res.data?.data });
+                dispatch({ type: WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, payload: false });
+        } catch (error) {
+            // errHandler(error);
+            dispatch({ type: WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, payload: false });
+        }
+    }
+}
+
+export const takeABreakAction = (timeValues, setModalVisible) => {
+    return async (dispatch) => {
+        dispatch({ type: TAKE_BREAK_LOADING_STATE, payload: true });
+        try {
+
+            const res = await axios.post(`${baseUrl}${endPoints.takeBreak}`, {
+                'id': '',
+                'startTime': '',
+            });
+
+
+            if(res.data?.success){
+                // dispatch({ type: CLOCK_IN, payload: res.data });
+                dispatch({ type: TAKE_BREAK_LOADING_STATE, payload: false });
+            }else {
+                dispatch({ type: TAKE_BREAK_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.msg);
+            }
+        } catch (error) {
+            errHandler(error);
+            console.log(error)
+            dispatch({ type: TAKE_BREAK_LOADING_STATE, payload: false });
         }
     }
 }

@@ -10,7 +10,7 @@ import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { AppImages } from '../../../assets/AppImages';
 import AppButton from '../../../components/DailyUse/AppButton';
 import { useDispatch, useSelector } from 'react-redux';
-import { ClockInNowAction, getTimeInAndTimeOutAction } from '../../../redux/actions/MainActions';
+import { ClockInNowAction, getTimeInAndTimeOutAction, savedDataForClockIn } from '../../../redux/actions/MainActions';
 import { getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
 const scheduleData = [
   {text: 'CLOCK IN', time: '09:00', width: responsiveWidth(45)},
@@ -57,6 +57,10 @@ const Attendant = ({ navigation }: { navigation: any }) => {
       launchCamera(options, handleResponse);
   }
 
+  const navTo = () => {
+    navigation.navigate('SelfieToClockIn');
+  }
+
   const handleResponse = (response: any) => {
     if (response.didCancel) {
       Alert.alert('Cancelled', 'User cancelled image picker');
@@ -67,13 +71,15 @@ const Attendant = ({ navigation }: { navigation: any }) => {
         id: authState?.authData.data?._id,
         date: getFormattedDate(),
         timeIn: getFormattedTime(),
+        longitude: '24.8607',
+        latitude: '67.0011',
         image: {
           uri: response.assets?.[0]?.uri,
           name: response.assets?.[0]?.fileName,
           type: response.assets?.[0]?.type || 'image/jpeg',
         },
       }
-      dispatch(ClockInNowAction(timeValues, navigation))
+      dispatch(savedDataForClockIn(timeValues, navTo))
       // navigation.navigate("SelfieToClockIn", {photo: imageUri})
     }
   }
@@ -135,7 +141,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
                       return (
                         <View style={{width: item.width, alignItems: 'center', borderRadius: 14, backgroundColor: APPCOLORS.LIGHTWHITE, borderWidth: 1, borderColor:APPCOLORS.GRAY_BORDER, padding: responsiveHeight(1.5), marginTop: responsiveHeight(1.5)}}>
                         <NormalText txtColour={APPCOLORS.DARK_GRAY} title={item.text} fontSize={2} fntWeight='bold'/>
-                        <NormalText txtColour={APPCOLORS.BLACK} title={index == 0 ? timeInAndTimeOut?.timeInTimeOutData?.data?.timeIn : timeInAndTimeOut?.timeInTimeOutData?.data?.timeOut || '00:00' } fontSize={4} fntWeight='bold' />
+                        <NormalText txtColour={APPCOLORS.BLACK} title={index == 0 ? timeInAndTimeOut?.timeInTimeOutData?.data?.timeIn || '00:00' : timeInAndTimeOut?.timeInTimeOutData?.data?.timeOut || '00:00' } fontSize={4} fntWeight='bold' />
                       </View>
                       );
                     }}

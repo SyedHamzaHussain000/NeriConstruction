@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { BoldText, NormalText } from '../../../components/DailyUse/AppText/AppText';
@@ -9,6 +9,8 @@ import { FlatList } from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AppButton, { SmallAppButton } from '../../../components/DailyUse/AppButton';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
+import { useSelector } from 'react-redux';
+import { formatDateToHrs } from '../../../utils/DateAndTimeFormater';
 
 const data = [
     {
@@ -19,11 +21,22 @@ const data = [
     {
       id: 2,
       title1: 'This Pay Period',
-      title2: '32:00 Hrs',
+      title2: '09:00 Hrs',
     },
   ];
 
 const ClockedIn = ({navigation}: any) => {
+  const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
+  const timeInAndTimeOut = useSelector((state: any) => state.getTimeInTimeOut);
+  const [todayHrs, setTodayHrs] = useState('');
+
+  useEffect(() => {
+      const date = timeInAndTimeOut ? new Date(timeInAndTimeOut?.timeInTimeOutData?.data?.date) : null;
+      const resDate = date ? formatDateToHrs(date) : '00:00 Hrs'
+      setTodayHrs(resDate)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [timeInAndTimeOut]);
+
   return (
     <View style={{ flex: 1, }}>
         <View style={styles.ContainerHeader}>
@@ -61,13 +74,13 @@ const ClockedIn = ({navigation}: any) => {
             <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
           </View>
           <View style={{ width: responsiveWidth(88), flexDirection: 'row' }}>
-            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item }) => (
+            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
               <View style={{ gap: responsiveHeight(1), width: responsiveWidth(42), backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1) }}>
                   <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                   <NormalText title={item.title1} fontSize={1.7} />
                 </View>
-                <BoldText title={item.title2} fontSize={2.5} />
+                <BoldText title={index == 0 ? todayHrs : item.title2} fontSize={2.5} />
               </View>
             )} />
           </View>
@@ -80,10 +93,14 @@ const ClockedIn = ({navigation}: any) => {
               <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1,  }} showsVerticalScrollIndicator={false}>
        
         <View style={{ flex: 1, }}>
-          <ClockInCards headingDate="27 September 2024"  />
-          <ClockInCards headingDate="27 September 2024"  />
-          <ClockInCards headingDate="27 September 2024"  />
-          <ClockInCards headingDate="27 September 2024"  />
+            <FlatList 
+              data={weeklyTimeInTimeOut?.weeklyTimeInTimeOutData}
+              renderItem={({item}) => {
+                return (
+                  <ClockInCards headingDate={item.date} timeIn={item.timeIn} timeOut={item.timeOut} />
+                )
+              }}
+              />
         </View>
       </ScrollView>
     </View>
