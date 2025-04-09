@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppImageBackground from '../../../components/DailyUse/AppImageBackground';
 import DropDownModal from '../../../components/DropDownModal';
@@ -19,18 +19,43 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
+import { emailVerificationAction, resendOTPAction } from '../../../redux/actions/AuthActions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CELL_COUNT = 6;
 
-const EnterOtp = ({navigation}: {navigation: any}) => {
+const EnterOtp = ({navigation, route}: {navigation: any, route?: any}) => {
   const [visible, setVisible] = useState(false);
   const [value, setValue] = useState('');
+  const loading = useSelector((state: any) => state.auth?.loadingState);
+  const resendLoadingState = useSelector((state: any) => state.auth?.resendLoadingState);
+  const dispatch = useDispatch();
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
+  const {accessToken, email} = route?.params;
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
 
+  const [timer, setTimer] = useState(60);
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
+
+  useEffect(() => {
+    let interval: string | number | NodeJS.Timeout | undefined;
+    if (isResendDisabled) {
+      interval = setInterval(() => {
+        setTimer((prev) => {
+          if (prev === 1) {
+            clearInterval(interval);
+            setIsResendDisabled(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isResendDisabled]);
   
     useEffect(() => {
       const unsubscribe = navigation.addListener('focus', () => {
@@ -44,14 +69,38 @@ const EnterOtp = ({navigation}: {navigation: any}) => {
     }, [navigation]);
 
   const handleCodeSubmit = () => {
-    navigation.navigate("EnterNewPassword")
-    if (value.length === CELL_COUNT) {
-      console.log('OTP Entered:', value);
-      // Handle OTP submission logic here
-    } else {
-      console.log('Please complete the OTP.');
+    if(email){
+      if (value.length === CELL_COUNT) {
+        const formValues = {
+          email: email,
+          token: accessToken,
+          otp: value,
+        }
+        dispatch(emailVerificationAction(formValues, navigation, setVisible))
+      } else {
+        Alert.alert('Please Enter otp');
+      }
+    }else {
+      navigation.navigate("EnterNewPassword")
+      if (value.length === CELL_COUNT) {
+        console.log('OTP Entered:', value);
+        // Handle OTP submission logic here
+      } else {
+        console.log('Please complete the OTP.');
+      }
     }
   };
+
+  const resendOtpHanlder = () => {
+    const formValues = {
+      email: email,
+    }
+    if(!isResendDisabled){
+      dispatch(resendOTPAction(formValues))
+      setTimer(60);
+      setIsResendDisabled(true);
+    }
+  }
 
   return (
     <AppImageBackground>
@@ -59,13 +108,13 @@ const EnterOtp = ({navigation}: {navigation: any}) => {
         <DropDownModalSheet icon={AppImages.Sheild}>
           <View style={{padding: 20, paddingTop: 0, gap: 20}}>
             <BoldText
-              title="Forgot Password"
+              title={email ? "Email Verification Sent!" : "Forgot Password"}
               textAligm={'center'}
               txtColour={APPCOLORS.BLACK}
               fontSize={3.5}
             />
             <NormalText
-              title="A reset code has been sent to Tonald@work.com, check your email to continue the password reset process."
+              title={`A reset code has been sent to ${email}, check your email to continue the password reset process.`}
               textAligm={'center'}
               txtColour={APPCOLORS.DARK_GRAY}
               fontSize={1.6}
@@ -100,10 +149,13 @@ const EnterOtp = ({navigation}: {navigation: any}) => {
             <View
               style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'center'}}>
               <BoldText title="Haven't received the verification code? " fontSize={1.7} />
-              <BoldText title="Resend it." txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={1.7} />
+              <TouchableOpacity onPress={resendOtpHanlder}
+              disabled={isResendDisabled}>
+              <BoldText title={resendLoadingState ? "Resending..." :  isResendDisabled ? `Resend OTP (${timer}s)` : 'Resend it.'} txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={1.7} />
+              </TouchableOpacity>
             </View>
 
-            <AppButton title="Verify OTP" onPress={handleCodeSubmit} />
+            <AppButton title={loading ? "Waiting..." : "Verify OTP"} disabled={loading} onPress={handleCodeSubmit} />
           </View>
         </DropDownModalSheet>
       </DropDownModal>

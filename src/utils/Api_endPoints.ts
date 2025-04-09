@@ -9,6 +9,8 @@ export const endPoints = {
     timeIn: '/api/attendance/timeIn',
     timeOut: '/api/attendance/timeOut',
     attendance: '/api/attendance',
+    emailVerification: '/api/otp/verifyOtp',
+    resendOTPForEmailVerification: '/api/otp/resendOtp',
     takeBreak: '/api/attendance/break',
 };
 

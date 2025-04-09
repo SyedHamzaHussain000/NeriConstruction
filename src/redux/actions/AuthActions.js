@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { baseUrl, endPoints, errHandler } from '../../utils/Api_endPoints';
-import { AUTH_DATA, LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
+import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 import { Alert } from 'react-native';
 
 export const handleSignUpAction = (formValues, navigation) => {
@@ -16,8 +16,7 @@ export const handleSignUpAction = (formValues, navigation) => {
 
             if(res.data?.success){
                 dispatch({ type: LOADING_STATE, payload: false });
-                navigation.navigate('Login');
-                Alert.alert(res.data?.msg);
+                navigation.navigate('EnterOtp', {accessToken: res?.data?.accessToken, email: formValues.email});
             }else {
                 dispatch({ type: LOADING_STATE, payload: false });
                 Alert.alert(res.data?.msg);
@@ -57,6 +56,54 @@ export const handleSignInAction = (formValues, navigation, setVisible, setFormVa
         } catch (error) {
             errHandler(error);
             dispatch({ type: LOADING_STATE, payload: false });
+        }
+    };
+};
+
+export const emailVerificationAction = (formValues, navigation, setVisible) => {
+    return async (dispatch) => {
+        dispatch({ type: EMAIL_VERIFY_LOADING_STATE, payload: true });
+        try {
+            const res = await axios.post(`${baseUrl}${endPoints.emailVerification}`, {
+                'email': formValues?.email,
+                'Otp': formValues?.otp,
+                'addEmployeeToken': formValues?.token,
+            });
+
+            if(res.data?.success){
+                dispatch({ type: EMAIL_VERIFY_LOADING_STATE, payload: false });
+                navigation.navigate('Login');
+                Alert.alert(res.data?.message);
+                setVisible(false);
+            }else {
+                dispatch({ type: EMAIL_VERIFY_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.message);
+            }
+        } catch (error) {
+            errHandler(error);
+            dispatch({ type: EMAIL_VERIFY_LOADING_STATE, payload: false });
+        }
+    };
+};
+
+export const resendOTPAction = (formValues) => {
+    return async (dispatch) => {
+        dispatch({ type: RESEND_EMAIL_VERIFY_LOADING_STATE, payload: true });
+        try {
+            const res = await axios.post(`${baseUrl}${endPoints.resendOTPForEmailVerification}`, {
+                'email': formValues?.email,
+            });
+
+            if(res.data?.success){
+                dispatch({ type: RESEND_EMAIL_VERIFY_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.message);
+            }else {
+                dispatch({ type: RESEND_EMAIL_VERIFY_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.message);
+            }
+        } catch (error) {
+            errHandler(error);
+            dispatch({ type: RESEND_EMAIL_VERIFY_LOADING_STATE, payload: false });
         }
     };
 };
