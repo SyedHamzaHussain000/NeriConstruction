@@ -16,9 +16,10 @@ type UpdateProfileModalProps = {
     subTitle: any,
     noBtnTitle: any,
     yesBtnTitle: any,
+    yesBtnDisabled?:any,
 }
 
-const UpdateProfileModal = ({isModalVisible, yesBtnOnPress, noBtnOnPress, imageSource, title, subTitle, noBtnTitle, yesBtnTitle}: UpdateProfileModalProps) => {
+const UpdateProfileModal = ({isModalVisible, yesBtnOnPress, noBtnOnPress, yesBtnDisabled, imageSource, title, subTitle, noBtnTitle, yesBtnTitle}: UpdateProfileModalProps) => {
   return (
     <DropDownModal isModalVisible={isModalVisible}>
     <View style={{ backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', height: noBtnTitle ? responsiveHeight(45) : responsiveHeight(36), padding: 50, paddingBottom: 0, borderRadius: 15, position: 'relative' }}>
@@ -30,6 +31,7 @@ const UpdateProfileModal = ({isModalVisible, yesBtnOnPress, noBtnOnPress, imageS
             <AppButton
             onPress={yesBtnOnPress}
             title={yesBtnTitle}
+            disabled={yesBtnDisabled}
             />
 
           {noBtnTitle && <SmallAppButton

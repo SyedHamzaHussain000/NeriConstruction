@@ -10,6 +10,8 @@ import BackIcon from 'react-native-vector-icons/Ionicons';
 import LanguageIcon from 'react-native-vector-icons/FontAwesome6';
 import AppButton from '../../../components/DailyUse/AppButton';
 import WhiteContainers from '../../../components/WhiteContainers';
+import { useSelector } from 'react-redux';
+import { baseUrl } from '../../../utils/Api_endPoints';
 
 const languages = [
     { id: '1', name: 'English', iconColor: APPCOLORS.THEMEBLUETEXT },
@@ -18,6 +20,7 @@ const languages = [
 ];
 
 const Language = ({navigation}: any) => {
+    const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
 
     const renderItem = ({ item }: any) => (
         <View style={{
@@ -59,20 +62,22 @@ const Language = ({navigation}: any) => {
             <BoldText title='My Profile' textAligm={'center'} txtColour={APPCOLORS.WHITE} fontSize={3} />
 
             {/* Profile Picture */}
-            <Image source={AppImages.pfps} style={{ position: 'absolute', zIndex: 10, bottom: -70 }} />
+            <Image source={employeeData?.personalData?.profileImage 
+                          ? { uri: `${baseUrl}/${employeeData.personalData.profileImage}` } 
+                          : AppImages.pfps} style={{ position: 'absolute', zIndex: 10, bottom: -70, borderRadius: 10, width: responsiveWidth(30), height: responsiveHeight(16) }} />
         </View>
 
   <View style={{height:responsiveHeight(10), }}/>
 
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:5}}>
-            <BoldText title='Tonald Drump' fontSize={2.5} textAligm={'center'}/>
+            <BoldText title={employeeData?.personalDataLoadingState ? "Loading..." : `${employeeData?.personalData?.firstName} ${employeeData?.personalData?.lastName}`} fontSize={2.5} textAligm={'center'}/>
             <MaterialIcons
              name={"verified"}
              size={responsiveFontSize(2.5)}
              color={APPCOLORS.ICON_TEXT_COLOUR}
             />
         </View> 
-        <BoldText title='Junior Full Stack Developer' txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={2} textAligm={'center'}/>
+        <BoldText title={employeeData?.personalDataLoadingState ? "Loading..." : employeeData?.personalData?.designation} txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={2} textAligm={'center'}/>
 
         <View style={{marginHorizontal: responsiveWidth(6), marginTop: responsiveHeight(2)}}>
         <BoldText title='Languages' fontSize={2}/>

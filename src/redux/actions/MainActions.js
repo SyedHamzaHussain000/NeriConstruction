@@ -1,5 +1,5 @@
 import { Alert } from "react-native";
-import { CLOCK_IN, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, LOADING_STATE, TAKE_BREAK_LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from "../actionsTypes/MainActionsTypes";
+import { CLOCK_IN, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, LOADING_STATE, TAKE_BREAK_LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from "../actionsTypes/MainActionsTypes";
 import { baseUrl, endPoints, errHandler } from "../../utils/Api_endPoints";
 import axios from "axios";
 
@@ -103,6 +103,27 @@ export const takeABreakAction = (timeValues, setModalVisible) => {
             errHandler(error);
             console.log(error)
             dispatch({ type: TAKE_BREAK_LOADING_STATE, payload: false });
+        }
+    }
+}
+
+export const getEmployeePersonalDataAction = (employeeId) => {
+    return async (dispatch) => {
+        dispatch({ type: GET_EMPLOYEE_PERSONAL_LOADING_STATE, payload: true });
+        try {
+
+            const res = await axios.get(`${baseUrl}${endPoints.employeePersonalData}?employeeId=${employeeId}`);
+
+            if(res.data?.success){
+                dispatch({ type: GET_EMPLOYEE_PERSONAL_DATA, payload: res.data?.data });
+                dispatch({ type: GET_EMPLOYEE_PERSONAL_LOADING_STATE, payload: false });
+            }else {
+                dispatch({ type: GET_EMPLOYEE_PERSONAL_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.msg);
+            }
+        } catch (error) {
+            console.log(error)
+            dispatch({ type: GET_EMPLOYEE_PERSONAL_LOADING_STATE, payload: false });
         }
     }
 }

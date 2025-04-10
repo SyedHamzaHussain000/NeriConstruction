@@ -13,6 +13,7 @@ export const endPoints = {
     resendOTPForEmailVerification: '/api/otp/resendOtp',
     takeBreak: '/api/attendance/break',
     workProfile: '/api/employee/editEmployee',
+    employeePersonalData: '/api/employee/getEmployee',
 };
 
 export const errHandler = async (err: any,) => {

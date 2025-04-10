@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Image, ScrollView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
-import { responsiveFontSize, responsiveHeight } from '../../utils/Responsive'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../../utils/Responsive'
 import { APPCOLORS } from '../../utils/APPCOLORS'
 import { BoldText } from '../../components/DailyUse/AppText/AppText'
 import { AppImages } from '../../assets/AppImages'
@@ -13,9 +13,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import ChangePasswordModal from '../../components/ProfileComp/ChangePasswordModal'
 import LogOutModal from '../../components/LogOutModal'
 import { LogoutAction } from '../../redux/actions/AuthActions';
+import { baseUrl } from '../../utils/Api_endPoints';
 
 const Profile = ({navigation}: {navigation: any}) => {
     const state = useSelector((state: any) => state.auth);
+    const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
     const dispatch = useDispatch();
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState<Boolean>(false);
     const [isSuccessModalVisible, setIsSuccessModalVisible] = useState<Boolean>(false);
@@ -32,19 +34,21 @@ const Profile = ({navigation}: {navigation: any}) => {
         <View style={{height:responsiveHeight(20), backgroundColor:APPCOLORS.ICON_TEXT_COLOUR, alignItems:'center', justifyContent:'center'}}>
             <BoldText title='My Profile' textAligm={'center'} txtColour={APPCOLORS.WHITE} fontSize={3}/>
             
-            <Image source={AppImages.pfps} style={{position:'absolute', zIndex:10 ,bottom:-70}}/>
+            <Image source={employeeData?.personalData?.profileImage 
+              ? { uri: `${baseUrl}/${employeeData.personalData.profileImage}` } 
+              : AppImages.pfps} style={{position:'absolute', zIndex:10 ,bottom:-70, borderRadius: 10, width: responsiveWidth(30), height: responsiveHeight(16)}}/>
         </View>
         <View style={{height:responsiveHeight(10), }}/>
 
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:5}}>
-            <BoldText title='Tonald Drump' fontSize={2.5} textAligm={'center'}/>
+            <BoldText title={employeeData?.personalDataLoadingState ? "Loading..." : `${employeeData?.personalData?.firstName} ${employeeData?.personalData?.lastName}`} fontSize={2.5} textAligm={'center'}/>
             <MaterialIcons
              name={"verified"}
              size={responsiveFontSize(2.5)}
              color={APPCOLORS.ICON_TEXT_COLOUR}
             />
         </View> 
-        <BoldText title='Junior Full Stack Developer' txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={2} textAligm={'center'}/>
+        <BoldText title={employeeData?.personalDataLoadingState ? "Loading..." : employeeData?.personalData?.designation} txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={2} textAligm={'center'}/>
 
         <View style={{padding:20, gap:20}}>
             <BoldText title='CONTACT' fontSize={2}/>
@@ -52,7 +56,7 @@ const Profile = ({navigation}: {navigation: any}) => {
             <WhiteContainers bgColor={"#F4F6F9"}>
                     <View style={{padding:10, gap:10}}>
                             <Bars icon={<Ionicons name={"mail"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title={state?.authData?.data?.email}/>
-                            <Bars icon={<Ionicons name={"location"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title='Taman Anggrek'/>
+                            <Bars icon={<Ionicons name={"location"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title={employeeData?.personalData?.state}/>
                     </View>
             </WhiteContainers>
         </View>

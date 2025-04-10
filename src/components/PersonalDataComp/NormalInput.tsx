@@ -5,7 +5,7 @@ import { BoldText } from "../DailyUse/AppText/AppText";
 import { APPCOLORS } from "../../utils/APPCOLORS";
 import { responsiveHeight } from "../../utils/Responsive";
 
-const NormalInput = ({labelTitle, icon, placeholder,defaultValue  }: any) => {
+const NormalInput = ({labelTitle, icon, placeholder,defaultValue, editable, value, onChangeText }: any) => {
   return (
     <View>
         <BoldText title={labelTitle} txtColour={APPCOLORS.DARK_GRAY} fontSize={2} mrgnTop={0}/>
@@ -15,7 +15,10 @@ const NormalInput = ({labelTitle, icon, placeholder,defaultValue  }: any) => {
         style={styles.input} 
         placeholder={placeholder} 
         placeholderTextColor="#888"
+        value={value}
         defaultValue={defaultValue}
+        editable={editable}
+        onChangeText={onChangeText}
         />
     </View>
         </View>

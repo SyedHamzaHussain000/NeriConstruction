@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { View, Text, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import HomeHeader from '../../components/AppHeaders/HomeHeader'
 import { AppImages } from '../../assets/AppImages'
 import Banner from '../../components/HomeComp/Banner'
@@ -12,12 +13,25 @@ import SquareContainer from '../../components/DailyUse/SquareContainer'
 import TaskCard from '../../components/HomeComp/TaskCard'
 import Slider from '@react-native-community/slider';
 import { responsiveWidth } from '../../utils/Responsive'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getEmployeePersonalDataAction } from '../../redux/actions/MainActions'
+import { baseUrl } from '../../utils/Api_endPoints'
 
 const Home = ({navigation}: {navigation: any}) => {
+  const dispatch = useDispatch();
+  const authData = useSelector((state: any) => state.auth?.authData);
+  const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
+
+  useEffect(() => {
+    dispatch(getEmployeePersonalDataAction(authData?.data?._id))
+  }, [authData?.data?._id])
+
+  console.log(employeeData?.personalData?.profileImage)
   return (
     <View style={{flex:1}}>
-        <HomeHeader Name='Tonald Trump' JobTitle='Junior Full Stack Developer'  pfp={AppImages.pfp}/>
+        <HomeHeader Name={employeeData?.personalDataLoadingState ? "Loading..." : `${employeeData?.personalData?.firstName} ${employeeData?.personalData?.lastName}`} JobTitle={employeeData?.personalDataLoadingState ? "Loading..." : employeeData?.personalData?.designation}  pfp={employeeData?.personalData?.profileImage 
+  ? { uri: `${baseUrl}/${employeeData.personalData.profileImage}` } 
+  : AppImages.pfp}/>
     <ScrollView style={{flex:1, }}>
         <View style={{padding:20, gap:20}}>
           <Banner Heading={"My Work Summary"} SubHeading={"Today task & presence activity"} img={AppImages.camera}/>

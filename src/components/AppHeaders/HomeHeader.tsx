@@ -19,10 +19,10 @@ type props = {
 const HomeHeader = ({JobTitle,Name,pfp, paddingHorizontal}:props) => {
     const nav = useNavigation();
   return (
-    <View style={{paddingHorizontal: paddingHorizontal ? paddingHorizontal : 20, flexDirection:'row', alignItems:'center', gap:10, backgroundColor:APPCOLORS.WHITE, justifyContent:'space-between'}}>
+    <View style={{paddingHorizontal: paddingHorizontal ? paddingHorizontal : 20, padding: 15, flexDirection:'row', alignItems:'center', gap:10, backgroundColor:APPCOLORS.WHITE, justifyContent:'space-between'}}>
         <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
-        <Image source={pfp} style={{height:responsiveHeight(10), width:responsiveWidth(10), borderRadius:200, resizeMode:'contain'}}/>
-        <View style={{alignItems:'center'}}>
+        <Image source={pfp} style={{height:responsiveHeight(5), width:responsiveWidth(10), borderRadius:10,}}/>
+        <View>
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center' ,gap:10}}>
                 <BoldText title={Name} fontSize={2.5}/>
                 <Octicons

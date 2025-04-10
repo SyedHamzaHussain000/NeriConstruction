@@ -2,6 +2,7 @@ import axios from 'axios';
 import { baseUrl, endPoints, errHandler } from '../../utils/Api_endPoints';
 import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 import { Alert } from 'react-native';
+import { IS_UPDATED_EMPLOYEE_PERSONAL_DATA } from '../actionsTypes/MainActionsTypes';
 
 export const handleSignUpAction = (formValues, navigation) => {
     return async (dispatch) => {
@@ -39,15 +40,26 @@ export const handleSignInAction = (formValues, navigation, setVisible, setFormVa
             });
 
             if(res.data?.success){
-                dispatch({ type: AUTH_DATA, payload: res.data });
-                dispatch({ type: LOADING_STATE, payload: false });
-                navigation.navigate('WorkProfile');
-                Alert.alert(res.data?.msg);
-                setVisible(false);
-                setFormValues({
-                    email: '',
-                    password: '',
-                });
+                if(res.data?.data?.isVerified){
+                    dispatch({ type: AUTH_DATA, payload: res.data });
+                    dispatch({ type: LOADING_STATE, payload: false });
+                    Alert.alert(res.data?.msg);
+                    setVisible(false);
+                    setFormValues({
+                        email: '',
+                        password: '',
+                    });
+                    navigation.navigate('Main');
+                }else{
+                    dispatch({ type: AUTH_DATA, payload: res.data });
+                    dispatch({ type: LOADING_STATE, payload: false });
+                    setVisible(false);
+                    setFormValues({
+                        email: '',
+                        password: '',
+                    });
+                    navigation.navigate('WorkProfile');
+                }
             }else {
                 dispatch({ type: LOADING_STATE, payload: false });
                 Alert.alert(res.data?.msg);
@@ -108,14 +120,17 @@ export const resendOTPAction = (formValues) => {
     };
 };
 
-export const workProfileAction = (formValues, navigation) => {
+export const workProfileAction = (formValues, navigation, noNav) => {
     return async (dispatch) => {
         dispatch({ type: WORK_PROFILE_LOADING_STATE, payload: true });
         try {
+            dispatch({ type: IS_UPDATED_EMPLOYEE_PERSONAL_DATA, payload: false });
 
             const formData = new FormData();
             formData.append('employeeId', formValues.id)
-            formData.append('profileImage', formValues.image)
+            if(formValues.image?.uri){
+                formData.append('profileImage', formValues.image)
+            }
             formData.append('firstName', formValues.firstName)
             formData.append('lastName', formValues.lastName)
             formData.append('DOB', formValues.dateOfBirth)
@@ -133,8 +148,10 @@ export const workProfileAction = (formValues, navigation) => {
 
             if(res.data?.success){
                 dispatch({ type: WORK_PROFILE_LOADING_STATE, payload: false });
-                Alert.alert(res.data?.message);
-                navigation.navigate("Main")
+                dispatch({ type: IS_UPDATED_EMPLOYEE_PERSONAL_DATA, payload: true });
+                if(!noNav){
+                    navigation.navigate("Main")
+                }
             }else {
                 dispatch({ type: WORK_PROFILE_LOADING_STATE, payload: false });
                 Alert.alert(res.data?.message);
@@ -151,5 +168,11 @@ export const LogoutAction = (navigation) => {
     return async (dispatch) => {
         dispatch({ type: AUTH_DATA, payload: null });
         navigation.navigate("Auth");
+    }
+}
+
+export const isUpdatedFalseAction = () => {
+    return async (dispatch) => {
+        dispatch({ type: IS_UPDATED_EMPLOYEE_PERSONAL_DATA, payload: false });
     }
 }

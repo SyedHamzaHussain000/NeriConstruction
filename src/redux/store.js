@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {thunk} from 'redux-thunk'; // Import redux-thunk
 import {AuthReducers, workProReducer} from './reducers/AuthReducers.js';
-import { getTimeinTimeoutReducer, getWeeklyTimeinTimeoutReducer, MainReducers, takeBreakReducer } from './reducers/MainReducers.js';
+import { getEmployeePersonalDataReducer, getTimeinTimeoutReducer, getWeeklyTimeinTimeoutReducer, MainReducers, takeBreakReducer } from './reducers/MainReducers.js';
 
 // Redux Persist Configuration
 const persistConfig = {
@@ -19,6 +19,7 @@ const rootReducer = combineReducers({
   getTimeInTimeOut: getTimeinTimeoutReducer,
   getWeeklyTimeinTimeout: getWeeklyTimeinTimeoutReducer,
   takeBreak: takeBreakReducer,
+  getEmployeePersonalData: getEmployeePersonalDataReducer,
   // Add other reducers here if necessary
 });
 

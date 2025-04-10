@@ -1,4 +1,4 @@
-import { CLOCK_IN, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
+import { CLOCK_IN, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
 
 const initialState = {
     loadingState: false,
@@ -82,6 +82,34 @@ export const takeBreakReducer = (state = takeBreakState, action) => {
          return { 
            ...state,
            takeBreakLoadingState: action.payload,
+         };
+    default:
+      return state;
+  }
+};
+
+const personalDataState = {
+  personalDataLoadingState: false,
+  isUpdatedEmployeeData: false,
+  personalData: null,
+};
+
+export const getEmployeePersonalDataReducer = (state = personalDataState, action) => {
+  switch (action.type) {
+    case GET_EMPLOYEE_PERSONAL_DATA:
+         return { 
+           ...state,
+           personalData: action.payload,
+         };
+         case GET_EMPLOYEE_PERSONAL_LOADING_STATE:
+         return { 
+           ...state,
+           personalDataLoadingState: action.payload,
+         };
+         case IS_UPDATED_EMPLOYEE_PERSONAL_DATA:
+         return { 
+           ...state,
+           isUpdatedEmployeeData: action.payload,
          };
     default:
       return state;
