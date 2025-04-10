@@ -1,4 +1,4 @@
-import { CLOCK_IN, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
+import { CLOCK_IN, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
 
 const initialState = {
     loadingState: false,
@@ -116,3 +116,24 @@ export const getEmployeePersonalDataReducer = (state = personalDataState, action
   }
 };
 
+const taskInitialState = {
+  taskLoadingState: false,
+  allTaskData: null,
+};
+
+export const getAllTasksByEmployeeReducer = (state = taskInitialState, action) => {
+  switch (action.type) {
+    case GET_ALL_TASK_LOADING_STATE:
+         return { 
+           ...state,
+           taskLoadingState: action.payload,
+         };
+         case GET_ALL_TASK:
+         return { 
+           ...state,
+           allTaskData: action.payload,
+         };
+    default:
+      return state;
+  }
+};

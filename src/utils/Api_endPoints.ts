@@ -14,6 +14,7 @@ export const endPoints = {
     takeBreak: '/api/attendance/break',
     workProfile: '/api/employee/editEmployee',
     employeePersonalData: '/api/employee/getEmployee',
+    allTask: '/api/task/getAllTaskByEmployee',
 };
 
 export const errHandler = async (err: any,) => {

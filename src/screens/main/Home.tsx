@@ -26,7 +26,6 @@ const Home = ({navigation}: {navigation: any}) => {
     dispatch(getEmployeePersonalDataAction(authData?.data?._id))
   }, [authData?.data?._id])
 
-  console.log(employeeData?.personalData?.profileImage)
   return (
     <View style={{flex:1}}>
         <HomeHeader Name={employeeData?.personalDataLoadingState ? "Loading..." : `${employeeData?.personalData?.firstName} ${employeeData?.personalData?.lastName}`} JobTitle={employeeData?.personalDataLoadingState ? "Loading..." : employeeData?.personalData?.designation}  pfp={employeeData?.personalData?.profileImage 

@@ -100,8 +100,8 @@ const TabBar = () => {
       />
       <Tab.Screen
         name="TaskManage"
-        component={TaskManage}
-        // component={TaskMenu}
+        // component={TaskManage}
+        component={TaskMenu}
         // component={TaskMenuDetails}
         // component={FinishTask}
         // component={Notification}

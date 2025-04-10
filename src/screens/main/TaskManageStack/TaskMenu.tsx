@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import {
   responsiveFontSize,
@@ -14,25 +14,34 @@ import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import TaskCard from "../../../components/HomeComp/TaskCard";
 import NormalHeader from "../../../components/AppHeaders/NormalHeader";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllTasksByEmployeeAction } from "../../../redux/actions/MainActions";
 
-const allTasks = {
-  All: [
-    { id: "1", title: "Complete UI Design", status: "New", priority: "High", dueDate: "27 April", comments: "2" },
-    { id: "2", title: "Fix Backend API", status: "New", priority: "High", dueDate: "28 April", comments: "5" },
-    { id: "3", title: "Write Unit Tests", status: "Finish", priority: "High", dueDate: "30 April", comments: "1" },
-    { id: "4", title: "Deploy to Staging", status: "In Progress", priority: "High", dueDate: "1 May", comments: "3" },
-  ],
-  InProgress: [
-    { id: "2", title: "Fix Backend API", status: "In Progress", priority: "High", dueDate: "28 April", comments: "5" },
-    { id: "4", title: "Deploy to Staging", status: "In Progress", priority: "High", dueDate: "1 May", comments: "3" },
-  ],
-  Finish: [
-    { id: "3", title: "Write Unit Tests", status: "Finish", priority: "High", dueDate: "30 April", comments: "1" },
-  ],
-};
+
 
 const TaskMenu = ({navigation}: any) => {
   const [selectedTab, setSelectedTab] = useState("All");
+  const dispatch = useDispatch()
+  const authData = useSelector((state: any) => state.auth?.authData);
+  const taskData = useSelector((state: any) => state.getAllTasksByEmployee);
+  const [tasks, setTasks] = useState({inprogress: [], finish: []})
+
+  useEffect(() => {
+    dispatch(getAllTasksByEmployeeAction(authData?.data?._id))
+  }, [authData?.data?._id])
+
+  useEffect(() => {
+    const inprogData = taskData?.allTaskData?.filter((item: any) => item.status === 'In Progress')
+    const finishData = taskData?.allTaskData?.filter((item: any) => item.status === 'Finish')
+    setTasks({inprogress: inprogData, finish: finishData})
+  }, [taskData])
+
+  const allTasks = {
+    All: taskData?.allTaskData,
+    Pending: tasks.inprogress,
+    InProgress: tasks.inprogress,
+    Finish: tasks.finish,
+  };
 
   return (
     <View style={styles.container}>
@@ -64,13 +73,13 @@ const TaskMenu = ({navigation}: any) => {
               />
               <BannerBoxes
                 cardType="In Progress"
-                number={allTasks.InProgress.length}
+                number={tasks.inprogress.length}
                 bgColor={APPCOLORS.DARK_ORANGE}
                 icon={<Ionicons name={"time-outline"} size={responsiveFontSize(1.2)} color={APPCOLORS.WHITE} />}
               />
               <BannerBoxes
                 cardType="Finish"
-                number={allTasks.Finish.length}
+                number={tasks.finish.length}
                 bgColor={APPCOLORS.DARK_GRAY}
                 icon={<Entypo name={"check"} size={responsiveFontSize(1.2)} color={APPCOLORS.WHITE} />}
               />
@@ -81,14 +90,14 @@ const TaskMenu = ({navigation}: any) => {
 
       {/* Custom Tabs */}
       <View style={styles.tabContainer}>
-        {["All", "InProgress", "Finish"].map((tab) => (
+        {["All", "Pending", "InProgress", "Finish"].map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[styles.tabButton, selectedTab === tab && styles.activeTab]}
             onPress={() => setSelectedTab(tab)}
           >
             <Text style={[styles.tabText, selectedTab === tab && styles.activeTabText]}>
-              {tab === "All" ? "All" : tab === "InProgress" ? "In Progress" : "Finish"}{" "}
+              {tab === "All" ? "All" : tab === "InProgress" ? "In Progress" : tab === "Pending" ? "Pending" : "Finish"}{" "}
               <Text style={[styles.numberText, selectedTab !== tab && {color: '#b3b3b3'}]}>{allTasks[tab].length}</Text>
             </Text>
           </TouchableOpacity>
@@ -99,10 +108,10 @@ const TaskMenu = ({navigation}: any) => {
       <View style={styles.listContainer}>
         <FlatList
           data={allTasks[selectedTab]}
-          keyExtractor={(item) => item.id.toString()}
+          // keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ gap: 20, paddingBottom: 20 }}
           renderItem={({ item }) => (
-            <TaskCard title={item.title} status={item.status} priority={item.priority} dueDate={item.dueDate} comments={item.comments} />
+            <TaskCard title={item.task} status={item.status} priority={item.priority} dueDate={item.date} comments={item.task} />
           )}
         />
       </View>
@@ -154,7 +163,7 @@ const styles = StyleSheet.create({
   },
   tabButton: {
     height: responsiveHeight(4.5),
-    width: responsiveWidth(30),
+    width: responsiveWidth(15),
     justifyContent: 'center',
     alignItems: 'center',
   },
