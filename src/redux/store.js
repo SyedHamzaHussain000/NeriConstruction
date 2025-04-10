@@ -2,7 +2,7 @@ import { combineReducers, legacy_createStore as createStore, applyMiddleware } f
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {thunk} from 'redux-thunk'; // Import redux-thunk
-import AuthReducers from './reducers/AuthReducers.js';
+import {AuthReducers, workProReducer} from './reducers/AuthReducers.js';
 import { getTimeinTimeoutReducer, getWeeklyTimeinTimeoutReducer, MainReducers, takeBreakReducer } from './reducers/MainReducers.js';
 
 // Redux Persist Configuration
@@ -14,6 +14,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   // counter: counterReducer,
   auth: AuthReducers,
+  work: workProReducer,
   main: MainReducers,
   getTimeInTimeOut: getTimeinTimeoutReducer,
   getWeeklyTimeinTimeout: getWeeklyTimeinTimeoutReducer,

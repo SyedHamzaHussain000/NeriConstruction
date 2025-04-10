@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { baseUrl, endPoints, errHandler } from '../../utils/Api_endPoints';
-import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
+import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 import { Alert } from 'react-native';
 
 export const handleSignUpAction = (formValues, navigation) => {
@@ -41,7 +41,7 @@ export const handleSignInAction = (formValues, navigation, setVisible, setFormVa
             if(res.data?.success){
                 dispatch({ type: AUTH_DATA, payload: res.data });
                 dispatch({ type: LOADING_STATE, payload: false });
-                navigation.navigate('Main');
+                navigation.navigate('WorkProfile');
                 Alert.alert(res.data?.msg);
                 setVisible(false);
                 setFormValues({
@@ -104,6 +104,45 @@ export const resendOTPAction = (formValues) => {
         } catch (error) {
             errHandler(error);
             dispatch({ type: RESEND_EMAIL_VERIFY_LOADING_STATE, payload: false });
+        }
+    };
+};
+
+export const workProfileAction = (formValues, navigation) => {
+    return async (dispatch) => {
+        dispatch({ type: WORK_PROFILE_LOADING_STATE, payload: true });
+        try {
+
+            const formData = new FormData();
+            formData.append('employeeId', formValues.id)
+            formData.append('profileImage', formValues.image)
+            formData.append('firstName', formValues.firstName)
+            formData.append('lastName', formValues.lastName)
+            formData.append('DOB', formValues.dateOfBirth)
+            formData.append('designation', formValues.position)
+            formData.append('country', formValues.country)
+            formData.append('state', formValues.state)
+            formData.append('city', formValues.city)
+            formData.append('fullAddress', formValues.fullAddress)
+
+            const res = await axios.post(`${baseUrl}${endPoints.workProfile}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if(res.data?.success){
+                dispatch({ type: WORK_PROFILE_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.message);
+                navigation.navigate("Main")
+            }else {
+                dispatch({ type: WORK_PROFILE_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.message);
+            }
+        } catch (error) {
+            errHandler(error);
+            console.log(error)
+            dispatch({ type: WORK_PROFILE_LOADING_STATE, payload: false });
         }
     };
 };

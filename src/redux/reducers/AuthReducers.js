@@ -1,4 +1,4 @@
-import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
+import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 
 const initialState = {
     loadingState: false,
@@ -6,8 +6,9 @@ const initialState = {
     authData: null,
 };
 
-const AuthReducers = (state = initialState, action) => {
+export const AuthReducers = (state = initialState, action) => {
   switch (action.type) {
+    case WORK_PROFILE_LOADING_STATE:
     case RESEND_EMAIL_VERIFY_LOADING_STATE:
     case EMAIL_VERIFY_LOADING_STATE:
     case LOADING_STATE:
@@ -15,11 +16,6 @@ const AuthReducers = (state = initialState, action) => {
         ...state,
         loadingState: action.payload 
       };
-      // case RESEND_EMAIL_VERIFY_LOADING_STATE:
-      //   return { 
-      //     ...state,
-      //     resendLoadingState: action.payload 
-      //   };
     case AUTH_DATA:
       return {
         ...state,
@@ -30,4 +26,18 @@ const AuthReducers = (state = initialState, action) => {
   }
 };
 
-export default AuthReducers;
+const workInitialState = {
+  workLoadingState: false,
+};
+
+export const workProReducer = (state = workInitialState, action) => {
+switch (action.type) {
+  case WORK_PROFILE_LOADING_STATE:
+    return { 
+      ...state,
+      workLoadingState: action.payload 
+    };
+  default:
+    return state;
+}
+};

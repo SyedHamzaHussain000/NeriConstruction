@@ -12,6 +12,7 @@ export const endPoints = {
     emailVerification: '/api/otp/verifyOtp',
     resendOTPForEmailVerification: '/api/otp/resendOtp',
     takeBreak: '/api/attendance/break',
+    workProfile: '/api/employee/editEmployee',
 };
 
 export const errHandler = async (err: any,) => {
