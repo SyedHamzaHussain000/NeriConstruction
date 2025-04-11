@@ -40,6 +40,9 @@ const Main = () => {
       initialRouteName="TabBar">
       <Stack.Screen name="TabBar" component={TabBar} />
       <Stack.Screen name="TaskDetail" component={TaskDetail} />
+      <Stack.Screen name="TaskManage" component={TaskManage} />
+      <Stack.Screen name="TaskMenuDetails" component={TaskMenuDetails} />
+      <Stack.Screen name="FinishTask" component={FinishTask} />
       <Stack.Screen name="ClockIn" component={ClockIn} />
       <Stack.Screen name="Attendant" component={Attendant} />
       <Stack.Screen name="AttendantSelfie" component={AttendantSelfie} />

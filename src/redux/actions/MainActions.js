@@ -1,5 +1,5 @@
 import { Alert } from "react-native";
-import { CLOCK_IN, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, LOADING_STATE, TAKE_BREAK_LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE } from "../actionsTypes/MainActionsTypes";
+import { CLOCK_IN, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, LOADING_STATE, TAKE_BREAK_LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_SINGLE_TASK, GET_SINGLE_TASK_LOADING_STATE } from "../actionsTypes/MainActionsTypes";
 import { baseUrl, endPoints, errHandler } from "../../utils/Api_endPoints";
 import axios from "axios";
 
@@ -135,6 +135,22 @@ export const getAllTasksByEmployeeAction = (employeeId) => {
         } catch (error) {
             console.log(error)
             dispatch({ type: GET_ALL_TASK_LOADING_STATE, payload: false });
+        }
+    }
+}
+
+export const getSingleTaskAction = (taskId) => {
+    return async (dispatch) => {
+        dispatch({ type: GET_SINGLE_TASK_LOADING_STATE, payload: true });
+        try {
+
+            const res = await axios.get(`${baseUrl}${endPoints.singleTask}?id=${taskId}`);
+
+                dispatch({ type: GET_SINGLE_TASK, payload: res.data?.data });
+                dispatch({ type: GET_SINGLE_TASK_LOADING_STATE, payload: false });
+        } catch (error) {
+            console.log(error)
+            dispatch({ type: GET_SINGLE_TASK_LOADING_STATE, payload: false });
         }
     }
 }

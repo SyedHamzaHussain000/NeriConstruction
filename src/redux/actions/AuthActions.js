@@ -3,6 +3,7 @@ import { baseUrl, endPoints, errHandler } from '../../utils/Api_endPoints';
 import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 import { Alert } from 'react-native';
 import { IS_UPDATED_EMPLOYEE_PERSONAL_DATA } from '../actionsTypes/MainActionsTypes';
+import { getEmployeePersonalDataAction } from './MainActions';
 
 export const handleSignUpAction = (formValues, navigation) => {
     return async (dispatch) => {
@@ -49,6 +50,7 @@ export const handleSignInAction = (formValues, navigation, setVisible, setFormVa
                         email: '',
                         password: '',
                     });
+                    dispatch(getEmployeePersonalDataAction(res?.data?.data?._id))
                     navigation.navigate('Main');
                 }else{
                     dispatch({ type: AUTH_DATA, payload: res.data });
@@ -150,6 +152,7 @@ export const workProfileAction = (formValues, navigation, noNav) => {
                 dispatch({ type: WORK_PROFILE_LOADING_STATE, payload: false });
                 dispatch({ type: IS_UPDATED_EMPLOYEE_PERSONAL_DATA, payload: true });
                 if(!noNav){
+                    dispatch(getEmployeePersonalDataAction(res?.data?.data?._id))
                     navigation.navigate("Main")
                 }
             }else {

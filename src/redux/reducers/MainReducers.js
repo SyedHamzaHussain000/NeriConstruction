@@ -1,4 +1,4 @@
-import { CLOCK_IN, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
+import { CLOCK_IN, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_SINGLE_TASK, GET_SINGLE_TASK_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
 
 const initialState = {
     loadingState: false,
@@ -132,6 +132,28 @@ export const getAllTasksByEmployeeReducer = (state = taskInitialState, action) =
          return { 
            ...state,
            allTaskData: action.payload,
+         };
+    default:
+      return state;
+  }
+};
+
+const getEmployeeTaskInitialState = {
+  singleTaskLoadingState: false,
+  singleTaskData: null,
+};
+
+export const getSingleTaskReducer = (state = getEmployeeTaskInitialState, action) => {
+  switch (action.type) {
+    case GET_SINGLE_TASK_LOADING_STATE:
+         return { 
+           ...state,
+           taskLoadingState: action.payload,
+         };
+         case GET_SINGLE_TASK:
+         return { 
+           ...state,
+           singleTaskData: action.payload,
          };
     default:
       return state;

@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import CircleContainer from '../DailyUse/CircleContainer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -12,9 +12,10 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import SmallButtonsOrBg from '../DailyUse/SmallButtonsOrBg';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-const TaskCard = ({ title, status, priority, dueDate, comments }: any) => {
+const TaskCard = ({ title, status, priority, dueDate, comments, onPress }: any) => {
   return (
-    <View
+    <TouchableOpacity
+    onPress={onPress}
       style={{
         padding: 10,
         backgroundColor: APPCOLORS.MORE_LIGHT_GRAY,
@@ -131,7 +132,7 @@ const TaskCard = ({ title, status, priority, dueDate, comments }: any) => {
           />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

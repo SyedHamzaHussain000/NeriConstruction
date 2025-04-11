@@ -1,4 +1,4 @@
-import {View, Text, Image, ScrollView, FlatList, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, Image, ScrollView, FlatList, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import React from 'react';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import WhiteContainers from '../../../components/WhiteContainers';
@@ -19,6 +19,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AppButton from '../../../components/DailyUse/AppButton';
 import CommentSection from '../../../components/TaskManageComp/CommentSection';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useSelector } from 'react-redux';
+import { formatDate } from '../../../utils/DateAndTimeFormater';
 
 const data = [
   {
@@ -34,12 +36,15 @@ const data = [
 ];
 
 const TaskMenuDetails = ({navigation}: {navigation: any}) => {
+  const singleTask = useSelector((state: any) => state.getSingleTask)
+
+  console.log(singleTask?.singleTaskData, 'res')
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <NormalHeader title="Task Details" onPress={()=> navigation.goBack()}/>
 
       <View style={{padding: 20}}>
-        <WhiteContainers>
+       {singleTask?.taskLoadingState ? <ActivityIndicator color='blue' size={50} /> : <WhiteContainers>
           <View style={{flexDirection: 'row'}}>
             <View>
               <View
@@ -51,14 +56,16 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
                 }}>
                 <BoldText title="Create On Boarding Screen" fontSize={2} />
                 <SmallButtonsOrBg
-                  title="In Progress"
+                  title={singleTask?.singleTaskData?.status}
                   btnColor={APPCOLORS.GRAY_BORDER}
                   height={4}
                   icon={<Ionicons name='time' size={12} color={APPCOLORS.DARK_GRAY} />}
                   txtColorr={APPCOLORS.DARK_GRAY}
                 />
               </View>
-              <NormalText title="Created 27 Sept 2024" fontSize={1.8} />
+              <NormalText 
+              title={`Created ${formatDate(new Date(singleTask?.singleTaskData?.createdAt))}`}
+               fontSize={1.8} />
             </View>
           </View>
 
@@ -97,7 +104,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
             <BoldText title="Description" fontSize={2} />
             <NormalText
               txtColour={'#475467'}
-              title="Create on boarding page based on pic, pixel perfect, with the user story of i want to know what kind of apps is this so i need to view onboarding screen to leverage my knowledge so that i know what kind of apps is this"
+              title={singleTask?.singleTaskData?.taskDetails}
               fontSize={1.5}
             />
           </View>
@@ -106,7 +113,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
             <View style={{gap: 5}}>
               <BoldText title="Priority" fontSize={2} />
               <SmallButtonsOrBg
-                title="High"
+                title={singleTask?.singleTaskData?.priority}
                 icon={
                   <FontAwesome
                     name="flag"
@@ -123,7 +130,8 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
               <BoldText title="Difficulty" fontSize={2} />
               <SmallButtonsOrBg
                 txtColorr={APPCOLORS.BLACK}
-                title="Very Easy (Less Than a Day)"
+                // title="Very Easy (Less Than a Day)"
+                title={singleTask?.singleTaskData?.difficulty}
                 icon={<Image source={AppImages.smile} />}
                 btnColor={APPCOLORS.WHITE}
                 height={4}
@@ -164,7 +172,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
 
          <CommentSection />
 
-        </WhiteContainers>
+        </WhiteContainers>}
 
         <WhiteContainers mrgnTop={3}>
           <View style={{padding: 8}}>

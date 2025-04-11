@@ -23,8 +23,10 @@ const Home = ({navigation}: {navigation: any}) => {
   const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
 
   useEffect(() => {
-    dispatch(getEmployeePersonalDataAction(authData?.data?._id))
-  }, [authData?.data?._id])
+    if(!employeeData?.personalData){
+      dispatch(getEmployeePersonalDataAction(authData?.data?._id))
+    }
+  }, [authData?.data?._id, employeeData])
 
   return (
     <View style={{flex:1}}>
