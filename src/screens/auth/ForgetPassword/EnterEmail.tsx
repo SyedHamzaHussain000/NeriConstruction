@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppImageBackground from '../../../components/DailyUse/AppImageBackground';
 import DropDownModal from '../../../components/DropDownModal';
@@ -13,10 +13,24 @@ import AppTxtInput from '../../../components/DailyUse/AppTxtInput';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {responsiveFontSize} from '../../../utils/Responsive';
 import AppButton from '../../../components/DailyUse/AppButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { resendOTPAction } from '../../../redux/actions/AuthActions';
 const EnterEmail = ({navigation}: {navigation: any}) => {
   const [visible, setVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [email, setEmail] = useState('');
+  const dispatch = useDispatch();
+  const loading = useSelector((state: any) => state.auth?.loadingState)
+
+  const sendVerificationHandler = () => {
+    if(email){
+      const formValues = {email: email}
+      dispatch(resendOTPAction(formValues, {isNavToEnterOtp: true}, navigation))
+    }else {
+      Alert.alert("Email is required");
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -57,9 +71,11 @@ const EnterEmail = ({navigation}: {navigation: any}) => {
                 />
               }
               placeholder="My Email"
+              value={email}
+              onChangeText={(text: any) => setEmail(text)}
             />
 
-            <AppButton title="Send Verification Code" onPress={()=>navigation.navigate("EnterOtp")} />
+            <AppButton title={loading ? "Waiting..." : "Send Verification Code"} disabled={loading} onPress={()=> sendVerificationHandler()} />
           </View>
         </DropDownModalSheet>
       </DropDownModal>

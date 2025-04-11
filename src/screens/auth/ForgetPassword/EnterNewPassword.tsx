@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppImageBackground from '../../../components/DailyUse/AppImageBackground';
 import DropDownModal from '../../../components/DropDownModal';
@@ -14,21 +14,43 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {responsiveFontSize} from '../../../utils/Responsive';
 import AppButton from '../../../components/DailyUse/AppButton';
 import Octicons from 'react-native-vector-icons/Octicons'
+import { useDispatch, useSelector } from 'react-redux';
+import { resetPasswordAction } from '../../../redux/actions/AuthActions';
 
-const EnterNewPassword = ({navigation}: {navigation: any}) => {
+const EnterNewPassword = ({navigation, route}: any) => {
     const [visible, setVisible] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [toggleCheckBox, setToggleCheckBox] = useState(false);
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const dispatch = useDispatch();
+    const email = route?.params?.email;
+    const loading = useSelector((state: any) => state.auth?.loadingState)
+
+    const submitHandler = () => {
+    if(password && confirmPassword){
+      if(password === confirmPassword){
+        const formValues = {
+          email: email,
+          password: password,
+        }
+        dispatch(resetPasswordAction(formValues, navigation, setVisible));
+      }else {
+        Alert.alert('Password and confirm password is not match');
+      }
+    }else {
+      Alert.alert('Password and Confirm Password required');
+    }
+    }
   
     useEffect(() => {
       const unsubscribe = navigation.addListener('focus', () => {
         setVisible(true); // Open modal when the screen is focused
       });
   
-      return () => {
-        setVisible(false); // Close modal when navigating away
-        unsubscribe();
-      };
+      // return () => {
+      //   setVisible(false); // Close modal when navigating away
+      //   unsubscribe();
+      // };
     }, [navigation]);
   
     return (
@@ -62,6 +84,8 @@ const EnterNewPassword = ({navigation}: {navigation: any}) => {
               password={true}
               setShowPassword={()=>setShowPassword(!showPassword)}
               showPassword={showPassword}
+              value={password}
+              onChangeText={(text: any) => setPassword(text)}
             />
 
 <AppTxtInput
@@ -77,9 +101,11 @@ const EnterNewPassword = ({navigation}: {navigation: any}) => {
               password={true}
               setShowPassword={()=>setShowPassword(!showPassword)}
               showPassword={showPassword}
+              value={confirmPassword}
+              onChangeText={(text: any) => setConfirmPassword(text)}
             />
   
-              <AppButton title="Submit" onPress={()=>navigation.navigate("PasswordCreated")} />
+              <AppButton title={loading ? "Waiting..." : "Submit"} disabled={loading} onPress={()=> submitHandler()} />
             </View>
           </DropDownModalSheet>
         </DropDownModal>

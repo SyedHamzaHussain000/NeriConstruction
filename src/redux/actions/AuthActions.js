@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { baseUrl, endPoints, errHandler } from '../../utils/Api_endPoints';
-import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
+import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, FORGOT_PASSWORD_LOADING_STATE, LOADING_STATE, NEW_PASSWORD_LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 import { Alert } from 'react-native';
 import { IS_UPDATED_EMPLOYEE_PERSONAL_DATA } from '../actionsTypes/MainActionsTypes';
 import { getEmployeePersonalDataAction } from './MainActions';
@@ -21,7 +21,7 @@ export const handleSignUpAction = (formValues, navigation) => {
                 navigation.navigate('EnterOtp', {accessToken: res?.data?.accessToken, email: formValues.email});
             }else {
                 dispatch({ type: LOADING_STATE, payload: false });
-                Alert.alert(res.data?.msg);
+                Alert.alert(res.data?.message);
             }
             
         } catch (error) {
@@ -44,7 +44,7 @@ export const handleSignInAction = (formValues, navigation, setVisible, setFormVa
                 if(res.data?.data?.isVerified){
                     dispatch({ type: AUTH_DATA, payload: res.data });
                     dispatch({ type: LOADING_STATE, payload: false });
-                    Alert.alert(res.data?.msg);
+                    Alert.alert(res.data?.message);
                     setVisible(false);
                     setFormValues({
                         email: '',
@@ -64,7 +64,7 @@ export const handleSignInAction = (formValues, navigation, setVisible, setFormVa
                 }
             }else {
                 dispatch({ type: LOADING_STATE, payload: false });
-                Alert.alert(res.data?.msg);
+                Alert.alert(res.data?.message);
             }
             
         } catch (error) {
@@ -100,7 +100,7 @@ export const emailVerificationAction = (formValues, navigation, setVisible) => {
     };
 };
 
-export const resendOTPAction = (formValues) => {
+export const resendOTPAction = (formValues, isNavToEnterOtp,navigation) => {
     return async (dispatch) => {
         dispatch({ type: RESEND_EMAIL_VERIFY_LOADING_STATE, payload: true });
         try {
@@ -110,7 +110,9 @@ export const resendOTPAction = (formValues) => {
 
             if(res.data?.success){
                 dispatch({ type: RESEND_EMAIL_VERIFY_LOADING_STATE, payload: false });
-                Alert.alert(res.data?.message);
+                if(isNavToEnterOtp){
+                    navigation.navigate("EnterOtp", {email: formValues?.email})
+                }
             }else {
                 dispatch({ type: RESEND_EMAIL_VERIFY_LOADING_STATE, payload: false });
                 Alert.alert(res.data?.message);
@@ -179,3 +181,53 @@ export const isUpdatedFalseAction = () => {
         dispatch({ type: IS_UPDATED_EMPLOYEE_PERSONAL_DATA, payload: false });
     }
 }
+
+export const forgotPasswordAction = (formValues, navigation, setVisible) => {
+    return async (dispatch) => {
+        dispatch({ type: FORGOT_PASSWORD_LOADING_STATE, payload: true });
+        try {
+            const res = await axios.post(`${baseUrl}${endPoints.forgotPassword}`, {
+                'email': formValues?.email,
+                'Otp': formValues?.otp,
+            });
+
+            if(res.data?.success){
+                dispatch({ type: FORGOT_PASSWORD_LOADING_STATE, payload: false });
+                navigation.navigate('EnterNewPassword', {email: formValues?.email});
+                setVisible(false);
+            }else {
+                dispatch({ type: FORGOT_PASSWORD_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.message);
+            }
+        } catch (error) {
+            errHandler(error);
+            dispatch({ type: FORGOT_PASSWORD_LOADING_STATE, payload: false });
+        }
+    };
+};
+
+export const resetPasswordAction = (formValues, navigation, setVisible) => {
+    return async (dispatch) => {
+        dispatch({ type: NEW_PASSWORD_LOADING_STATE, payload: true });
+        try {
+            console.log(formValues)
+            const res = await axios.post(`${baseUrl}${endPoints.resetPassword}`, {
+                'email': formValues?.email,
+                'newPassword': formValues?.password,
+            });
+
+            if(res.data?.success){
+                dispatch({ type: NEW_PASSWORD_LOADING_STATE, payload: false });
+                navigation.navigate('PasswordCreated');
+                setVisible(false);
+            }else {
+                dispatch({ type: NEW_PASSWORD_LOADING_STATE, payload: false });
+                Alert.alert(res.data?.message);
+            }
+        } catch (error) {
+            errHandler(error);
+            console.log(error)
+            dispatch({ type: NEW_PASSWORD_LOADING_STATE, payload: false });
+        }
+    };
+};

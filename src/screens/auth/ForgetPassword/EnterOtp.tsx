@@ -19,7 +19,7 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import { emailVerificationAction, resendOTPAction } from '../../../redux/actions/AuthActions';
+import { emailVerificationAction, forgotPasswordAction, resendOTPAction } from '../../../redux/actions/AuthActions';
 import { useDispatch, useSelector } from 'react-redux';
 
 const CELL_COUNT = 6;
@@ -31,7 +31,8 @@ const EnterOtp = ({navigation, route}: {navigation: any, route?: any}) => {
   const resendLoadingState = useSelector((state: any) => state.auth?.resendLoadingState);
   const dispatch = useDispatch();
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
-  const {accessToken, email} = route?.params;
+  const accessToken = route?.params?.accessToken;
+  const email = route?.params?.email;
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
@@ -69,7 +70,7 @@ const EnterOtp = ({navigation, route}: {navigation: any, route?: any}) => {
     }, [navigation]);
 
   const handleCodeSubmit = () => {
-    if(email){
+    if(email && accessToken){
       if (value.length === CELL_COUNT) {
         const formValues = {
           email: email,
@@ -81,12 +82,16 @@ const EnterOtp = ({navigation, route}: {navigation: any, route?: any}) => {
         Alert.alert('Please Enter otp');
       }
     }else {
-      navigation.navigate("EnterNewPassword")
+      // navigation.navigate("EnterNewPassword")
       if (value.length === CELL_COUNT) {
-        console.log('OTP Entered:', value);
+        const formValues = {
+          email: email,
+          otp: value,
+        }
+        dispatch(forgotPasswordAction(formValues, navigation, setVisible))
         // Handle OTP submission logic here
       } else {
-        console.log('Please complete the OTP.');
+        Alert.alert('Please Enter otp');
       }
     }
   };
@@ -108,7 +113,7 @@ const EnterOtp = ({navigation, route}: {navigation: any, route?: any}) => {
         <DropDownModalSheet icon={AppImages.Sheild}>
           <View style={{padding: 20, paddingTop: 0, gap: 20}}>
             <BoldText
-              title={email ? "Email Verification Sent!" : "Forgot Password"}
+              title={accessToken ? "Email Verification Sent!" : "Forgot Password"}
               textAligm={'center'}
               txtColour={APPCOLORS.BLACK}
               fontSize={3.5}

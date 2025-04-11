@@ -1,4 +1,4 @@
-import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
+import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, FORGOT_PASSWORD_LOADING_STATE, LOADING_STATE, NEW_PASSWORD_LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 
 const initialState = {
     loadingState: false,
@@ -8,6 +8,8 @@ const initialState = {
 
 export const AuthReducers = (state = initialState, action) => {
   switch (action.type) {
+    case NEW_PASSWORD_LOADING_STATE:
+    case FORGOT_PASSWORD_LOADING_STATE:
     case WORK_PROFILE_LOADING_STATE:
     case RESEND_EMAIL_VERIFY_LOADING_STATE:
     case EMAIL_VERIFY_LOADING_STATE:

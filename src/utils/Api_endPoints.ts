@@ -16,6 +16,8 @@ export const endPoints = {
     employeePersonalData: '/api/employee/getEmployee',
     allTask: '/api/task/getAllTaskByEmployee',
     singleTask: '/api/task/getTask',
+    forgotPassword: '/api/otp/verify',
+    resetPassword: '/api/employee/resetPassword',
 };
 
 export const errHandler = async (err: any,) => {
