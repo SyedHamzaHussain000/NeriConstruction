@@ -1,58 +1,77 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Image, Alert } from 'react-native';
 import { responsiveHeight, responsiveWidth } from '../../utils/Responsive';
 import { APPCOLORS } from '../../utils/APPCOLORS';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { AppImages } from '../../assets/AppImages';
+import { baseUrl, endPoints, errHandler } from '../../utils/Api_endPoints';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllTasksByEmployeeAction, getSingleTaskAction } from '../../redux/actions/MainActions';
 
-const CommentSection = () => {
-  const [comments, setComments] = useState([
-    { id: '1', username: 'John Doe', designation: 'Software Engineer', text: 'Great post!', time: '28 Sept 2024 5:53 AM', avatar: 'https://i.pravatar.cc/50?img=1' },
-    { id: '2', username: 'Jane Smith', designation: 'Product Manager', text: 'Nice article!', time: '29 Sept 2024 5:53 AM', avatar: 'https://i.pravatar.cc/50?img=2' },
-  ]);
+function formatCustomDate(date) {
+  const day = date.getDate();
+  const month = date.toLocaleString('en-GB', { month: 'short' }); // "Sept"
+  const year = date.getFullYear();
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12 || 12; // Convert to 12-hour format
+
+  return `${day} ${month} ${year} ${hours}:${minutes} ${ampm}`;
+}
+
+const CommentSection = ({commentsData, taskData}) => {
   const [newComment, setNewComment] = useState('');
-  const flatListRef = useRef(null);
+  const authState = useSelector((state: any) => state.auth);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch()
 
   // Function to add a new comment
-  const addComment = () => {
-    if (newComment.trim().length === 0) return;
+  const addComment = async (employeeId, taskId) => {
+    if(newComment){
+      try {
+       setIsLoading(true)
+                  const res = await axios.post(`${baseUrl}${endPoints.addComments}`, {
+                                 'taskId': taskId,
+                                 'employeeId': employeeId,
+                                 'text': newComment
+                             });
+ 
+                             if(res.data?.success){
+                               setIsLoading(false)
+                               dispatch(getSingleTaskAction(taskId))
+                               dispatch(getAllTasksByEmployeeAction(employeeId))
+                               setNewComment('')
+                             }
 
-    const newCommentObj = {
-      id: Date.now().toString(),
-      username: 'User ' + (comments.length + 1),
-      designation: 'New Commenter', // You can set dynamic designations here
-      text: newComment,
-      time: new Date().toLocaleTimeString(),
-      avatar: `https://i.pravatar.cc/50?img=${Math.floor(Math.random() * 50) + 1}`, // Random avatar
-    };
-
-    setComments([...comments, newCommentObj]);
-    setNewComment('');
-
-    // Auto-scroll to the last comment
-    setTimeout(() => {
-      flatListRef.current?.scrollToEnd({ animated: true });
-    }, 100);
+             } catch (error) {
+                 errHandler(error);
+                 setIsLoading(false);
+             }
+    }else{
+      Alert.alert('Comment is required');
+    }
   };
 
   return (
     <View style={styles.container}>
       {/* Comment List */}
       <FlatList
-        ref={flatListRef}
-        data={comments}
-        keyExtractor={(item) => item.id}
+        data={commentsData}
         renderItem={({ item }) => (
-          <View key={item.id} style={styles.commentContainer}>
-            <Image source={{ uri: item.avatar }} style={styles.avatar} />
+          <View style={styles.commentContainer}>
+            <Image source={{ uri: `${baseUrl}/${item?.employeeId?.profileImage}` }} style={styles.avatar} />
             <View style={styles.commentContent}>
               <View style={styles.userInfo}>
-                <Text style={styles.username}>{item.username}</Text>
-              <Text style={styles.time}>{item.time}</Text>
+                <Text style={styles.username}>{item?.employeeId?.firstName} {item?.employeeId?.lastName}</Text>
+              <Text style={styles.time}>{formatCustomDate(new Date(item?.createdAt))}</Text>
 
               </View>
-                <Text style={styles.designation}>{item.designation}</Text>
-              <Text style={styles.commentText}>{item.text}</Text>
+                <Text style={styles.designation}>{item?.employeeId?.designation}</Text>
+              <Text style={styles.commentText}>{item?.text}</Text>
             </View>
           </View>
         )}
@@ -65,13 +84,14 @@ const CommentSection = () => {
           style={styles.input}
           placeholder="Write a comment..."
           value={newComment}
-          onChangeText={setNewComment}
+          onChangeText={(text) => setNewComment(text)}
           multiline={true} // Allows multiple lines
           numberOfLines={3} // Defines visible lines
+          textAlignVertical='top'
         />
         <View style={styles.btnContainer}>
-        <TouchableOpacity onPress={addComment} style={styles.sendButton}>
-          <FontAwesome name="send" size={17} color="#fff" />
+        <TouchableOpacity disabled={isLoading} onPress={() => addComment(authState?.authData?.data?._id, taskData?._id)} style={styles.sendButton}>
+         {isLoading ? <Text style={{color: '#fff'}}>Wait</Text> : <FontAwesome name="send" size={17} color="#fff" />}
         </TouchableOpacity>
         </View>
       </View>

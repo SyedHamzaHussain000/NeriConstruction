@@ -21,6 +21,7 @@ import CommentSection from '../../../components/TaskManageComp/CommentSection';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useSelector } from 'react-redux';
 import { formatDate } from '../../../utils/DateAndTimeFormater';
+import { baseUrl } from '../../../utils/Api_endPoints';
 
 const data = [
   {
@@ -70,7 +71,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
           </View>
 
           <Image
-            source={AppImages.detail}
+            source={{ uri: `${baseUrl}/${singleTask?.singleTaskData?.pdfFile}` }}
             style={{
               width: responsiveWidth(85),
               borderRadius: 10,
@@ -80,7 +81,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
           />
 
           <View style={{flexDirection: 'row', gap: 10}}>
-            <Image
+            {/* <Image
               source={AppImages.detail}
               style={{
                 width: responsiveHeight(10),
@@ -88,8 +89,8 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
                 height: responsiveHeight(10),
                 marginTop: 10,
               }}
-            />
-            <Image
+            /> */}
+            {/* <Image
               source={AppImages.detail}
               style={{
                 width: responsiveHeight(10),
@@ -97,7 +98,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
                 height: responsiveHeight(10),
                 marginTop: 10,
               }}
-            />
+            /> */}
           </View>
 
           <View style={{marginTop: 20}}>
@@ -158,7 +159,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
               />
 
               <View>
-                <BoldText title="Alice" fontSize={2} />
+                <BoldText title='Admin' fontSize={2} />
                 <BoldText
                   title="Sr Front End Developer"
                   fontSize={2}
@@ -170,7 +171,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
 
           <BoldText title='Comment Section' fontSize={2} mrgnTop={2}/>
 
-         <CommentSection />
+         <CommentSection commentsData={singleTask?.singleTaskData?.comments} taskData={singleTask?.singleTaskData} />
 
         </WhiteContainers>}
 

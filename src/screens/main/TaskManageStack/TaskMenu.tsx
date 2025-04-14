@@ -117,7 +117,7 @@ const TaskMenu = ({navigation}: any) => {
               const taskId = item._id;
               dispatch(getSingleTaskAction(taskId))
               navigation.navigate('TaskMenuDetails')
-            }} status={item.status} priority={item.priority} dueDate={item.date} comments={item.task} />
+            }} status={item.status} priority={item.priority} dueDate={item.date} comments={item.comments?.length || 0} />
           )}
         />}
       </View>
