@@ -12,6 +12,7 @@ import AppButton from '../../../components/DailyUse/AppButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { ClockInNowAction, getTimeInAndTimeOutAction, savedDataForClockIn } from '../../../redux/actions/MainActions';
 import { getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
+import { baseUrl } from '../../../utils/Api_endPoints';
 const scheduleData = [
   {text: 'CLOCK IN', time: '09:00', width: responsiveWidth(45)},
   {text: 'CLOCK OUT', time: '05:00', width: responsiveWidth(45)},
@@ -24,6 +25,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
       const mainState = useSelector((state: any) => state.main);
     const authState = useSelector((state: any) => state.auth);
     const dispatch = useDispatch();
+  const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -109,11 +111,13 @@ const Attendant = ({ navigation }: { navigation: any }) => {
         </View>
         <NormalText mrgnTop={2} txtColour={APPCOLORS.BLACK} fntWeight="700" fontSize={2.2} title="MY PROFILE" />
         <View style={{flexDirection: 'row', borderRadius: 14, backgroundColor: APPCOLORS.LIGHTWHITE, borderWidth: 1, borderColor:APPCOLORS.GRAY_BORDER,  padding: responsiveHeight(1.5), marginTop: responsiveHeight(1.5)}}>
-          <Image source={AppImages.pfps} style={{height: responsiveHeight(10), width: responsiveWidth(20), borderRadius: responsiveHeight(1) }} />
+          <Image source={employeeData?.personalData?.profileImage 
+            ? { uri: `${baseUrl}/${employeeData.personalData.profileImage}` } 
+            : AppImages.pfp} style={{height: responsiveHeight(10), width: responsiveWidth(20), borderRadius: responsiveHeight(1) }} />
         <View style={{marginLeft: responsiveWidth(3), gap: 10}}>
           <View>
           <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
-          <NormalText txtColour={APPCOLORS.BLACK} title="Tonald Drump" fontSize={2} fntWeight='bold'/>
+          <NormalText txtColour={APPCOLORS.BLACK} title={`${employeeData?.personalData?.firstName} ${employeeData?.personalData?.lastName}`} fontSize={2} fntWeight='bold'/>
           <Image
             source={AppImages.correct}
           />

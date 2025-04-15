@@ -113,10 +113,9 @@ const TaskMenu = ({navigation}: any) => {
           // keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ gap: 20, paddingBottom: 20 }}
           renderItem={({ item }) => (
-            <TaskCard title={item.task} onPress={() => {
+            <TaskCard title={item.task || item.taskTitle} onPress={() => {
               const taskId = item._id;
-              dispatch(getSingleTaskAction(taskId))
-              navigation.navigate('TaskMenuDetails')
+              dispatch(getSingleTaskAction(taskId, navigation))
             }} status={item.status} priority={item.priority} dueDate={item.date} comments={item.comments?.length || 0} />
           )}
         />}

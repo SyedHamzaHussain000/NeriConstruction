@@ -74,6 +74,8 @@ const SelfieToClockIn = ({navigation}: any) => {
         timeIn: getFormattedTime(),
         image: data?.image || newPhoto,
         clockInNotes: clockInNotes || '',
+        lat: data?.latitude,
+        long: data?.longitude,
       }
       dispatch(ClockInNowAction(timeValues, setModalVisible))
     }
@@ -127,7 +129,7 @@ const SelfieToClockIn = ({navigation}: any) => {
           <AppButton
             onPress={() => clockinHandler()}
             title={loadingState ? "Waiting..." : "Clock In"}
-            disabled={loadingState}
+            // disabled={loadingState}
             />
         </WhiteContainers>
         </ScrollView>

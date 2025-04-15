@@ -69,7 +69,8 @@ const TabBar = () => {
       }}>
       <Tab.Screen
         name="Home"
-        component={Home}
+        // component={Home}
+        component={Calender}
         options={{
           tabBarShowLabel: false,
           tabBarLabel: '',
@@ -84,7 +85,7 @@ const TabBar = () => {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Calender"
         component={Calender}
         options={{
@@ -100,7 +101,7 @@ const TabBar = () => {
             );
           },
         }}
-      />
+      /> */}
       <Tab.Screen
         name="TaskManage"
         // component={TaskManage}

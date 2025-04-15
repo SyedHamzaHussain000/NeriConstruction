@@ -1,5 +1,5 @@
 import {View, Text, ScrollView, FlatList} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import HomeHeader from '../../components/AppHeaders/HomeHeader';
 import {AppImages} from '../../assets/AppImages';
 import Banner from '../../components/HomeComp/Banner';
@@ -9,15 +9,79 @@ import {Calendar, LocaleConfig} from 'react-native-calendars';
 import WhiteContainers from '../../components/WhiteContainers';
 import { NormalText } from '../../components/DailyUse/AppText/AppText';
 import AgendaBars from '../../components/CalenderComp/AgendaBars';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDaylyAgendaAction, getEmployeePersonalDataAction, getMonthlyAgendaAction, getWeeklyAgendaAction, getYearlyAgendaAction } from '../../redux/actions/MainActions';
+import { baseUrl } from '../../utils/Api_endPoints';
+
+function formatTimeRange(startDate, durationInHours = 1) {
+  const pad = (n) => n.toString().padStart(2, '0');
+
+  const startHours = startDate.getHours();
+  const startMinutes = startDate.getMinutes();
+  const endDate = new Date(startDate.getTime() + durationInHours * 60 * 60 * 1000);
+  const endHours = endDate.getHours();
+  const endMinutes = endDate.getMinutes();
+
+  const startTime = `${pad(startHours)}:${pad(startMinutes)}`;
+  const endTime = `${pad(endHours)}:${pad(endMinutes)}`;
+
+  return `${startTime} - ${endTime}`;
+}
+
+
 const Calender = () => {
-  const [selected, setSelected] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTab, setSelectedTab] = useState({id: 1, name: 'Day'});
+  const authData = useSelector((state: any) => state.auth?.authData);
+  const dispatch = useDispatch();
+
+  const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
+  const daylyData = useSelector((state: any) => state.getDaylyAgenda);
+  const weeklyData = useSelector((state: any) => state.getWeeklyAgenda);
+  const monthlyData = useSelector((state: any) => state.getMonthlyAgenda);
+  const yearlyData = useSelector((state: any) => state.getYearlyAgenda);
+
+  const data = {
+    Day: daylyData?.daylyAgendaData,
+    Week: weeklyData?.weeklyAgendaData,
+    Month: monthlyData?.monthlyAgendaData,
+    Year: yearlyData?.yearlyAgendaData,
+  }
+  
+    useEffect(() => {
+      if(!employeeData?.personalData){
+        dispatch(getEmployeePersonalDataAction(authData?.data?._id))
+      }
+    }, [authData?.data?._id, employeeData])
+
+    useEffect(() => {
+      if(selectedDate && selectedTab.name === 'Day'){
+        dispatch(getDaylyAgendaAction(authData?.data?._id))
+      }else if(selectedDate && selectedTab.name === 'Week'){
+        dispatch(getWeeklyAgendaAction(authData?.data?._id))
+      }else if(selectedDate && selectedTab.name === 'Month'){
+        const month = new Date(selectedDate).getMonth() + 1;
+        const year = new Date(selectedDate).getFullYear();
+        const day = new Date(selectedDate).getDate();
+        if(day){
+        dispatch(getMonthlyAgendaAction(authData?.data?._id, month, year, day))
+        }
+        dispatch(getMonthlyAgendaAction(authData?.data?._id, month, year))
+      }else if(selectedDate && selectedTab.name === 'Year'){
+        const year = new Date(selectedDate).getFullYear();
+        dispatch(getYearlyAgendaAction(authData?.data?._id, year))
+      }
+
+    }, [selectedDate, selectedTab])
 
   return (
     <View style={{flex: 1, backgroundColor: APPCOLORS.BACKGROUND_COLOR}}>
       <HomeHeader
-        Name="Tonald Trump"
-        JobTitle="Junior Full Stack Developer"
-        pfp={AppImages.pfp}
+        Name={employeeData?.personalDataLoadingState ? "Loading..." : `${employeeData?.personalData?.firstName} ${employeeData?.personalData?.lastName}`}
+        JobTitle={employeeData?.personalDataLoadingState ? "Loading..." : employeeData?.personalData?.designation}
+        pfp={employeeData?.personalData?.profileImage 
+          ? { uri: `${baseUrl}/${employeeData.personalData.profileImage}` } 
+          : AppImages.pfp}
       />
       <ScrollView style={{flex: 1}}>
         <View style={{padding: 20, gap: 20}}>
@@ -42,11 +106,13 @@ const Calender = () => {
               <TouchableOpacity
                 style={{
                   padding: 10,
-                  backgroundColor: APPCOLORS.LIGHT_GRAY,
+                  backgroundColor: selectedTab.name === item.name ? APPCOLORS.ClockInBg : APPCOLORS.LIGHT_GRAY,
                   borderRadius: 200,
                   paddingHorizontal: 30,
-                }}>
-                <Text style={{color: 'black'}}>{item.name}</Text>
+                }}
+                onPress={() => setSelectedTab({id: item.id, name: item.name})}
+                >
+                <Text style={{color: selectedTab.name === item.name ? '#fff' : 'black'}}>{item.name}</Text>
               </TouchableOpacity>
             );
           }}
@@ -54,7 +120,7 @@ const Calender = () => {
 
         <Calendar
           onDayPress={(day: any) => {
-            setSelected(day.dateString);
+            setSelectedDate(day.dateString);
           }}
           style={{
             backgroundColor:APPCOLORS.BACKGROUND_COLOR
@@ -64,7 +130,7 @@ const Calender = () => {
             calendarBackground: APPCOLORS.BACKGROUND_COLOR,
           }}
           markedDates={{
-            [selected]: {
+            [selectedDate]: {
               selected: true,
               disableTouchEvent: true,
               selectedDotColor: 'orange',
@@ -72,16 +138,17 @@ const Calender = () => {
           }}
         />
 
-
-
-
           <View style={{padding:20}}>
         <WhiteContainers>
           <View style={{padding:10, gap:10}}>
-              <NormalText title='Today Agenda' fontSize={2}/>
-              <AgendaBars title={"Wiring Dashboard Analytics"} time={"13:00 - 14:00"} barColor={APPCOLORS.DARK_ORANGE}/>
-              <AgendaBars title={"Wiring Dashboard Analytics"} time={"13:00 - 14:00"} barColor={APPCOLORS.SKY_BLUR}/>
-              <AgendaBars title={"Wiring Dashboard Analytics"} time={"13:00 - 14:00"} barColor={APPCOLORS.ICON_TEXT_COLOUR}/>
+              <NormalText title={`${selectedTab.name === 'Day' ? 'Today' : `${selectedTab.name}ly`} Agenda`} fontSize={2}/>
+             
+          <FlatList 
+          data={data[selectedTab.name]}
+          renderItem={({item}) => (
+            <AgendaBars title={item?.task} time={formatTimeRange(new Date(item?.date))} barColor={APPCOLORS.ICON_TEXT_COLOUR}/>
+          )}
+          />
 
           </View>
         </WhiteContainers>

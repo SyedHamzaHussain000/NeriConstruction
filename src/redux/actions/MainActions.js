@@ -1,5 +1,5 @@
 import { Alert } from "react-native";
-import { CLOCK_IN, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, LOADING_STATE, TAKE_BREAK_LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_SINGLE_TASK, GET_SINGLE_TASK_LOADING_STATE } from "../actionsTypes/MainActionsTypes";
+import { CLOCK_IN, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, LOADING_STATE, TAKE_BREAK_LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_SINGLE_TASK, GET_SINGLE_TASK_LOADING_STATE, GET_WEEKLY_AGENDA_LOADING_STATE, GET_WEEKLY_AGENDA_DATA, GET_MONTHLY_AGENDA_LOADING_STATE, GET_MONTHLY_AGENDA_DATA, GET_YEARLY_AGENDA_LOADING_STATE, GET_YEARLY_AGENDA_DATA, GET_DAYLY_AGENDA_LOADING_STATE, GET_DAYLY_AGENDA_DATA } from "../actionsTypes/MainActionsTypes";
 import { baseUrl, endPoints, errHandler } from "../../utils/Api_endPoints";
 import axios from "axios";
 
@@ -12,18 +12,15 @@ export const ClockInNowAction = (timeValues, setModalVisible) => {
             formData.append('date', timeValues?.date);
             formData.append('timeIn', timeValues?.timeIn);
             formData.append('image', timeValues?.image);
-            formData.append('longitude', '24.8607');
-            formData.append('latitude', '67.0011');
+            formData.append('longitude', timeValues.lat);
+            formData.append('latitude', timeValues.long);
             formData.append('notes', timeValues?.clockInNotes);
-            
-            // return console.log(formData)
 
             const res = await axios.post(`${baseUrl}${endPoints.timeIn}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
             });
-
 
             if(res.data?.success){
                 // dispatch({ type: CLOCK_IN, payload: res.data });
@@ -70,7 +67,7 @@ export const getWeeklyTimeInAndTimeOutAction = (employeeId) => {
     return async (dispatch) => {
         dispatch({ type: WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, payload: true });
         try {
-            const res = await axios.get(`${baseUrl}${endPoints.attendance}/weekly?employeeId=${employeeId}`);
+            const res = await axios.get(`${baseUrl}${endPoints.attendance}?employeeId=${employeeId}`);
 
                 dispatch({ type: GET_WEEKLY_TIMEIN_TIMEOUT, payload: res.data?.data });
                 dispatch({ type: WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE, payload: false });
@@ -139,7 +136,7 @@ export const getAllTasksByEmployeeAction = (employeeId) => {
     }
 }
 
-export const getSingleTaskAction = (taskId) => {
+export const getSingleTaskAction = (taskId, navigation) => {
     return async (dispatch) => {
         dispatch({ type: GET_SINGLE_TASK_LOADING_STATE, payload: true });
         try {
@@ -148,9 +145,99 @@ export const getSingleTaskAction = (taskId) => {
 
                 dispatch({ type: GET_SINGLE_TASK, payload: res.data?.data });
                 dispatch({ type: GET_SINGLE_TASK_LOADING_STATE, payload: false });
+                navigation.navigate('TaskMenuDetails')
         } catch (error) {
             console.log(error)
             dispatch({ type: GET_SINGLE_TASK_LOADING_STATE, payload: false });
         }
     }
 }
+
+export const getDaylyAgendaAction = (employeeId) => {
+    return async (dispatch) => {
+        dispatch({ type: GET_DAYLY_AGENDA_LOADING_STATE, payload: true });
+        try {
+
+            const res = await axios.get(`${baseUrl}${endPoints.daylyAgenda}?employeeId=${employeeId}`);
+
+                dispatch({ type: GET_DAYLY_AGENDA_DATA, payload: res.data?.data });
+                dispatch({ type: GET_DAYLY_AGENDA_LOADING_STATE, payload: false });
+        } catch (error) {
+            console.log(error)
+            dispatch({ type: GET_DAYLY_AGENDA_LOADING_STATE, payload: false });
+        }
+    }
+}
+
+export const getWeeklyAgendaAction = (employeeId) => {
+    return async (dispatch) => {
+        dispatch({ type: GET_WEEKLY_AGENDA_LOADING_STATE, payload: true });
+        try {
+
+            const res = await axios.get(`${baseUrl}${endPoints.weeklyAgenda}?employeeId=${employeeId}`);
+
+                dispatch({ type: GET_WEEKLY_AGENDA_DATA, payload: res.data?.data });
+                dispatch({ type: GET_WEEKLY_AGENDA_LOADING_STATE, payload: false });
+        } catch (error) {
+            console.log(error)
+            dispatch({ type: GET_WEEKLY_AGENDA_LOADING_STATE, payload: false });
+        }
+    }
+}
+
+export const getMonthlyAgendaAction = (employeeId, month, year, day) => {
+    return async (dispatch) => {
+        dispatch({ type: GET_MONTHLY_AGENDA_LOADING_STATE, payload: true });
+        try {
+
+            const res = await axios.get(`${baseUrl}${endPoints.monthlyAgenda}?employeeId=${employeeId}&year=${year}&month=${month}&day=${day}`);
+
+                dispatch({ type: GET_MONTHLY_AGENDA_DATA, payload: res.data?.data });
+                dispatch({ type: GET_MONTHLY_AGENDA_LOADING_STATE, payload: false });
+        } catch (error) {
+            console.log(error)
+            dispatch({ type: GET_MONTHLY_AGENDA_LOADING_STATE, payload: false });
+        }
+    }
+}
+
+export const getYearlyAgendaAction = (employeeId, year) => {
+    return async (dispatch) => {
+        dispatch({ type: GET_YEARLY_AGENDA_LOADING_STATE, payload: true });
+        try {
+
+            const res = await axios.get(`${baseUrl}${endPoints.yearlyAgenda}?employeeId=${employeeId}&year=${year}`);
+
+                dispatch({ type: GET_YEARLY_AGENDA_DATA, payload: res.data?.data });
+                dispatch({ type: GET_YEARLY_AGENDA_LOADING_STATE, payload: false });
+        } catch (error) {
+            console.log(error)
+            dispatch({ type: GET_YEARLY_AGENDA_LOADING_STATE, payload: false });
+        }
+    }
+}
+
+let timerId = null; // scoped outside so it's shared between actions
+
+export const startTimerAction = () => {
+  return (dispatch) => {
+    let seconds = 0;
+
+    dispatch({ type: 'TIMER_RESET' });
+
+    timerId = setInterval(() => {
+      seconds += 1;
+      dispatch({ type: 'TIMER_TICK', payload: seconds });
+    }, 1000);
+  };
+};
+
+export const stopTimerAction = () => {
+  return (dispatch) => {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+      dispatch({ type: 'TIMER_STOP' });
+    }
+  };
+};

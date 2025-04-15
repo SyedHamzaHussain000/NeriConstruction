@@ -1,4 +1,4 @@
-import { CLOCK_IN, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_SINGLE_TASK, GET_SINGLE_TASK_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_TIMEIN_TIMEOUT, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
+import { CLOCK_IN, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_DAYLY_AGENDA_DATA, GET_DAYLY_AGENDA_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_MONTHLY_AGENDA_DATA, GET_MONTHLY_AGENDA_LOADING_STATE, GET_SINGLE_TASK, GET_SINGLE_TASK_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_AGENDA_DATA, GET_WEEKLY_AGENDA_LOADING_STATE, GET_WEEKLY_TIMEIN_TIMEOUT, GET_YEARLY_AGENDA_DATA, GET_YEARLY_AGENDA_LOADING_STATE, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
 
 const initialState = {
     loadingState: false,
@@ -159,3 +159,109 @@ export const getSingleTaskReducer = (state = getEmployeeTaskInitialState, action
       return state;
   }
 };
+
+const getDaylyAgendaInitialState = {
+  daylyAgendaLoadingState: false,
+  daylyAgendaData: null,
+};
+
+export const getDaylyAgendaReducer = (state = getDaylyAgendaInitialState, action) => {
+  switch (action.type) {
+    case GET_DAYLY_AGENDA_LOADING_STATE:
+         return { 
+           ...state,
+           daylyAgendaLoadingState: action.payload,
+         };
+         case GET_DAYLY_AGENDA_DATA:
+         return { 
+           ...state,
+           daylyAgendaData: action.payload,
+         };
+    default:
+      return state;
+  }
+};
+
+const getWeeklyAgendaInitialState = {
+  weeklyAgendaLoadingState: false,
+  weeklyAgendaData: null,
+};
+
+export const getWeeklyAgendaReducer = (state = getWeeklyAgendaInitialState, action) => {
+  switch (action.type) {
+    case GET_WEEKLY_AGENDA_LOADING_STATE:
+         return { 
+           ...state,
+           weeklyAgendaLoadingState: action.payload,
+         };
+         case GET_WEEKLY_AGENDA_DATA:
+         return { 
+           ...state,
+           weeklyAgendaData: action.payload,
+         };
+    default:
+      return state;
+  }
+};
+
+const getMonthlyAgendaInitialState = {
+  monthlyAgendaLoadingState: false,
+  monthlyAgendaData: null,
+};
+
+export const getMonthlyAgendaReducer = (state = getMonthlyAgendaInitialState, action) => {
+  switch (action.type) {
+    case GET_MONTHLY_AGENDA_LOADING_STATE:
+         return { 
+           ...state,
+           monthlyAgendaLoadingState: action.payload,
+         };
+         case GET_MONTHLY_AGENDA_DATA:
+         return { 
+           ...state,
+           monthlyAgendaData: action.payload,
+         };
+    default:
+      return state;
+  }
+};
+
+const getYearlyAgendaInitialState = {
+  yearlyAgendaLoadingState: false,
+  yearlyAgendaData: null,
+};
+
+export const getYearlyAgendaReducer = (state = getYearlyAgendaInitialState, action) => {
+  switch (action.type) {
+    case GET_YEARLY_AGENDA_LOADING_STATE:
+         return { 
+           ...state,
+           yearlyAgendaLoadingState: action.payload,
+         };
+         case GET_YEARLY_AGENDA_DATA:
+         return { 
+           ...state,
+           yearlyAgendaData: action.payload,
+         };
+    default:
+      return state;
+  }
+};
+
+const timerInitialState = {
+  seconds: 0,
+  isRunning: false,
+};
+
+export const timerReducer = (state = timerInitialState, action) => {
+  switch (action.type) {
+    case 'TIMER_TICK':
+      return { ...state, seconds: action.payload, isRunning: true };
+    case 'TIMER_RESET':
+      return { ...state, seconds: 0, isRunning: true };
+    case 'TIMER_STOP':
+      return { ...state, isRunning: false };
+    default:
+      return state;
+  }
+}

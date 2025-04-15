@@ -10,7 +10,7 @@ import WhiteContainers from '../../../components/WhiteContainers';
 import AppButton from '../../../components/DailyUse/AppButton';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
-import { ClockInNowAction, getTimeInAndTimeOutAction, getWeeklyTimeInAndTimeOutAction } from '../../../redux/actions/MainActions';
+import { ClockInNowAction, getTimeInAndTimeOutAction, getWeeklyTimeInAndTimeOutAction, startTimerAction } from '../../../redux/actions/MainActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDateToHrs, getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
 
@@ -27,15 +27,17 @@ const data = [
   },
 ];
 
-const ClockIn = ({ navigation }: { navigation: any }) => {
+const ClockIn = ({ navigation, route }: any) => {
   const dispatch = useDispatch();
   const authState = useSelector((state: any) => state.auth);
   const mainState = useSelector((state: any) => state.main);
-  const timeInAndTimeOut = useSelector((state: any) => state.getTimeInTimeOut);
   const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
-  const [todayHrs, setTodayHrs] = useState('');
+  const timer = useSelector((state: any) => state.timer);
+
+  const routeData = route?.params?.data;
 
   const clockInNowHandler = () => {
+    dispatch(startTimerAction())
     navigation.navigate('Attendant');
   }
 
@@ -43,13 +45,6 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
     dispatch(getTimeInAndTimeOutAction(authState?.authData.data?._id))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authState?.authData.data?._id]);
-
-  useEffect(() => {
-    const date = timeInAndTimeOut ? new Date(timeInAndTimeOut?.timeInTimeOutData?.data?.date) : null;
-    const resDate = date ? formatDateToHrs(date) : '00:00 Hrs'
-    setTodayHrs(resDate)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeInAndTimeOut]);
 
   useEffect(() => {
     dispatch(getWeeklyTimeInAndTimeOutAction(authState?.authData.data?._id))
@@ -98,7 +93,7 @@ const ClockIn = ({ navigation }: { navigation: any }) => {
                   <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                   <NormalText title={item.title1} fontSize={1.7} />
                 </View>
-                <BoldText title={index == 0 ? todayHrs : item.title2} fontSize={2.5} />
+                <BoldText title={index == 1 ? routeData?.duration : timer.seconds} fontSize={2.5} />
               </View>
             )} />
           </View>

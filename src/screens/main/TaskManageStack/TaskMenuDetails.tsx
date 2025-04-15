@@ -36,10 +36,21 @@ const data = [
   },
 ];
 
+function formatDateRange(startDate, endDate) {
+  const formatDate = (date) => {
+    const day = date.getDate();
+    const month = date.toLocaleString('en-GB', { month: 'short' }); // e.g., "Sept"
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
+
+  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+}
+
 const TaskMenuDetails = ({navigation}: {navigation: any}) => {
   const singleTask = useSelector((state: any) => state.getSingleTask)
 
-  console.log(singleTask?.singleTaskData, 'res')
+  console.log(singleTask?.singleTaskData?.duration, 'res')
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <NormalHeader title="Task Details" onPress={()=> navigation.goBack()}/>
@@ -70,7 +81,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
             </View>
           </View>
 
-          <Image
+        {singleTask?.singleTaskData?.pdfFile ? <Image
             source={{ uri: `${baseUrl}/${singleTask?.singleTaskData?.pdfFile}` }}
             style={{
               width: responsiveWidth(85),
@@ -78,7 +89,11 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
               height: responsiveHeight(30),
               marginTop: 10,
             }}
-          />
+          /> : <View style={{ width: responsiveWidth(85),
+            marginTop: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: responsiveHeight(30),}}><Text style={{fontSize: 20}}>Image Not Found</Text></View>}
 
           <View style={{flexDirection: 'row', gap: 10}}>
             {/* <Image
@@ -105,7 +120,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
             <BoldText title="Description" fontSize={2} />
             <NormalText
               txtColour={'#475467'}
-              title={singleTask?.singleTaskData?.taskDetails}
+              title={singleTask?.singleTaskData?.taskDetails || singleTask?.singleTaskData?.description}
               fontSize={1.5}
             />
           </View>
@@ -180,23 +195,24 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
 
              <View style={{ width: responsiveWidth(95) }}>
                         <BoldText title="Total Working Hour" fontSize={2} />
-                        <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
+                        {/* <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} /> */}
+                        <NormalText title={`Paid Period ${singleTask?.singleTaskData?.startDate || 0} ${singleTask?.singleTaskData?.endDate || 0}`} fontSize={1.5} />
                       </View>
                       <View style={{ width: responsiveWidth(82), flexDirection: 'row' }}>
-                        <FlatList contentContainerStyle={{ gap: responsiveHeight(1), marginBottom: responsiveHeight(1), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item }) => (
+                        <FlatList contentContainerStyle={{ gap: responsiveHeight(1), marginBottom: responsiveHeight(1), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
                           <View style={{ gap: responsiveHeight(1), width: responsiveWidth(40), backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1) }}>
                               <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                               <NormalText title={item.title1} fontSize={1.7} />
                             </View>
-                            <BoldText title={item.title2} fontSize={2.5} />
+                            <BoldText title={index == 1 ? singleTask?.singleTaskData?.duration : item.title2} fontSize={2.5} />
                           </View>
                         )} />
                       </View>
 
         <View style={{marginTop:20}}>
         <AppButton
-        onPress={()=> navigation.navigate("ClockIn")}
+        onPress={()=> navigation.navigate("ClockIn", {data: singleTask?.singleTaskData})}
         title='Check In Now'
         width={85}
         />
