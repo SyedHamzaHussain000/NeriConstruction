@@ -44,6 +44,7 @@ const TaskMenu = ({navigation}: any) => {
     Finish: tasks.finish,
   };
 
+  console.log(allTasks)
   return (
     <View style={styles.container}>
       {/* Header Section */}
@@ -92,7 +93,7 @@ const TaskMenu = ({navigation}: any) => {
 
       {/* Custom Tabs */}
       <View style={styles.tabContainer}>
-        {["All", "Pending", "InProgress", "Finish"].map((tab) => (
+        {["All",  "InProgress", "Finish"].map((tab) => (
           <TouchableOpacity
           key={tab}
           style={[styles.tabButton, selectedTab === tab && styles.activeTab]}
@@ -115,7 +116,7 @@ const TaskMenu = ({navigation}: any) => {
           renderItem={({ item }) => (
             <TaskCard title={item.task || item.taskTitle} onPress={() => {
               const taskId = item._id;
-              dispatch(getSingleTaskAction(taskId, navigation))
+              navigation.navigate('TaskMenuDetails', {taskId: taskId})
             }} status={item.status} priority={item.priority} dueDate={item.date} comments={item.comments?.length || 0} />
           )}
         />}
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
   },
   tabButton: {
     height: responsiveHeight(4.5),
-    width: responsiveWidth(10),
+    width: responsiveWidth(25),
     justifyContent: 'center',
     alignItems: 'center',
   },

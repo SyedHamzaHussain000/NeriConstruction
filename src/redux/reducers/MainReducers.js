@@ -1,4 +1,4 @@
-import { CLOCK_IN, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_DAYLY_AGENDA_DATA, GET_DAYLY_AGENDA_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_MONTHLY_AGENDA_DATA, GET_MONTHLY_AGENDA_LOADING_STATE, GET_SINGLE_TASK, GET_SINGLE_TASK_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_AGENDA_DATA, GET_WEEKLY_AGENDA_LOADING_STATE, GET_WEEKLY_TIMEIN_TIMEOUT, GET_YEARLY_AGENDA_DATA, GET_YEARLY_AGENDA_LOADING_STATE, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
+import { CLOCK_IN, CLOCK_OUT_DATA, CLOCK_OUT_LOADING_STATE, GET_ALL_TASK, GET_ALL_TASK_LOADING_STATE, GET_DAYLY_AGENDA_DATA, GET_DAYLY_AGENDA_LOADING_STATE, GET_EMPLOYEE_PERSONAL_DATA, GET_EMPLOYEE_PERSONAL_LOADING_STATE, GET_MONTHLY_AGENDA_DATA, GET_MONTHLY_AGENDA_LOADING_STATE, GET_SINGLE_TASK, GET_SINGLE_TASK_LOADING_STATE, GET_TIMEIN_TIMEOUT, GET_WEEKLY_AGENDA_DATA, GET_WEEKLY_AGENDA_LOADING_STATE, GET_WEEKLY_TIMEIN_TIMEOUT, GET_YEARLY_AGENDA_DATA, GET_YEARLY_AGENDA_LOADING_STATE, IS_UPDATED_EMPLOYEE_PERSONAL_DATA, LOADING_STATE, TAKE_BREAK_LOADING_STATE, TIMEIN_TIMEOUT_LOADING_STATE, WEEKLY_TIMEIN_TIMEOUT_LOADING_STATE } from '../actionsTypes/MainActionsTypes';
 
 const initialState = {
     loadingState: false,
@@ -265,3 +265,41 @@ export const timerReducer = (state = timerInitialState, action) => {
       return state;
   }
 }
+
+const takeBreakInitialState = {
+  takeBreakLoadingState: false,
+};
+
+export const takeABreakReducer = (state = takeBreakInitialState, action) => {
+  switch (action.type) {
+    case TAKE_BREAK_LOADING_STATE:
+         return { 
+           ...state,
+           takeBreakLoadingState: action.payload,
+         };
+    default:
+      return state;
+  }
+};
+
+const clockOutInitialState = {
+  clockOutLoadingState: false,
+  clockOutData: null,
+};
+
+export const clockOutReducer = (state = clockOutInitialState, action) => {
+  switch (action.type) {
+    case CLOCK_OUT_LOADING_STATE:
+         return { 
+           ...state,
+           clockOutLoadingState: action.payload,
+         };
+    case CLOCK_OUT_DATA: 
+    return {
+      ...state,
+      clockOutData: action.payload,
+    }
+    default:
+      return state;
+  }
+};

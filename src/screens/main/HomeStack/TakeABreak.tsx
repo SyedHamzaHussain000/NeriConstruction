@@ -11,6 +11,8 @@ import AppButton, { SmallAppButton } from '../../../components/DailyUse/AppButto
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
 import ClockInConfirmModal from '../../../components/HomeComp/ClockInConfirmModal';
 import ClockInSuccessModal from '../../../components/HomeComp/ClockInSuccessModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { clockOutAction } from '../../../redux/actions/MainActions';
 
 const data = [
     {
@@ -28,7 +30,13 @@ const data = [
 const TakeABreak = ({navigation}: any) => {
         const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState<Boolean>(false);
         const [isSuccessModalVisible, setIsSuccessModalVisible] = useState<Boolean>(false);
-  return (
+        const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
+      const singleTask = useSelector((state: any) => state.getSingleTask)
+    const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
+    const loading = useSelector((state: any) => state.clockOut?.clockOutLoadingState);
+    const dispatch = useDispatch() 
+
+        return (
     <View style={{ flex: 1, }}>
         <View style={styles.ContainerHeader}>
                 <View
@@ -65,13 +73,13 @@ const TakeABreak = ({navigation}: any) => {
             <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
           </View>
           <View style={{ width: responsiveWidth(88), flexDirection: 'row' }}>
-            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item }) => (
+            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
               <View style={{ gap: responsiveHeight(1), width: responsiveWidth(42), backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1) }}>
                   <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                   <NormalText title={item.title1} fontSize={1.7} />
                 </View>
-                <BoldText title={item.title2} fontSize={2.5} />
+                <BoldText title={index == 0 ? todayTimeIn?.timeInTimeOutData?.data[0]?.timeIn || '00:00' : singleTask?.singleTaskData?.duration || '00:00'} fontSize={2.5} />
               </View>
             )} />
           </View>
@@ -84,16 +92,19 @@ const TakeABreak = ({navigation}: any) => {
               <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1,  }} showsVerticalScrollIndicator={false}>
        
         <View style={{ flex: 1, }}>
-          <ClockInCards headingDate="27 September 2024"  />
-          <ClockInCards headingDate="27 September 2024"  />
-          <ClockInCards headingDate="27 September 2024"  />
-          <ClockInCards headingDate="27 September 2024"  />
+        <FlatList 
+              data={weeklyTimeInTimeOut?.weeklyTimeInTimeOutData}
+              renderItem={({item}) => {
+                return (
+                  <ClockInCards headingDate={item.date} timeIn={item.timeIn} timeOut={item.timeOut} />
+                )
+              }}
+              />
         </View>
       </ScrollView>
 
-      <ClockInConfirmModal isModalVisible={isConfirmationModalVisible} imageSource={AppImages.timer} yesBtnTitle='Yes, Clock Out' noBtnTitle='No, Let me check' yesBtnOnPress={() => {
-        setIsConfirmationModalVisible(false);
-        setIsSuccessModalVisible(true);
+      <ClockInConfirmModal isModalVisible={isConfirmationModalVisible} disabled={loading} imageSource={AppImages.timer} yesBtnTitle={loading ? 'Waiting...' : 'Yes, Clock Out'} noBtnTitle='No, Let me check' yesBtnOnPress={() => {
+        dispatch(clockOutAction(todayTimeIn?.timeInTimeOutData?.data[0]?._id, setIsConfirmationModalVisible, setIsSuccessModalVisible))
       }} noBtnOnPress={() => setIsConfirmationModalVisible(false)}   title="Confirm Clockout" subTitle="Once you clock out, you won’t be able to edit this time. Please double-check your hours before proceeding."  />
       <ClockInSuccessModal isModalVisible={isSuccessModalVisible} imageSource={AppImages.timer} btnTitle='Close Message'  title="Clockout Successful!" subTitle="You’ve officially clocked out for the day. Thank you for your hard work! Time to relax and enjoy your break." 
       onPress={() => {

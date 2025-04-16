@@ -23,4 +23,5 @@ export type SmallBtnTypes = {
     borderRadious?: any,
     borderWidth?: any,
     borderColor?: any,
+    disabled?:any,
 };

@@ -26,6 +26,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
     const authState = useSelector((state: any) => state.auth);
     const dispatch = useDispatch();
   const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
+  const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -145,7 +146,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
                       return (
                         <View style={{width: item.width, alignItems: 'center', borderRadius: 14, backgroundColor: APPCOLORS.LIGHTWHITE, borderWidth: 1, borderColor:APPCOLORS.GRAY_BORDER, padding: responsiveHeight(1.5), marginTop: responsiveHeight(1.5)}}>
                         <NormalText txtColour={APPCOLORS.DARK_GRAY} title={item.text} fontSize={2} fntWeight='bold'/>
-                        <NormalText txtColour={APPCOLORS.BLACK} title={index == 0 ? timeInAndTimeOut?.timeInTimeOutData?.data?.timeIn || '00:00' : timeInAndTimeOut?.timeInTimeOutData?.data?.timeOut || '00:00' } fontSize={4} fntWeight='bold' />
+                        <NormalText txtColour={APPCOLORS.BLACK} title={index == 0 ? todayTimeIn?.timeInTimeOutData?.data[0]?.timeIn || '00:00' : todayTimeIn?.timeInTimeOutData?.data[0]?.timeIn.timeOut || '00:00' } fontSize={4} fntWeight='bold' />
                       </View>
                       );
                     }}

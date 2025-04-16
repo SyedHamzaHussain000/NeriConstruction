@@ -74,6 +74,7 @@ const Calender = () => {
 
     }, [selectedDate, selectedTab])
 
+    console.log(data)
   return (
     <View style={{flex: 1, backgroundColor: APPCOLORS.BACKGROUND_COLOR}}>
       <HomeHeader
@@ -146,7 +147,7 @@ const Calender = () => {
           <FlatList 
           data={data[selectedTab.name]}
           renderItem={({item}) => (
-            <AgendaBars title={item?.task} time={formatTimeRange(new Date(item?.date))} barColor={APPCOLORS.ICON_TEXT_COLOUR}/>
+            <AgendaBars title={item?.taskTitle} time={formatTimeRange(new Date(item?.createdAt))} barColor={APPCOLORS.ICON_TEXT_COLOUR}/>
           )}
           />
 

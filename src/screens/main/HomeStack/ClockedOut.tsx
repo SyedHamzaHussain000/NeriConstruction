@@ -9,7 +9,13 @@ import WhiteContainers from '../../../components/WhiteContainers';
 import AppButton from '../../../components/DailyUse/AppButton';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
+import { useSelector } from 'react-redux';
+
 const ClockedOut = ({ navigation }: { navigation: any }) => {
+  const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
+  const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
+    const singleTask = useSelector((state: any) => state.getSingleTask)
+
   const data = [
     {
       id: 1,
@@ -59,13 +65,13 @@ const ClockedOut = ({ navigation }: { navigation: any }) => {
             <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
           </View>
           <View style={{ width: responsiveWidth(90), flexDirection: 'row' }}>
-            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item }) => (
+            <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
               <View style={{ gap: responsiveHeight(1), width: responsiveWidth(40), backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1) }}>
                   <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                   <NormalText title={item.title1} fontSize={1.7} />
                 </View>
-                <BoldText title={item.title2} fontSize={2.5} />
+                <BoldText title={index == 0 ? todayTimeIn?.timeInTimeOutData?.data[0]?.timeIn || '00:00' : singleTask?.singleTaskData?.duration} fontSize={2.5} />
               </View>
             )} />
           </View>
@@ -75,10 +81,14 @@ const ClockedOut = ({ navigation }: { navigation: any }) => {
       <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
        
         <View style={{ flex: 1 }}>
-          <ClockInCards headingDate="27 September 2024" />
-          <ClockInCards headingDate="27 September 2024" />
-          <ClockInCards headingDate="27 September 2024" />
-          <ClockInCards headingDate="27 September 2024" />
+        <FlatList 
+              data={weeklyTimeInTimeOut?.weeklyTimeInTimeOutData}
+              renderItem={({item}) => {
+                return (
+                  <ClockInCards headingDate={item.date} timeIn={item.timeIn} timeOut={item.timeOut} />
+                )
+              }}
+              />
         </View>
       </ScrollView>
     </View>

@@ -27,6 +27,7 @@ const SelfieToClockIn = ({navigation}: any) => {
     const data = mainState
     const authState = useSelector((state: any) => state.auth);
     const dispatch = useDispatch();
+    const singleTask = useSelector((state: any) => state.getSingleTask)
 
     const handleRetakePhoto = () => {
             const options = {
@@ -70,14 +71,17 @@ const SelfieToClockIn = ({navigation}: any) => {
       // setModalVisible(true)
       const timeValues = {
         id: authState?.authData.data?._id,
+        taskId: singleTask?.singleTaskData?._id,
         date: getFormattedDate(),
         timeIn: getFormattedTime(),
         image: data?.image || newPhoto,
         clockInNotes: clockInNotes || '',
-        lat: data?.latitude,
-        long: data?.longitude,
+        lat: 40.758896,
+        long: -73.98513,
+        locationName: 'Times Square',
       }
       dispatch(ClockInNowAction(timeValues, setModalVisible))
+      console.log(timeValues)
     }
 
   return (

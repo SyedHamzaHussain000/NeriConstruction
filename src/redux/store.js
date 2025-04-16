@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {thunk} from 'redux-thunk'; // Import redux-thunk
 import {AuthReducers, workProReducer} from './reducers/AuthReducers.js';
-import { getAllTasksByEmployeeReducer, getDaylyAgendaReducer, getEmployeePersonalDataReducer, getMonthlyAgendaReducer, getSingleTaskReducer, getTimeinTimeoutReducer, getWeeklyAgendaReducer, getWeeklyTimeinTimeoutReducer, getYearlyAgendaReducer, MainReducers, takeBreakReducer, timerReducer } from './reducers/MainReducers.js';
+import { clockOutReducer, getAllTasksByEmployeeReducer, getDaylyAgendaReducer, getEmployeePersonalDataReducer, getMonthlyAgendaReducer, getSingleTaskReducer, getTimeinTimeoutReducer, getWeeklyAgendaReducer, getWeeklyTimeinTimeoutReducer, getYearlyAgendaReducer, MainReducers, takeABreakReducer, takeBreakReducer, timerReducer } from './reducers/MainReducers.js';
 
 // Redux Persist Configuration
 const persistConfig = {
@@ -27,6 +27,8 @@ const rootReducer = combineReducers({
   getMonthlyAgenda: getMonthlyAgendaReducer,
   getYearlyAgenda: getYearlyAgendaReducer,
   timer: timerReducer,
+  break: takeABreakReducer,
+  clockOut: clockOutReducer
   // Add other reducers here if necessary
 });
 

@@ -32,12 +32,13 @@ const ClockIn = ({ navigation, route }: any) => {
   const authState = useSelector((state: any) => state.auth);
   const mainState = useSelector((state: any) => state.main);
   const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
+  const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
   const timer = useSelector((state: any) => state.timer);
+  const singleTask = useSelector((state: any) => state.getSingleTask)
 
   const routeData = route?.params?.data;
 
   const clockInNowHandler = () => {
-    dispatch(startTimerAction())
     navigation.navigate('Attendant');
   }
 
@@ -93,7 +94,7 @@ const ClockIn = ({ navigation, route }: any) => {
                   <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                   <NormalText title={item.title1} fontSize={1.7} />
                 </View>
-                <BoldText title={index == 1 ? routeData?.duration : timer.seconds} fontSize={2.5} />
+                <BoldText title={index == 1 ? routeData?.duration : todayTimeIn?.timeInTimeOutData?.data[0]?.timeIn || '00:00'} fontSize={2.5} />
               </View>
             )} />
           </View>

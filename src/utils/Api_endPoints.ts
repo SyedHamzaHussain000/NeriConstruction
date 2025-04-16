@@ -8,7 +8,8 @@ export const endPoints = {
     signIn: '/api/employee/login',
     timeIn: '/api/attendance/timeIn',
     timeOut: '/api/attendance/timeOut',
-    attendance: '/api/task/getWeeklyTask',
+    attendance: '/api/attendance',
+    todayAttendance: '/api/attendance',
     emailVerification: '/api/otp/verifyOtp',
     resendOTPForEmailVerification: '/api/otp/resendOtp',
     takeBreak: '/api/attendance/break',
@@ -23,6 +24,8 @@ export const endPoints = {
     weeklyAgenda: '/api/task/getWeeklyTask',
     monthlyAgenda: '/api/task/getMonthlyTask',
     yearlyAgenda: '/api/task/getYearlyTask',
+    attendanceTotal: '/api/attendance/getAttendanceByAttendanceId',
+    downloadPDF: '/api/attendance/pdf',
 };
 
 export const errHandler = async (err: any,) => {

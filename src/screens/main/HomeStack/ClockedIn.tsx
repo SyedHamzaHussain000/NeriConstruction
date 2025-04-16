@@ -9,8 +9,9 @@ import { FlatList } from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AppButton, { SmallAppButton } from '../../../components/DailyUse/AppButton';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatDateToHrs } from '../../../utils/DateAndTimeFormater';
+import { takeABreakAction } from '../../../redux/actions/MainActions';
 
 const data = [
     {
@@ -29,7 +30,12 @@ const ClockedIn = ({navigation}: any) => {
   const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
   const timeInAndTimeOut = useSelector((state: any) => state.getTimeInTimeOut);
   const [todayHrs, setTodayHrs] = useState('');
-
+    const singleTask = useSelector((state: any) => state.getSingleTask)
+  const timer = useSelector((state: any) => state.timer);
+  const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
+  const loading = useSelector((state: any) => state.break?.takeBreakLoadingState);
+  const dispatch = useDispatch() 
+  
   useEffect(() => {
       const date = timeInAndTimeOut ? new Date(timeInAndTimeOut?.timeInTimeOutData?.data?.date) : null;
       const resDate = date ? formatDateToHrs(date) : '00:00 Hrs'
@@ -80,12 +86,12 @@ const ClockedIn = ({navigation}: any) => {
                   <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                   <NormalText title={item.title1} fontSize={1.7} />
                 </View>
-                <BoldText title={index == 0 ? todayHrs : item.title2} fontSize={2.5} />
+                <BoldText title={index == 0 ? todayTimeIn?.timeInTimeOutData?.data[0]?.timeIn || '00:00' : singleTask?.singleTaskData?.duration} fontSize={2.5} />
               </View>
             )} />
           </View>
           <View style={{flexDirection: 'row', gap: 16, }}>
-          <SmallAppButton title="Take A Break" onPress={() => navigation.navigate('SelfieToClockIn')} height={8} fntSize={1.8} btnColor={APPCOLORS.WHITE} borderWidth={1} borderColor={APPCOLORS.ClockInBg} txtColor={APPCOLORS.ClockInBg} width={42} borderRadious={49} height={6.4} />
+          <SmallAppButton title={loading ? "Waiting" : "Take A Break"}  onPress={() => dispatch(takeABreakAction(todayTimeIn.timeInTimeOutData?.data[0], navigation))} height={8} fntSize={1.8} btnColor={APPCOLORS.WHITE} borderWidth={1} borderColor={APPCOLORS.ClockInBg} txtColor={APPCOLORS.ClockInBg} width={42} borderRadious={49} height={6.4} />
           <SmallAppButton title="Clock Out" onPress={() => navigation.navigate('TakeABreak')} height={8} fntSize={1.8} btnColor={APPCOLORS.BLACK} width={42} borderRadious={49} height={6.4}/>
           </View>
         </WhiteContainers>

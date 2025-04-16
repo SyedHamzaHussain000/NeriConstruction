@@ -6,6 +6,7 @@ import { APPCOLORS } from '../../utils/APPCOLORS';
 import AppButton, { SmallAppButton } from '../DailyUse/AppButton';
 import { responsiveHeight, responsiveWidth } from '../../utils/Responsive';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useSelector } from 'react-redux';
 
 type ClockInConfirmModalProps = {
     isModalVisible: any,
@@ -16,6 +17,7 @@ type ClockInConfirmModalProps = {
     subTitle: any,
     noBtnTitle: any,
     yesBtnTitle: any,
+    disabled?: any,
 }
 
 const data = [
@@ -31,7 +33,9 @@ const data = [
   },
 ];
 
-const ClockInConfirmModal = ({isModalVisible, yesBtnOnPress, noBtnOnPress, imageSource, title, subTitle, noBtnTitle, yesBtnTitle}: ClockInConfirmModalProps) => {
+const ClockInConfirmModal = ({isModalVisible, disabled, yesBtnOnPress, noBtnOnPress, imageSource, title, subTitle, noBtnTitle, yesBtnTitle}: ClockInConfirmModalProps) => {
+  const singleTask = useSelector((state: any) => state.getSingleTask)
+ 
   return (
     <DropDownModal isModalVisible={isModalVisible}>
     <View style={{ backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', height: responsiveHeight(62), padding: 50, paddingBottom: 0, borderRadius: 15, position: 'relative' }}>
@@ -41,13 +45,13 @@ const ClockInConfirmModal = ({isModalVisible, yesBtnOnPress, noBtnOnPress, image
   <NormalText txtColour={APPCOLORS.DARK_GRAY} title={subTitle} fontSize={1.8} fntWeight='bold' textAligm='center'/>
             
             <View style={{flexDirection: 'row'}}>
-                        <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item }) => (
+                        <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
                           <View style={{ gap: responsiveHeight(1), width: responsiveWidth(42), backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(1.5), borderRadius: responsiveHeight(1) }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1) }}>
                               <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                               <NormalText title={item.title1} fontSize={1.7} />
                             </View>
-                            <BoldText title={item.title2} fontSize={2.5} />
+                            <BoldText title={index == 0 ? singleTask?.singleTaskData?.duration || '00:00' : item.title2} fontSize={2.5} />
                           </View>
                         )} />
                       </View>
@@ -55,6 +59,7 @@ const ClockInConfirmModal = ({isModalVisible, yesBtnOnPress, noBtnOnPress, image
             <AppButton
             onPress={yesBtnOnPress}
             title={yesBtnTitle}
+            disabled={disabled}
             />
 
           <SmallAppButton

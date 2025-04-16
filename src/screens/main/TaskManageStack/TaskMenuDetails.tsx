@@ -1,5 +1,5 @@
 import {View, Text, Image, ScrollView, FlatList, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import WhiteContainers from '../../../components/WhiteContainers';
 import {
@@ -19,9 +19,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AppButton from '../../../components/DailyUse/AppButton';
 import CommentSection from '../../../components/TaskManageComp/CommentSection';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '../../../utils/DateAndTimeFormater';
 import { baseUrl } from '../../../utils/Api_endPoints';
+import { getSingleTaskAction } from '../../../redux/actions/MainActions';
 
 const data = [
   {
@@ -47,10 +48,16 @@ function formatDateRange(startDate, endDate) {
   return `${formatDate(startDate)} - ${formatDate(endDate)}`;
 }
 
-const TaskMenuDetails = ({navigation}: {navigation: any}) => {
+const TaskMenuDetails = ({navigation, route}: any) => {
   const singleTask = useSelector((state: any) => state.getSingleTask)
+  const taskId = route?.params?.taskId
+  const dispatch = useDispatch()
+   const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
+ 
+  useEffect(() => {
+    dispatch(getSingleTaskAction(taskId))
+  }, [taskId])
 
-  console.log(singleTask?.singleTaskData?.duration, 'res')
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <NormalHeader title="Task Details" onPress={()=> navigation.goBack()}/>
@@ -190,7 +197,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
 
         </WhiteContainers>}
 
-        <WhiteContainers mrgnTop={3}>
+     {!singleTask?.taskLoadingState &&   <WhiteContainers mrgnTop={3}>
           <View style={{padding: 8}}>
 
              <View style={{ width: responsiveWidth(95) }}>
@@ -205,7 +212,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
                               <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
                               <NormalText title={item.title1} fontSize={1.7} />
                             </View>
-                            <BoldText title={index == 1 ? singleTask?.singleTaskData?.duration : item.title2} fontSize={2.5} />
+                            <BoldText title={index == 1 ? singleTask?.singleTaskData?.duration || '00:00' : todayTimeIn?.timeInTimeOutData?.data[0]?.timeIn || '00:00'} fontSize={2.5} />
                           </View>
                         )} />
                       </View>
@@ -218,7 +225,7 @@ const TaskMenuDetails = ({navigation}: {navigation: any}) => {
         />
         </View>
         </View>
-         </WhiteContainers>
+         </WhiteContainers>}
       </View>
     </ScrollView>
   );
