@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, ScrollView, PermissionsAndroid, Platform } from "react-native";
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -16,8 +16,7 @@ import TaskCard from "../../../components/HomeComp/TaskCard";
 import NormalHeader from "../../../components/AppHeaders/NormalHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllTasksByEmployeeAction, getSingleTaskAction } from "../../../redux/actions/MainActions";
-
-
+import Geolocation from '@react-native-community/geolocation';
 
 const TaskMenu = ({navigation}: any) => {
   const [selectedTab, setSelectedTab] = useState("All");
@@ -43,6 +42,49 @@ const TaskMenu = ({navigation}: any) => {
     InProgress: tasks.inprogress,
     Finish: tasks.finish,
   };
+
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Access Required',
+          message: 'This App needs to Access your location',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true;
+  }
+
+  const getCurrentLocation = async () => {
+    const hasPermission = await requestLocationPermission();
+    if (!hasPermission){
+      console.log('no per')
+    }else {
+      Geolocation.getCurrentPosition(
+        position => {
+          console.log('Latitude:', position.coords.latitude);
+          console.log('Longitude:', position.coords.longitude);
+        },
+        error => {
+          console.log('Location error:', error.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 10000,
+        }
+      );
+    }
+  }
+
+  useEffect(() => {
+    getCurrentLocation()
+  }, [])
 
   console.log(allTasks)
   return (

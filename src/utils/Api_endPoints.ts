@@ -9,6 +9,7 @@ export const endPoints = {
     timeIn: '/api/attendance/timeIn',
     timeOut: '/api/attendance/timeOut',
     attendance: '/api/attendance',
+    allAttendaceByTaskId: '/api/attendance/getAllAttendenceByTaskId',
     todayAttendance: '/api/attendance',
     emailVerification: '/api/otp/verifyOtp',
     resendOTPForEmailVerification: '/api/otp/resendOtp',

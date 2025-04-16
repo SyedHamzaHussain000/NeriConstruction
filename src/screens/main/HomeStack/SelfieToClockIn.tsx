@@ -76,8 +76,8 @@ const SelfieToClockIn = ({navigation}: any) => {
         timeIn: getFormattedTime(),
         image: data?.image || newPhoto,
         clockInNotes: clockInNotes || '',
-        lat: 40.758896,
-        long: -73.98513,
+        lat: data?.latitude,
+        long: data?.longitude,
         locationName: 'Times Square',
       }
       dispatch(ClockInNowAction(timeValues, setModalVisible))

@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, Platform, Alert, PermissionsAndroid, Linking } from 'react-native';
 import { launchCamera as _launchCamera } from 'react-native-image-picker';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ClockInNowAction, getTimeInAndTimeOutAction, savedDataForClockIn } from '../../../redux/actions/MainActions';
 import { getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
 import { baseUrl } from '../../../utils/Api_endPoints';
+import Geolocation from '@react-native-community/geolocation';
+
 const scheduleData = [
   {text: 'CLOCK IN', time: '09:00', width: responsiveWidth(45)},
   {text: 'CLOCK OUT', time: '05:00', width: responsiveWidth(45)},
@@ -27,6 +29,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
     const dispatch = useDispatch();
   const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
   const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
+  const [coordinates, setCoordinates] = useState({lat: '', long: ''})
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -74,8 +77,8 @@ const Attendant = ({ navigation }: { navigation: any }) => {
         id: authState?.authData.data?._id,
         date: getFormattedDate(),
         timeIn: getFormattedTime(),
-        longitude: '24.8607',
-        latitude: '67.0011',
+        longitude: coordinates.long,
+        latitude: coordinates.lat,
         image: {
           uri: response.assets?.[0]?.uri,
           name: response.assets?.[0]?.fileName,
@@ -91,6 +94,50 @@ const Attendant = ({ navigation }: { navigation: any }) => {
       dispatch(getTimeInAndTimeOutAction(authState?.authData.data?._id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authState?.authData.data?._id]);
+
+    const requestLocationPermission = async () => {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Access Required',
+            message: 'This App needs to Access your location',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      }
+      return true;
+    }
+  
+    const getCurrentLocation = async () => {
+      const hasPermission = await requestLocationPermission();
+      if (!hasPermission){
+        console.log('no per')
+      }else {
+        Geolocation.getCurrentPosition(
+          position => {
+            console.log('Latitude:', position.coords.latitude);
+            console.log('Longitude:', position.coords.longitude);
+            setCoordinates({lat: position.coords.latitude, long: position.coords.longitude})
+          },
+          error => {
+            console.log('Location error:', error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 10000,
+          }
+        );
+      }
+    }
+  
+    useEffect(() => {
+      getCurrentLocation()
+    }, [])
 
   return (
     <View>
@@ -130,7 +177,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
           <Image
             source={AppImages.location}
           />
-          <NormalText txtColour={APPCOLORS.DARK_GRAY} title="Lat 45.43534 Long 97897.576" fntWeight='bold' fontSize={1.5}/>
+          <NormalText txtColour={APPCOLORS.DARK_GRAY} title={`Lat ${coordinates?.lat} Long ${coordinates?.long}`} fntWeight='bold' fontSize={1.5}/>
           </View>
         </View>
         </View>
@@ -158,7 +205,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
         <AppButton
         onPress={()=> selfieHandler()}
         title={mainState?.loadingState ? "Waiting..." : 'Selfie To Clock In'}
-        disabled={mainState?.loadingState}
+        disabled={mainState?.loadingState || !coordinates.lat}
         />
         </View>
     </View>

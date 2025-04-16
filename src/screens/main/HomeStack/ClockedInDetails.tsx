@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as base64 from 'base64-js';
 // import Share from 'react-native-share';
+import Geolocation from '@react-native-community/geolocation';
 
 const ClockedInDetails = ({navigation}: any) => {
     const [isModalVisible, setModalVisible] = useState<Boolean>(false);
@@ -22,6 +23,7 @@ const ClockedInDetails = ({navigation}: any) => {
     const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
     const [details, setDetails] = useState({});
     const authState = useSelector((state: any) => state.auth);
+    const [coordinates, setCoordinates] = useState({lat: '', long: ''})
 
     async function requestStoragePermission() {
       if (Platform.OS === 'android') {
@@ -110,6 +112,49 @@ const ClockedInDetails = ({navigation}: any) => {
       getData(todayTimeIn?.timeInTimeOutData?.data[0]?._id)
     }, [todayTimeIn?.timeInTimeOutData]);
 
+    const requestLocationPermission = async () => {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Access Required',
+            message: 'This App needs to Access your location',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      }
+      return true;
+    }
+  
+    const getCurrentLocation = async () => {
+      const hasPermission = await requestLocationPermission();
+      if (!hasPermission){
+        console.log('no per')
+      }else {
+        Geolocation.getCurrentPosition(
+          position => {
+            console.log('Latitude:', position.coords.latitude);
+            console.log('Longitude:', position.coords.longitude);
+            setCoordinates({lat: position.coords.latitude, long: position.coords.longitude})
+          },
+          error => {
+            console.log('Location error:', error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 10000,
+          }
+        );
+      }
+    }
+  
+    useEffect(() => {
+      getCurrentLocation()
+    }, [])
 
     
   return (
@@ -128,8 +173,8 @@ const ClockedInDetails = ({navigation}: any) => {
             <ImageBackground source={{uri: `${baseUrl}/${details?.image}`}} imageStyle={{ borderRadius: 15}} style={{width: '100%', height: responsiveHeight(45)}}>
                     <View style={{flex: 1, justifyContent: 'flex-end', paddingHorizontal: responsiveWidth(3)}}>
                     <View style={{gap: 3, paddingBottom: responsiveHeight(2)}}>
-                    <NormalText txtColour={APPCOLORS.WHITE} title={`Lat : ${details?.latitude}`} fontSize={1.5} fntWeight='bold'/>
-                    <NormalText txtColour={APPCOLORS.WHITE} title={`Long : ${details?.longitude}`} fontSize={1.5} fntWeight='bold'/>
+                    <NormalText txtColour={APPCOLORS.WHITE} title={`Lat : ${coordinates?.lat || 'N/A'}`} fontSize={1.5} fntWeight='bold'/>
+                    <NormalText txtColour={APPCOLORS.WHITE} title={`Long : ${coordinates?.long || 'N/A'}`} fontSize={1.5} fntWeight='bold'/>
                     <NormalText txtColour={APPCOLORS.WHITE} title={details?.createdAt} fontSize={1.6} fntWeight='bold'/>
                     </View>
                     </View>

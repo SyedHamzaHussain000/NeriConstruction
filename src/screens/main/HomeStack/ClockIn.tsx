@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import { View, StyleSheet, Image, FlatList, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, FlatList, ScrollView, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { APPCOLORS } from '../../../utils/APPCOLORS';
@@ -104,14 +104,14 @@ const ClockIn = ({ navigation, route }: any) => {
       <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
        
         <View style={{ flex: 1 }}>
-          <FlatList 
+          {weeklyTimeInTimeOut?.weeklyTimeInTimeOutLoadingState ? <View><Text>Loading...</Text></View> : <FlatList 
           data={weeklyTimeInTimeOut?.weeklyTimeInTimeOutData}
           renderItem={({item}) => {
             return (
               <ClockInCards headingDate={item.date} inprogressTxt={item.status} timeIn={item.timeIn} timeOut={item.timeOut} />
             )
           }}
-          />
+          />}
         </View>
       </ScrollView>
     </View>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { baseUrl, endPoints, errHandler } from '../../utils/Api_endPoints';
 import { AUTH_DATA, EMAIL_VERIFY_LOADING_STATE, FORGOT_PASSWORD_LOADING_STATE, LOADING_STATE, NEW_PASSWORD_LOADING_STATE, RESEND_EMAIL_VERIFY_LOADING_STATE, WORK_PROFILE_LOADING_STATE } from '../actionsTypes/AuthActionsTypes';
 import { Alert } from 'react-native';
-import { IS_UPDATED_EMPLOYEE_PERSONAL_DATA } from '../actionsTypes/MainActionsTypes';
+import { GET_WEEKLY_TIMEIN_TIMEOUT, IS_UPDATED_EMPLOYEE_PERSONAL_DATA } from '../actionsTypes/MainActionsTypes';
 import { getEmployeePersonalDataAction } from './MainActions';
 
 export const handleSignUpAction = (formValues, navigation) => {
@@ -172,6 +172,7 @@ export const workProfileAction = (formValues, navigation, noNav) => {
 export const LogoutAction = (navigation) => {
     return async (dispatch) => {
         dispatch({ type: AUTH_DATA, payload: null });
+        dispatch({ type: GET_WEEKLY_TIMEIN_TIMEOUT, payload: null });
         navigation.navigate("Auth");
     }
 }
