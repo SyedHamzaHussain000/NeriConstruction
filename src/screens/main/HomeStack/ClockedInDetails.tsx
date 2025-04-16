@@ -13,6 +13,8 @@ import axios from 'axios';
 import { baseUrl, endPoints } from '../../../utils/Api_endPoints';
 import { useSelector } from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
+import * as base64 from 'base64-js';
+// import Share from 'react-native-share';
 
 const ClockedInDetails = ({navigation}: any) => {
     const [isModalVisible, setModalVisible] = useState<Boolean>(false);
@@ -21,83 +23,79 @@ const ClockedInDetails = ({navigation}: any) => {
     const [details, setDetails] = useState({});
     const authState = useSelector((state: any) => state.auth);
 
-    const requestStoragePermission = async () => {
+    async function requestStoragePermission() {
       if (Platform.OS === 'android') {
         try {
-          const granted = await PermissionsAndroid.requestMultiple([
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          ]);
-    
-          if (
-            granted['android.permission.READ_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED &&
-            granted['android.permission.WRITE_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED
-          ) {
-            console.log('Storage permissions granted');
-            return true;
-          } else {
-            console.warn('Storage permissions denied');
-            return false;
-          }
+            {
+              title: 'Storage Permission',
+              message: 'App needs access to your storage to download and manage files.',
+              buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            }
+          );
+          return granted === PermissionsAndroid.RESULTS.GRANTED;
         } catch (err) {
-          console.warn('Permission error:', err);
+          console.warn(err);
           return false;
         }
-      } else {
-        // iOS does not require this for file access in app directories
-        return true;
       }
+      return true;
     }
 
     const handleExportPDF = async () => {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
+        
         const { config, fs } = RNFetchBlob;
         const downloads = fs.dirs.DownloadDir;
     
-        // Get today's date values
+        // Date formatting
         const date = new Date();
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const day = date.getDate().toString().padStart(2, '0');
     
-        // Construct your API URL (customized)
         const url = `${baseUrl}${endPoints.downloadPDF}?employeeId=${authState?.authData.data?._id}&year=${year}&month=${month}&day=${day}`;
     
-        // Android permissions
-        if (Platform.OS === 'android') {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-          );
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-            Alert.alert('Please Give the permission access');
-            setIsLoading(false)
-            return;
-          }
-        }
+        const res = await axios.get(url, { responseType: 'arraybuffer' });
+        const pdfData = res.data;
+        const base64Data = base64.fromByteArray(new Uint8Array(pdfData));
     
         const fileName = `report_${year}${month}${day}.pdf`;
         const filePath = `${downloads}/${fileName}`;
     
-        const result = await config({
-          fileCache: true,
-          addAndroidDownloads: {
-            useDownloadManager: true,
-            notification: true,
-            path: filePath,
-            description: 'Downloading PDF report',
-            mediaScannable: true,
-            title: fileName,
-          },
-        }).fetch('GET', url);
+        // Write the file
+        await fs.writeFile(filePath, base64Data, 'base64');
+        const fileExists = await fs.exists(filePath);
     
-        console.log('PDF downloaded successfully to:', result.path());
-        setIsLoading(false)
+        if (fileExists) {
+          console.log('PDF downloaded successfully to:', filePath);
+    
+          if (Platform.OS === 'ios') {
+            // await Share.open({
+            //   url: `file://${filePath}`,
+            //   type: 'application/pdf',
+            //   title: 'Open PDF',
+            // });
+            console.log('ios')
+          } else {
+            Alert.alert('Download Complete', `PDF saved to Downloads as ${fileName}`);
+            navigation.navigate('TabBar')
+          }
+        } else {
+          Alert.alert('Error', 'Failed to save the PDF');
+        }
+    
       } catch (err) {
-        setIsLoading(false)
-        console.warn('Error downloading PDF:', err);
+        console.warn('Error downloading PDF:', err?.message);
+        Alert.alert('Error', 'Failed to download PDF');
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
 
     const getData = async (id) => {
       try {
