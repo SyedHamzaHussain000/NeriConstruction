@@ -1,4 +1,4 @@
-import {View, Text, ScrollView, FlatList} from 'react-native';
+import {View, Text, ScrollView, FlatList, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import HomeHeader from '../../components/AppHeaders/HomeHeader';
 import {AppImages} from '../../assets/AppImages';
@@ -47,6 +47,13 @@ const Calender = () => {
     Month: monthlyData?.monthlyAgendaData,
     Year: yearlyData?.yearlyAgendaData,
   }
+
+  const load = {
+    Day: daylyData?.daylyAgendaLoadingState,
+    Week: weeklyData?.weeklyAgendaLoadingState,
+    Month: monthlyData?.monthlyAgendaLoadingState,
+    Year: yearlyData?.yearlyAgendaLoadingState,
+  }
   
     useEffect(() => {
       if(!employeeData?.personalData){
@@ -72,9 +79,9 @@ const Calender = () => {
         dispatch(getYearlyAgendaAction(authData?.data?._id, year))
       }
 
-    }, [selectedDate, selectedTab])
+    }, [authData, selectedDate, selectedTab])
 
-    console.log(data)
+    console.log(daylyData?.daylyAgendaLoadingState)
   return (
     <View style={{flex: 1, backgroundColor: APPCOLORS.BACKGROUND_COLOR}}>
       <HomeHeader
@@ -144,12 +151,12 @@ const Calender = () => {
           <View style={{padding:10, gap:10}}>
               <NormalText title={`${selectedTab.name === 'Day' ? 'Today' : `${selectedTab.name}ly`} Agenda`} fontSize={2}/>
              
-          <FlatList 
+         {load[selectedTab.name] ? <ActivityIndicator color='blue' size={20} /> : !!data[selectedTab.name]?.length ? <FlatList 
           data={data[selectedTab.name]}
           renderItem={({item}) => (
             <AgendaBars title={item?.taskTitle} time={formatTimeRange(new Date(item?.createdAt))} barColor={APPCOLORS.ICON_TEXT_COLOUR}/>
           )}
-          />
+          /> : <View><Text style={{textAlign: 'center'}}>No Data Found</Text></View>}
 
           </View>
         </WhiteContainers>

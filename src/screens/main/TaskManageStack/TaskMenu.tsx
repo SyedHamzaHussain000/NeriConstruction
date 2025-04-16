@@ -151,7 +151,7 @@ const TaskMenu = ({navigation}: any) => {
 
       {/* Task List Based on Selected Tab */}
       <View style={styles.listContainer}>
-       {taskData?.taskLoadingState ? <ActivityIndicator color='blue' size={50} /> : <FlatList
+       {taskData?.taskLoadingState ? <ActivityIndicator color='blue' size={50} /> : !!allTasks[selectedTab]?.length ? <FlatList
           data={allTasks[selectedTab]}
           // keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ gap: 20, paddingBottom: 20 }}
@@ -161,7 +161,7 @@ const TaskMenu = ({navigation}: any) => {
               navigation.navigate('TaskMenuDetails', {taskId: taskId})
             }} status={item.status} priority={item.priority} dueDate={item.date} comments={item.comments?.length || 0} />
           )}
-        />}
+        /> : <View><Text style={{textAlign: 'center'}}>No Data Found</Text></View>}
       </View>
     </View>
   );
