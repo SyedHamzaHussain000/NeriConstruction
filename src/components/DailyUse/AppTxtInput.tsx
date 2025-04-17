@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import { View, TextInput, useColorScheme } from 'react-native';
+import { View, TextInput } from 'react-native';
 import React from 'react';
 import { APPCOLORS } from '../../utils/APPCOLORS';
 import Feather from 'react-native-vector-icons/Feather';
@@ -22,8 +22,6 @@ type props = {
 }
 
 const AppTxtInput = ({icon,inputHeadig,password, value, onChangeText, keyboardType,editable, passwordShown,placeholder,showPassword,setShowPassword, }: props) => {
-  const theme = useColorScheme() === 'dark'
-  
   return (
     <View>
       <NormalText title={inputHeadig} txtColour={APPCOLORS.DARK_GRAY} fontSize={1.8}/>
@@ -34,7 +32,7 @@ const AppTxtInput = ({icon,inputHeadig,password, value, onChangeText, keyboardTy
             placeholder={placeholder}
             value={value}
             onChangeText={onChangeText}
-            placeholderTextColor={theme ? APPCOLORS.DARK_GRAY : APPCOLORS.DARK_GRAY}
+            placeholderTextColor={APPCOLORS.DARK_GRAY}
             style={{marginLeft:10, width:responsiveWidth(70)}}
             secureTextEntry={password && !showPassword}
             keyboardType={keyboardType}

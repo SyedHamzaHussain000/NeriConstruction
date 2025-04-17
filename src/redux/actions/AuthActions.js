@@ -40,6 +40,8 @@ export const handleSignInAction = (formValues, navigation, setVisible, setFormVa
                 'password': formValues?.password,
             });
 
+            console.log(res.data)
+
             if(res.data?.success){
                 if(res.data?.data?.isVerified){
                     dispatch({ type: AUTH_DATA, payload: res.data });
@@ -68,6 +70,7 @@ export const handleSignInAction = (formValues, navigation, setVisible, setFormVa
             }
             
         } catch (error) {
+            console.log(error)
             errHandler(error);
             dispatch({ type: LOADING_STATE, payload: false });
         }

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, Platform, Alert, PermissionsAndroid, Linking } from 'react-native';
+import { View, Text, Image, FlatList, Platform, Alert, PermissionsAndroid, Linking, ActivityIndicator } from 'react-native';
 import { launchCamera as _launchCamera } from 'react-native-image-picker';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import WhiteContainers from '../../../components/WhiteContainers';
@@ -30,6 +30,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
   const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
   const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
   const [coordinates, setCoordinates] = useState({lat: '', long: ''})
+  const [loading, setLoading] = useState(false)
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -113,8 +114,10 @@ const Attendant = ({ navigation }: { navigation: any }) => {
     }
   
     const getCurrentLocation = async () => {
+      setLoading(true)
       const hasPermission = await requestLocationPermission();
       if (!hasPermission){
+        setLoading(false)
         console.log('no per')
       }else {
         Geolocation.getCurrentPosition(
@@ -122,6 +125,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
             console.log('Latitude:', position.coords.latitude);
             console.log('Longitude:', position.coords.longitude);
             setCoordinates({lat: position.coords.latitude, long: position.coords.longitude})
+            setLoading(false)
           },
           error => {
             console.log('Location error:', error.message);
@@ -136,13 +140,20 @@ const Attendant = ({ navigation }: { navigation: any }) => {
     }
   
     useEffect(() => {
-      getCurrentLocation()
-    }, [])
+      const unsubscribe = navigation.addListener('focus', () => {
+        getCurrentLocation()
+        // The screen is focused
+        // Call any action
+      });
+  
+      // Return the function to unsubscribe from the event so it gets removed on unmount
+      return unsubscribe;
+    }, [navigation])
 
   return (
     <View>
       <NormalHeader onPress={() => navigation.goBack()} title="Clock In Area" />
-      <WhiteContainers mrgnTop={2}>
+      {loading ? <ActivityIndicator size={50} color="blue" /> : <WhiteContainers mrgnTop={2}>
         <View style={{ backgroundColor: APPCOLORS.ClockInBg, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', padding: responsiveHeight(2), borderRadius: responsiveHeight(2) }}>
           <View>
             <NormalText txtColour={APPCOLORS.WHITE} fntWeight="600" fontSize={2.2} title="You are in the clock-in area!" />
@@ -200,14 +211,14 @@ const Attendant = ({ navigation }: { navigation: any }) => {
         />
         
        
-      </WhiteContainers>
-      <View style={{height:responsiveHeight(30), justifyContent: 'flex-end'}}>
+      </WhiteContainers>}
+     {!loading && <View style={{height:responsiveHeight(30), justifyContent: 'flex-end'}}>
         <AppButton
         onPress={()=> selfieHandler()}
         title={mainState?.loadingState ? "Waiting..." : 'Selfie To Clock In'}
         disabled={mainState?.loadingState || !coordinates.lat}
         />
-        </View>
+        </View>}
     </View>
   );
 };

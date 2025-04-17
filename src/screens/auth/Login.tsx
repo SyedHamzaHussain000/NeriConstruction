@@ -62,6 +62,7 @@ const Login = ({navigation}: {navigation: any}) => {
        if(!state?.loadingState){
             if (validateForm()) {
               if(toggleCheckBox){
+                console.log(toggleCheckBox)
                 dispatch(handleSignInAction(formValues, navigation, setVisible, setFormValues));
               }else{
                 Alert.alert('Please select checkbox');
