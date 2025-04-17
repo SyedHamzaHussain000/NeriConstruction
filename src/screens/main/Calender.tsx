@@ -16,6 +16,12 @@ import { baseUrl } from '../../utils/Api_endPoints';
 function formatTimeRange(startDate, durationInHours = 1) {
   const pad = (n) => n.toString().padStart(2, '0');
 
+  const day = pad(startDate.getDate());
+  const month = pad(startDate.getMonth() + 1); // Months are zero-based
+  const year = startDate.getFullYear();
+
+  const formattedDate = `${day}-${month}-${year}`;
+
   const startHours = startDate.getHours();
   const startMinutes = startDate.getMinutes();
   const endDate = new Date(startDate.getTime() + durationInHours * 60 * 60 * 1000);
@@ -25,8 +31,9 @@ function formatTimeRange(startDate, durationInHours = 1) {
   const startTime = `${pad(startHours)}:${pad(startMinutes)}`;
   const endTime = `${pad(endHours)}:${pad(endMinutes)}`;
 
-  return `${startTime} - ${endTime}`;
+  return `${formattedDate}`;
 }
+
 
 
 const Calender = () => {

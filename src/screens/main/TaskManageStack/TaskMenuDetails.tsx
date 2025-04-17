@@ -1,4 +1,4 @@
-import {View, Text, Image, ScrollView, FlatList, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, Text, Image, ScrollView, FlatList, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert} from 'react-native';
 import React, { useEffect } from 'react';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import WhiteContainers from '../../../components/WhiteContainers';
@@ -21,8 +21,9 @@ import CommentSection from '../../../components/TaskManageComp/CommentSection';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '../../../utils/DateAndTimeFormater';
-import { baseUrl } from '../../../utils/Api_endPoints';
-import { getSingleTaskAction } from '../../../redux/actions/MainActions';
+import { baseUrl, endPoints, errHandler } from '../../../utils/Api_endPoints';
+import { getAllTasksByEmployeeAction, getSingleTaskAction } from '../../../redux/actions/MainActions';
+import axios from 'axios';
 
 const data = [
   {
@@ -53,10 +54,29 @@ const TaskMenuDetails = ({navigation, route}: any) => {
   const taskId = route?.params?.taskId
   const dispatch = useDispatch()
    const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
+   const authData = useSelector((state: any) => state.auth?.authData);
  
   useEffect(() => {
     dispatch(getSingleTaskAction(taskId))
   }, [taskId])
+
+  const changeStatus = async () => {
+    try {
+      console.log(taskId)
+       const res = await axios.post(`${baseUrl}${endPoints.changeStatus}`, {
+        'id': taskId,
+        'status': singleTask?.singleTaskData?.status === "In Progress" ? "Finish" : "In Progress",
+       });
+      
+       if(res.data.sucess){
+        dispatch(getSingleTaskAction(taskId))
+        dispatch(getAllTasksByEmployeeAction(authData?.data?._id))
+       }
+    } catch (error) {
+        errHandler(error)
+        console.log(error)      
+    }
+  }
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -80,6 +100,24 @@ const TaskMenuDetails = ({navigation, route}: any) => {
                   height={4}
                   icon={<Ionicons name='time' size={12} color={APPCOLORS.DARK_GRAY} />}
                   txtColorr={APPCOLORS.DARK_GRAY}
+                  onPress={() => {
+                    Alert.alert(
+                      'Change Status',
+                      `Task Current Status is: ${singleTask?.singleTaskData?.status}`,
+                      [
+                        {
+                          text: `Change to ${singleTask?.singleTaskData?.status === "In Progress" ? "Finish" : "In Progress"}`,
+                          onPress: () => changeStatus(),
+                        },
+                        {
+                          text: 'Cancel',
+                          style: 'cancel',
+                          onPress: () => console.log('User cancelled'),
+                        },
+                      ],
+                      { cancelable: true }
+                    );
+                  }}
                 />
               </View>
               <NormalText 

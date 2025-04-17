@@ -1,6 +1,7 @@
 import { Message } from './Alert';
 
-export const baseUrl = 'https://l9zx2vrf-5020.inc1.devtunnels.ms';
+// export const baseUrl = 'https://l9zx2vrf-5020.inc1.devtunnels.ms';
+export const baseUrl = 'https://appsdemo.pro/NeriConstructionBackend';
 // export const baseUrl = 'http://localhost:3000/api/';
 
 export const endPoints = {
@@ -9,6 +10,7 @@ export const endPoints = {
     timeIn: '/api/attendance/timeIn',
     timeOut: '/api/attendance/timeOut',
     attendance: '/api/attendance',
+    changeStatus: '/api/task/updateTaskStatus',
     allAttendaceByTaskId: '/api/attendance/getAllAttendenceByTaskId',
     todayAttendance: '/api/attendance',
     emailVerification: '/api/otp/verifyOtp',
