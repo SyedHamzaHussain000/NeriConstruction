@@ -22,6 +22,7 @@ export const endPoints = {
     singleTask: '/api/task/getTask',
     forgotPassword: '/api/otp/verify',
     resetPassword: '/api/employee/resetPassword',
+    setNewPassword: '/api/employee/setNewPassword',
     addComments: '/api/task/addComments',
     daylyAgenda: '/api/task/getTodayTask',
     weeklyAgenda: '/api/task/getWeeklyTask',

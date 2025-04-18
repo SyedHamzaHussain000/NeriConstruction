@@ -15,10 +15,15 @@ type ChangePasswordModalProps = {
     imageSource: any,
     title: any,
     subTitle: any,
-    btnTitle: any
+    btnTitle: any,
+    formValues: any,
+    setFormValues: any,
+    isShowPassword: any,
+    setIsShowPassword: any,
+    isLoading?:any,
 }
 
-const ChangePasswordModal = ({isModalVisible, onPress, imageSource, title, subTitle, btnTitle}: ChangePasswordModalProps) => {
+const ChangePasswordModal = ({isLoading, isModalVisible, onPress, imageSource, title, subTitle, btnTitle, formValues, setFormValues, isShowPassword, setIsShowPassword}: ChangePasswordModalProps) => {
   return (
     <DropDownModal isModalVisible={isModalVisible}>
     <View style={{ backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', height: responsiveHeight(btnTitle === 'Submit' ? 69 : 40), padding: 50, paddingBottom: 0, borderRadius: 15, position: 'relative' }}>
@@ -39,8 +44,10 @@ const ChangePasswordModal = ({isModalVisible, onPress, imageSource, title, subTi
               }
               placeholder="Password"
               password={true}
-              // setShowPassword={()=>setShowPassword(!showPassword)}
-              // showPassword={showPassword}
+              value={formValues?.oldPassword}
+              onChangeText={(text) => setFormValues({...formValues, oldPassword: text})}
+              setShowPassword={()=>setIsShowPassword({...isShowPassword, oldPassword: !isShowPassword?.oldPassword})}
+              showPassword={isShowPassword?.oldPassword}
             />
 
 <AppTxtInput
@@ -54,8 +61,10 @@ const ChangePasswordModal = ({isModalVisible, onPress, imageSource, title, subTi
               }
               placeholder="Password"
               password={true}
-              // setShowPassword={()=>setShowPassword(!showPassword)}
-              // showPassword={showPassword}
+              value={formValues?.newPassword}
+              onChangeText={(text) => setFormValues({...formValues, newPassword: text})}
+              setShowPassword={()=>setIsShowPassword({...isShowPassword, newPassword: !isShowPassword?.newPassword})}
+              showPassword={isShowPassword?.newPassword}
             />
 
 <AppTxtInput
@@ -69,14 +78,17 @@ const ChangePasswordModal = ({isModalVisible, onPress, imageSource, title, subTi
               }
               placeholder="Password"
               password={true}
-              // setShowPassword={()=>setShowPassword(!showPassword)}
-              // showPassword={showPassword}
+              value={formValues?.reEnterPassword}
+              onChangeText={(text) => setFormValues({...formValues, reEnterPassword: text})}
+              setShowPassword={()=>setIsShowPassword({...isShowPassword, reEnterPassword: !isShowPassword?.reEnterPassword})}
+              showPassword={isShowPassword?.reEnterPassword}
             />
       </View>    }  
 
             <AppButton
             onPress={onPress}
-            title={btnTitle}
+            title={isLoading ? "Waiting..." : btnTitle}
+            disabled={isLoading}
             />
             </View>
 </View>

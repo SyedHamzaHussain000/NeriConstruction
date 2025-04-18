@@ -235,3 +235,30 @@ export const resetPasswordAction = (formValues, navigation, setVisible) => {
         }
     };
 };
+
+export const setNewPasswordAction = (formValues, setFormValues, setIsLoading, setIsUpdateModalVisible, setIsSuccessModalVisible) => {
+    return async (dispatch) => {
+        setIsLoading(true)
+        try {
+            const res = await axios.post(`${baseUrl}${endPoints.setNewPassword}`, {
+                'email': formValues?.email,
+                'password': formValues?.password,
+                'newPassword': formValues?.newPassword,
+            });
+
+            if(res.data?.sucess){
+                setIsUpdateModalVisible(false);
+                setIsSuccessModalVisible(true);
+                setIsLoading(false)
+                setFormValues({});
+            }else {
+                Alert.alert(res.data?.message);
+                setIsLoading(false)
+            }
+        } catch (error) {
+            errHandler(error);
+            setIsLoading(false)
+            console.log(error)
+        }
+    };
+};

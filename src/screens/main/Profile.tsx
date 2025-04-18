@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Image, ScrollView } from 'react-native'
+import { View, Image, ScrollView, Alert } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../../utils/Responsive'
 import { APPCOLORS } from '../../utils/APPCOLORS'
@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import ChangePasswordModal from '../../components/ProfileComp/ChangePasswordModal'
 import LogOutModal from '../../components/LogOutModal'
-import { LogoutAction } from '../../redux/actions/AuthActions';
+import { LogoutAction, setNewPasswordAction } from '../../redux/actions/AuthActions';
 import { baseUrl } from '../../utils/Api_endPoints';
 
 const Profile = ({navigation}: {navigation: any}) => {
@@ -22,10 +22,43 @@ const Profile = ({navigation}: {navigation: any}) => {
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState<Boolean>(false);
     const [isSuccessModalVisible, setIsSuccessModalVisible] = useState<Boolean>(false);
     const [isLogoutModalVisible, setIsLogoutModalVisible] = useState<Boolean>(false);
+    const [formValues, setFormValues] = useState<Object>({oldPassword: '', newPassword: '', reEnterPassword: ''});
+    const [isShowPassword, setIsShowPassword] = useState<Object>({oldPassword: false, newPassword: false, reEnterPassword: false});
+    const authData = useSelector((state: any) => state.auth?.authData);
+    const [isLoading, setIsLoading] = useState<Boolean>(false);
+
+    const validateForm = () => {
+        const { oldPassword, newPassword, reEnterPassword } = formValues;
+
+        // Empty fields
+        if (!oldPassword || !newPassword || !reEnterPassword) {
+            Alert.alert("All fields are required.");
+            return false;
+        }
+
+        // Check password match
+        if (newPassword !== reEnterPassword) {
+            Alert.alert("New password and re-entered password do not match.");
+            return false;
+        }
+
+        return true;
+    };
 
     const logoutHandler = () => {
             setIsLogoutModalVisible(false);
             dispatch(LogoutAction(navigation))
+    }
+
+    const newPasswordSubmitHandler = () => {
+        if(validateForm()){
+                const form = {
+                        email: authData?.data?.email,
+                        password: formValues?.oldPassword,
+                        newPassword: formValues?.newPassword,
+                }
+                dispatch(setNewPasswordAction(form, setFormValues, setIsLoading, setIsUpdateModalVisible, setIsSuccessModalVisible))
+        }
     }
 
   return (
@@ -92,10 +125,7 @@ const Profile = ({navigation}: {navigation: any}) => {
         </View>
         </ScrollView>
 
-        <ChangePasswordModal isModalVisible={isUpdateModalVisible} onPress={() => {
-            setIsUpdateModalVisible(false);
-            setIsSuccessModalVisible(true);
-            }} imageSource={AppImages.key} title='Set a New Password' subTitle='Please set a new password to secure your App account.' btnTitle='Submit' />
+        <ChangePasswordModal isLoading={isLoading} isModalVisible={isUpdateModalVisible} onPress={() => newPasswordSubmitHandler()} formValues={formValues} setFormValues={setFormValues} isShowPassword={isShowPassword} setIsShowPassword={setIsShowPassword} imageSource={AppImages.key} title='Set a New Password' subTitle='Please set a new password to secure your App account.' btnTitle='Submit' />
         
         
         <ChangePasswordModal isModalVisible={isSuccessModalVisible} onPress={() => setIsSuccessModalVisible(false)} imageSource={AppImages.key} title='Password Has Been Updated' subTitle='To log in to your account, click the Sign in button and enter your email along with your new password.' btnTitle='Go back' />
