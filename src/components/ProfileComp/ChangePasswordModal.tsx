@@ -8,6 +8,7 @@ import AppButton from '../DailyUse/AppButton';
 import { responsiveFontSize, responsiveHeight } from '../../utils/Responsive';
 import Octicons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AppTxtInput from '../DailyUse/AppTxtInput';
+import { useTranslation } from 'react-i18next';
 
 type ChangePasswordModalProps = {
     isModalVisible: any,
@@ -21,20 +22,22 @@ type ChangePasswordModalProps = {
     isShowPassword: any,
     setIsShowPassword: any,
     isLoading?:any,
+    isShow?:any,
 }
 
-const ChangePasswordModal = ({isLoading, isModalVisible, onPress, imageSource, title, subTitle, btnTitle, formValues, setFormValues, isShowPassword, setIsShowPassword}: ChangePasswordModalProps) => {
+const ChangePasswordModal = ({isLoading, isModalVisible, onPress, imageSource, title, subTitle, btnTitle, formValues, setFormValues, isShowPassword, setIsShowPassword, isShow}: ChangePasswordModalProps) => {
+      const { t } = useTranslation();
   return (
     <DropDownModal isModalVisible={isModalVisible}>
-    <View style={{ backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', height: responsiveHeight(btnTitle === 'Submit' ? 69 : 40), padding: 50, paddingBottom: 0, borderRadius: 15, position: 'relative' }}>
+    <View style={{ backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', height: responsiveHeight(isShow ? 69 : 40), padding: 50, paddingBottom: 0, borderRadius: 15, position: 'relative' }}>
     <Image source={imageSource} style={{position: 'absolute', top: '-50'}} />
   <View style={{gap:15}}>
   <NormalText txtColour={APPCOLORS.BLACK} title={title} fontSize={3} fntWeight='bold' textAligm='center'/>
   <NormalText txtColour={APPCOLORS.DARK_GRAY} title={subTitle} fontSize={1.8} fntWeight='bold' textAligm='center'/>
 
-    {btnTitle === 'Submit' && <View style={{gap: 20}}>
+    {isShow && <View style={{gap: 20}}>
   <AppTxtInput
-              inputHeadig="Old Password"
+              inputHeadig={t("Old Password")}
               icon={
                 <Octicons
                   name={'credit-card-scan-outline'}
@@ -42,7 +45,7 @@ const ChangePasswordModal = ({isLoading, isModalVisible, onPress, imageSource, t
                   color={APPCOLORS.ICON_TEXT_COLOUR}
                 />
               }
-              placeholder="Password"
+              placeholder={t("Password")}
               password={true}
               value={formValues?.oldPassword}
               onChangeText={(text) => setFormValues({...formValues, oldPassword: text})}
@@ -51,7 +54,7 @@ const ChangePasswordModal = ({isLoading, isModalVisible, onPress, imageSource, t
             />
 
 <AppTxtInput
-              inputHeadig="New Password"
+              inputHeadig={t("New Password")}
               icon={
                 <Octicons
                   name={'credit-card-scan-outline'}
@@ -59,7 +62,7 @@ const ChangePasswordModal = ({isLoading, isModalVisible, onPress, imageSource, t
                   color={APPCOLORS.ICON_TEXT_COLOUR}
                 />
               }
-              placeholder="Password"
+              placeholder={t("Password")}
               password={true}
               value={formValues?.newPassword}
               onChangeText={(text) => setFormValues({...formValues, newPassword: text})}
@@ -68,7 +71,7 @@ const ChangePasswordModal = ({isLoading, isModalVisible, onPress, imageSource, t
             />
 
 <AppTxtInput
-              inputHeadig="Re Enter New Password"
+              inputHeadig={t("Re Enter New Password")}
               icon={
                 <Octicons
                   name={'credit-card-scan-outline'}
@@ -76,7 +79,7 @@ const ChangePasswordModal = ({isLoading, isModalVisible, onPress, imageSource, t
                   color={APPCOLORS.ICON_TEXT_COLOUR}
                 />
               }
-              placeholder="Password"
+              placeholder={t("Password")}
               password={true}
               value={formValues?.reEnterPassword}
               onChangeText={(text) => setFormValues({...formValues, reEnterPassword: text})}

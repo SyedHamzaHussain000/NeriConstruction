@@ -17,6 +17,7 @@ import NormalHeader from "../../../components/AppHeaders/NormalHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllTasksByEmployeeAction, getSingleTaskAction } from "../../../redux/actions/MainActions";
 import Geolocation from '@react-native-community/geolocation';
+import { useTranslation } from "react-i18next";
 
 const TaskMenu = ({navigation}: any) => {
   const [selectedTab, setSelectedTab] = useState("All");
@@ -24,6 +25,7 @@ const TaskMenu = ({navigation}: any) => {
   const authData = useSelector((state: any) => state.auth?.authData);
   const taskData = useSelector((state: any) => state.getAllTasksByEmployee);
   const [tasks, setTasks] = useState({inprogress: [], finish: [], pending: []})
+  const { t } = useTranslation();
 
   useEffect(() => {
     dispatch(getAllTasksByEmployeeAction(authData?.data?._id))
@@ -161,7 +163,7 @@ const TaskMenu = ({navigation}: any) => {
               navigation.navigate('TaskMenuDetails', {taskId: taskId})
             }} status={item.status} priority={item.priority} dueDate={item.date} comments={item.comments?.length || 0} />
           )}
-        /> : <View><Text style={{textAlign: 'center'}}>No Data Found</Text></View>}
+        /> : <View><Text style={{textAlign: 'center'}}>{t('No Data Found')}</Text></View>}
       </View>
     </View>
   );

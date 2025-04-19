@@ -14,8 +14,8 @@ const Banner = ({Heading,SubHeading,img, width}: props) => {
   return (
     <View style={{width:responsiveWidth(width ? width : 90), padding:20, paddingRight:0, backgroundColor:APPCOLORS.ICON_TEXT_COLOUR, justifyContent:'space-between', flexDirection:'row', alignSelf:'center', borderRadius:20, alignItems:'center'}}>
       <View>
-            <BoldText title={Heading} txtColour={APPCOLORS.WHITE} fontSize={3}/>
-            <NormalText title={SubHeading} txtColour={APPCOLORS.WHITE} fontSize={2}/>
+            <BoldText title={Heading} txtColour={APPCOLORS.WHITE} fontSize={2}/>
+            <NormalText title={SubHeading} txtColour={APPCOLORS.WHITE} fontSize={1.5}/>
       </View>
 
       <Image source={img} style={{height:responsiveHeight(8), width:responsiveWidth(20),  resizeMode:'contain'}}/>

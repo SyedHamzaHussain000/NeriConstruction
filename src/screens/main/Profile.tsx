@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Image, ScrollView, Alert } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from '../../utils/Responsive'
@@ -14,6 +14,7 @@ import ChangePasswordModal from '../../components/ProfileComp/ChangePasswordModa
 import LogOutModal from '../../components/LogOutModal'
 import { LogoutAction, setNewPasswordAction } from '../../redux/actions/AuthActions';
 import { baseUrl } from '../../utils/Api_endPoints';
+import { useTranslation } from 'react-i18next';
 
 const Profile = ({navigation}: {navigation: any}) => {
     const state = useSelector((state: any) => state.auth);
@@ -26,19 +27,20 @@ const Profile = ({navigation}: {navigation: any}) => {
     const [isShowPassword, setIsShowPassword] = useState<Object>({oldPassword: false, newPassword: false, reEnterPassword: false});
     const authData = useSelector((state: any) => state.auth?.authData);
     const [isLoading, setIsLoading] = useState<Boolean>(false);
+    const { t } = useTranslation();
 
     const validateForm = () => {
         const { oldPassword, newPassword, reEnterPassword } = formValues;
 
         // Empty fields
         if (!oldPassword || !newPassword || !reEnterPassword) {
-            Alert.alert("All fields are required.");
+            Alert.alert(t("All fields are required."));
             return false;
         }
 
         // Check password match
         if (newPassword !== reEnterPassword) {
-            Alert.alert("New password and re-entered password do not match.");
+            Alert.alert(t("New password and re-entered password do not match."));
             return false;
         }
 
@@ -65,7 +67,7 @@ const Profile = ({navigation}: {navigation: any}) => {
     <View style={{flex:1, backgroundColor:APPCOLORS.WHITE}}>
         <ScrollView contentContainerStyle={{flexGrow:1}}>
         <View style={{height:responsiveHeight(20), backgroundColor:APPCOLORS.ICON_TEXT_COLOUR, alignItems:'center', justifyContent:'center'}}>
-            <BoldText title='My Profile' textAligm={'center'} txtColour={APPCOLORS.WHITE} fontSize={3}/>
+            <BoldText title={t('My Profile')} textAligm={'center'} txtColour={APPCOLORS.WHITE} fontSize={3}/>
             
             <Image source={employeeData?.personalData?.profileImage 
               ? { uri: `${baseUrl}/${employeeData.personalData.profileImage}` } 
@@ -84,7 +86,7 @@ const Profile = ({navigation}: {navigation: any}) => {
         <BoldText title={employeeData?.personalDataLoadingState ? "Loading..." : employeeData?.personalData?.designation} txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={2} textAligm={'center'}/>
 
         <View style={{padding:20, gap:20}}>
-            <BoldText title='CONTACT' fontSize={2}/>
+            <BoldText title={t('CONTACT')} fontSize={2}/>
 
             <WhiteContainers bgColor={"#F4F6F9"}>
                     <View style={{padding:10, gap:10}}>
@@ -95,28 +97,28 @@ const Profile = ({navigation}: {navigation: any}) => {
         </View>
 
         <View style={{padding:20, gap:10}}>
-            <BoldText title='ACCOUNT' fontSize={2}/>
+            <BoldText title={t('ACCOUNT')} fontSize={2}/>
 
             <WhiteContainers bgColor={"#F4F6F9"}>
                     <View style={{padding:10, gap:10}}>
-                            <Bars icon={<Ionicons name={"person"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title='Personal Data' onPress={() => navigation.navigate('PersonalData')}/>
+                            <Bars icon={<Ionicons name={"person"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title={t('Personal Data')} onPress={() => navigation.navigate('PersonalData')}/>
                     </View>
             </WhiteContainers>
         </View>
 
         <View style={{padding:20, gap:10}}>
-            <BoldText title='SETTINGS' fontSize={2}/>
+            <BoldText title={t('SETTINGS')} fontSize={2}/>
 
             <WhiteContainers bgColor={"#F4F6F9"}>
                     <View style={{padding:10, gap:20}}>
-                            <Bars icon={<Ionicons name={"settings"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title='Change Password' onPress={() => setIsUpdateModalVisible(true)} />
-                            <Bars icon={<Ionicons name={"language"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title='Set Language' onPress={()=> navigation.navigate("Language")} />
-                            <Bars icon={<Ionicons name={"information-circle"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title='FAQ' onPress={() => navigation.navigate('Faq')}/>
-                            <Bars icon={<Ionicons name={"help-circle"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title='Help'
+                            <Bars icon={<Ionicons name={"settings"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title={t('Change Password')} onPress={() => setIsUpdateModalVisible(true)} />
+                            <Bars icon={<Ionicons name={"language"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title={t('Set Language')} onPress={()=> navigation.navigate("Language")} />
+                            <Bars icon={<Ionicons name={"information-circle"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title={t('FAQ')} onPress={() => navigation.navigate('Faq')}/>
+                            <Bars icon={<Ionicons name={"help-circle"} size={responsiveFontSize(3) } color={APPCOLORS.ICON_TEXT_COLOUR}/>} title={t('Help')}
                             onPress={()=> navigation.navigate("Help")}
                             />
                             <Bars icon={<AntDesign name={"logout"} size={responsiveFontSize(3) } 
-                            color={APPCOLORS.DARK_ORANGE}/>} title='Logout' 
+                            color={APPCOLORS.DARK_ORANGE}/>} title={t('Logout')} 
                             onPress={()=> setIsLogoutModalVisible(true)}
                             
                             />
@@ -125,17 +127,17 @@ const Profile = ({navigation}: {navigation: any}) => {
         </View>
         </ScrollView>
 
-        <ChangePasswordModal isLoading={isLoading} isModalVisible={isUpdateModalVisible} onPress={() => newPasswordSubmitHandler()} formValues={formValues} setFormValues={setFormValues} isShowPassword={isShowPassword} setIsShowPassword={setIsShowPassword} imageSource={AppImages.key} title='Set a New Password' subTitle='Please set a new password to secure your App account.' btnTitle='Submit' />
+        <ChangePasswordModal isLoading={isLoading} isModalVisible={isUpdateModalVisible} onPress={() => newPasswordSubmitHandler()} formValues={formValues} setFormValues={setFormValues} isShowPassword={isShowPassword} setIsShowPassword={setIsShowPassword} imageSource={AppImages.key} title={t('Set a New Password')} subTitle={t('Please set a new password to secure your App account.')} btnTitle={t('Submit')} isShow={true} />
         
         
-        <ChangePasswordModal isModalVisible={isSuccessModalVisible} onPress={() => setIsSuccessModalVisible(false)} imageSource={AppImages.key} title='Password Has Been Updated' subTitle='To log in to your account, click the Sign in button and enter your email along with your new password.' btnTitle='Go back' />
+        <ChangePasswordModal isModalVisible={isSuccessModalVisible} onPress={() => setIsSuccessModalVisible(false)} imageSource={AppImages.key} title={t('Password Has Been Updated')} subTitle={t('To log in to your account, click the Sign in button and enter your email along with your new password.')} btnTitle={t('Go back')} />
         
         <LogOutModal isModalVisible={isLogoutModalVisible}
          onPress={() => logoutHandler()}
         imageSource={AppImages.download}
-         title='Are You Sure You Want To Logout?' 
-         subTitle='Since the 1500s, when an unknown printer took a galley of type and scrambled specimen book.' 
-         btnTitle='Logout' noBtnTitle='No'  noBtnOnPress={() => setIsLogoutModalVisible(false)} />
+         title={t('Are You Sure You Want To Logout?')} 
+         subTitle={t('Since the 1500s, when an unknown printer took a galley of type and scrambled specimen book.')} 
+         btnTitle={t('Logout')} noBtnTitle={t('No')}  noBtnOnPress={() => setIsLogoutModalVisible(false)} />
     </View>
   )
 }

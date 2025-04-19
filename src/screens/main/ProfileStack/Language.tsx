@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { APPCOLORS } from '../../../utils/APPCOLORS';
 import { AppImages } from '../../../assets/AppImages';
 import { BoldText } from '../../../components/DailyUse/AppText/AppText';
@@ -10,8 +10,11 @@ import BackIcon from 'react-native-vector-icons/Ionicons';
 import LanguageIcon from 'react-native-vector-icons/FontAwesome6';
 import AppButton from '../../../components/DailyUse/AppButton';
 import WhiteContainers from '../../../components/WhiteContainers';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { baseUrl } from '../../../utils/Api_endPoints';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../../locales/index';
+import { savingLanguageAction } from '../../../redux/actions/MainActions';
 
 const languages = [
     { id: '1', name: 'English', iconColor: APPCOLORS.THEMEBLUETEXT },
@@ -21,6 +24,10 @@ const languages = [
 
 const Language = ({navigation}: any) => {
     const employeeData = useSelector((state: any) => state.getEmployeePersonalData);
+    const languageState = useSelector((state: any) => state.savingLanguage?.language)
+    const [isSelectedLanguage, setIsSelectedLanguage] = useState({language: ''});
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
 
     const renderItem = ({ item }: any) => (
         <View style={{
@@ -30,6 +37,11 @@ const Language = ({navigation}: any) => {
             paddingTop: 0,
             paddingBottom: 0,
         }}>
+        <TouchableOpacity style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+        }}
+        onPress={() => setIsSelectedLanguage({language: item.name})}>
             {/* Language Icon */}
             <LanguageIcon name="language" size={20} color={APPCOLORS.ClockInBg} style={{marginRight: responsiveWidth(4)}} />
     
@@ -37,11 +49,16 @@ const Language = ({navigation}: any) => {
             <Text style={{ flex: 1, fontSize: 16, color: '#000' }}>{item.name}</Text>
     
             {/* Three-dot Menu Icon */}
-            <TouchableOpacity onPress={() => console.log(`Options for ${item.name}`)}>
-                <Icon name="dot-single" size={50} color={item.iconColor} />
-            </TouchableOpacity>
+                <Icon name="dot-single" size={50} color={isSelectedLanguage.language === item.name ? APPCOLORS.ClockInBg : APPCOLORS.GRAY_BORDER} />
+        </TouchableOpacity>
         </View>
     );
+
+    useEffect(() => {
+        const resLanguage = languageState === 'en' ? 'English' : languageState === 'fr' ? "French" : 'Spanish'
+        setIsSelectedLanguage({language: resLanguage})
+    }, [languageState])
+
   return (
     <View style={{flex:1, backgroundColor:APPCOLORS.WHITE}}>
          <View style={{
@@ -59,7 +76,7 @@ const Language = ({navigation}: any) => {
             </TouchableOpacity>
 
             {/* Profile Title */}
-            <BoldText title='My Profile' textAligm={'center'} txtColour={APPCOLORS.WHITE} fontSize={3} />
+            <BoldText title={t('My Profile')} textAligm={'center'} txtColour={APPCOLORS.WHITE} fontSize={3} />
 
             {/* Profile Picture */}
             <Image source={employeeData?.personalData?.profileImage 
@@ -80,7 +97,7 @@ const Language = ({navigation}: any) => {
         <BoldText title={employeeData?.personalDataLoadingState ? "Loading..." : employeeData?.personalData?.designation} txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={2} textAligm={'center'}/>
 
         <View style={{marginHorizontal: responsiveWidth(6), marginTop: responsiveHeight(2)}}>
-        <BoldText title='Languages' fontSize={2}/>
+        <BoldText title={t('Languages')} fontSize={2}/>
 
         <View style={{backgroundColor: APPCOLORS.SKY_BLUR, borderRadius: 10, marginTop: responsiveWidth(2)}}>
         <FlatList
@@ -94,8 +111,22 @@ const Language = ({navigation}: any) => {
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
             <WhiteContainers>
         <AppButton
-        // onPress={()=> setIsUpdateModalVisible(true)}
-        title='Save'
+        onPress={()=> {
+            if(isSelectedLanguage.language === 'English'){
+                i18n.changeLanguage('en')
+                dispatch(savingLanguageAction('en'))
+                Alert.alert('Language changed successfully')
+            }else if(isSelectedLanguage.language === 'Spanish'){
+                i18n.changeLanguage('es')
+                dispatch(savingLanguageAction('es'))
+                Alert.alert('Language changed successfully')
+            }else if(isSelectedLanguage.language === 'French'){
+                i18n.changeLanguage('fr')
+                dispatch(savingLanguageAction('fr'))
+                Alert.alert('Language changed successfully')
+            }
+        }}
+        title={t('Save')}
         />
         </WhiteContainers>
         </View>
