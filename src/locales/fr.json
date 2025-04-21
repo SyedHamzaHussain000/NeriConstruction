@@ -148,6 +148,7 @@
     "Clock-In Notes":"Notes d'arrivée",
     "Export As PDF":"Exporter au format PDF",
     "Export As PDF Successful!":"Exportation au format PDF réussie !",
-    "Your clock-in data has been exported as a PDF. You can now download it.":"Vos données de pointage ont été exportées au format PDF. Vous pouvez maintenant les télécharger."
+    "Your clock-in data has been exported as a PDF. You can now download it.":"Vos données de pointage ont été exportées au format PDF. Vous pouvez maintenant les télécharger.",
+    "Notifications":"Notifications",
 }
   

@@ -4,6 +4,7 @@ import { APPCOLORS } from '../../../utils/APPCOLORS';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { AppImages } from '../../../assets/AppImages';
+import { useTranslation } from 'react-i18next';
 
 const DATA = [
     {
@@ -43,9 +44,10 @@ const DATA = [
   );
 
 const Notification = ({navigation}: any) => {
+      const { t } = useTranslation();
   return (
     <View style={{flex: 1, backgroundColor: APPCOLORS.WHITE}}>
-      <NormalHeader onPress={() => navigation.goBack()} title="Notifcations" />
+      <NormalHeader onPress={() => navigation.goBack()} title={t("Notifcations")} />
 
     <View>
       <FlatList
