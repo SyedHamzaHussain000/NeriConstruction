@@ -129,13 +129,13 @@ const Calender = () => {
               <TouchableOpacity
                 style={{
                   padding: 10,
-                  backgroundColor: selectedTab.name === item.name ? APPCOLORS.ClockInBg : APPCOLORS.LIGHT_GRAY,
+                  backgroundColor: selectedTab.name === item.name || selectedTab.id === item.id ? APPCOLORS.ClockInBg : APPCOLORS.LIGHT_GRAY,
                   borderRadius: 200,
                   paddingHorizontal: 30,
                 }}
                 onPress={() => setSelectedTab({id: item.id, name: item.name})}
                 >
-                <Text style={{color: selectedTab.name === item.name ? '#fff' : 'black'}}>{item.name}</Text>
+                <Text style={{color: selectedTab.name === item.name || selectedTab.id === item.id ? '#fff' : 'black'}}>{item.name}</Text>
               </TouchableOpacity>
             );
           }}
@@ -164,7 +164,7 @@ const Calender = () => {
           <View style={{padding:20}}>
         <WhiteContainers>
           <View style={{padding:10, gap:10}}>
-              <NormalText title={`${selectedTab.name === 'Day' ? 'Today' : `${selectedTab.name}ly`} Agenda`} fontSize={2}/>
+              <NormalText title={`${t(selectedTab.name)} Agenda`} fontSize={2}/>
              
          {load[selectedTab.name] ? <ActivityIndicator color='blue' size={20} /> : !!data[selectedTab.name]?.length ? <FlatList 
           data={data[selectedTab.name]}
