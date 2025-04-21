@@ -13,6 +13,7 @@ import ClockInCards from '../../../components/DailyUse/ClockInCards';
 import { ClockInNowAction, getTimeInAndTimeOutAction, getWeeklyTimeInAndTimeOutAction, startTimerAction } from '../../../redux/actions/MainActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDateToHrs, getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
+import { useTranslation } from 'react-i18next';
 
 const data = [
   {
@@ -35,6 +36,7 @@ const ClockIn = ({ navigation, route }: any) => {
   const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
   const timer = useSelector((state: any) => state.timer);
   const singleTask = useSelector((state: any) => state.getSingleTask)
+   const { t } = useTranslation();
 
   const routeData = route?.params?.data;
 
@@ -63,12 +65,12 @@ const ClockIn = ({ navigation, route }: any) => {
           }}>
           <View>
             <BoldText
-              title="Let’s Clock-In!"
+              title={t("Let’s Clock-In!")}
               fontSize={3}
               txtColour={APPCOLORS.WHITE}
             />
             <BoldText
-              title="Don’t miss your clock in schedule"
+              title={t("Don’t miss your clock in schedule")}
               fontSize={2}
               txtColour={'#D9D6FE'}
             />
@@ -84,27 +86,27 @@ const ClockIn = ({ navigation, route }: any) => {
         </View>
         <WhiteContainers position='absolute' top='16' marginBottom='5'>
           <View style={{ width: responsiveWidth(90) }}>
-            <BoldText title="Total Working Hour" fontSize={2} />
-            <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
+            <BoldText title={t("Total Working Hour")} fontSize={2} />
+            <NormalText title={`${t('Paid Period')} ${singleTask?.singleTaskData?.startDate || 0} ${singleTask?.singleTaskData?.endDate || 0}`} fontSize={1.5} />
           </View>
           <View style={{ width: responsiveWidth(90), flexDirection: 'row' }}>
             <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
               <View style={{ gap: responsiveHeight(1), width: responsiveWidth(40), backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveHeight(1) }}>
                   <AntDesign name="clockcircle" size={20} color={APPCOLORS.Clock_Bg} />
-                  <NormalText title={item.title1} fontSize={1.7} />
+                  <NormalText title={t(item.title1)} fontSize={1.7} />
                 </View>
                 <BoldText title={index == 1 ? routeData?.duration : todayTimeIn?.timeInTimeOutData?.data[0]?.timeIn || '00:00'} fontSize={2.5} />
               </View>
             )} />
           </View>
-          <AppButton title={mainState?.loadingState ? "Waiting..." : "Clock In Now"} disabled={mainState?.loadingState} onPress={() => clockInNowHandler()} height={8} fntSize={1.8} />
+          <AppButton title={mainState?.loadingState ? t("Waiting...") : t("Clock In Now")} disabled={mainState?.loadingState} onPress={() => clockInNowHandler()} height={8} fntSize={1.8} />
         </WhiteContainers>
       </View>
       <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1 }} showsVerticalScrollIndicator={false}>
        
         <View style={{ flex: 1 }}>
-          {weeklyTimeInTimeOut?.weeklyTimeInTimeOutLoadingState ? <View><Text>Loading...</Text></View> : <FlatList 
+          {weeklyTimeInTimeOut?.weeklyTimeInTimeOutLoadingState ? <View><Text>{t('Loading...')}</Text></View> : <FlatList 
           data={weeklyTimeInTimeOut?.weeklyTimeInTimeOutData}
           renderItem={({item}) => {
             return (

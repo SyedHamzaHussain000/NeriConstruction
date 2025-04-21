@@ -88,7 +88,7 @@ export const takeABreakAction = (id, navigation) => {
         dispatch({ type: TAKE_BREAK_LOADING_STATE, payload: true });
         try {
 
-            console.log(id._id)
+            console.log(id)
             const now = new Date();
             const getFormattedTime = (date) => {
             const hours = date.getHours().toString().padStart(2, '0');

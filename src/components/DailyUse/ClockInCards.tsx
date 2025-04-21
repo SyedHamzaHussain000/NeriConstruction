@@ -7,6 +7,7 @@ import { BoldText, NormalText } from './AppText/AppText';
 import { APPCOLORS } from '../../utils/APPCOLORS';
 import { SmallAppButton } from './AppButton';
 import { responsiveHeight } from '../../utils/Responsive';
+import { useTranslation } from 'react-i18next';
 
 type clockInProp = {
   headingDate?: any,
@@ -16,6 +17,8 @@ type clockInProp = {
 }
 
 const ClockInCards = ({headingDate, inprogressTxt, timeIn, timeOut}: clockInProp) => {
+     const { t } = useTranslation();
+
   return (
     <WhiteContainers mrgnTop={2}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: responsiveHeight(2) }}>
@@ -27,11 +30,11 @@ const ClockInCards = ({headingDate, inprogressTxt, timeIn, timeOut}: clockInProp
       </View>
       <View style={{ flexDirection: 'row', marginTop: responsiveHeight(3), justifyContent: 'space-between', backgroundColor: APPCOLORS.LIGHTWHITE, borderColor: APPCOLORS.GRAY_BORDER, borderWidth: 2, padding: responsiveHeight(2), borderRadius: responsiveHeight(1) }}>
         <View>
-          <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={2} title="Total Hours" />
+          <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={2} title={t("Total Hours")} />
           <BoldText txtColour={APPCOLORS.ClockInBold} fntWeight="600" fontSize={2.2} title="09:00:00 hrs" />
         </View>
         <View>
-          <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={2} title="Clock in & Out" />
+          <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={2} title={t("Clock in & Out")} />
           <BoldText txtColour={APPCOLORS.ClockInBold} fntWeight="600" fontSize={2.2} title={`${timeIn || '00:00 AM'} — ${timeOut || '00:00 AM'}`} />
         </View>
       </View>

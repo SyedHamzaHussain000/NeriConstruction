@@ -7,6 +7,7 @@ import AppButton, { SmallAppButton } from '../DailyUse/AppButton';
 import { responsiveHeight, responsiveWidth } from '../../utils/Responsive';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 type ClockInConfirmModalProps = {
     isModalVisible: any,
@@ -20,22 +21,21 @@ type ClockInConfirmModalProps = {
     disabled?: any,
 }
 
-const data = [
-  {
-    id: 1,
-    title1: 'Today',
-    title2: '08:00:00 Hrs',
-  },
-  {
-    id: 2,
-    title1: 'Overtime',
-    title2: '00:00:00 Hrs',
-  },
-];
-
 const ClockInConfirmModal = ({isModalVisible, disabled, yesBtnOnPress, noBtnOnPress, imageSource, title, subTitle, noBtnTitle, yesBtnTitle}: ClockInConfirmModalProps) => {
   const singleTask = useSelector((state: any) => state.getSingleTask)
- 
+         const { t } = useTranslation();
+         const data = [
+          {
+            id: 1,
+            title1: t('Today'),
+            title2: '08:00:00 Hrs',
+          },
+          {
+            id: 2,
+            title1: t('Overtime'),
+            title2: '00:00:00 Hrs',
+          },
+        ];
   return (
     <DropDownModal isModalVisible={isModalVisible}>
     <View style={{ backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', height: responsiveHeight(62), padding: 50, paddingBottom: 0, borderRadius: 15, position: 'relative' }}>

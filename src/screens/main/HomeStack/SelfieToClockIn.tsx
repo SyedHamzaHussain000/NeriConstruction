@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { baseUrl } from '../../../utils/Api_endPoints';
 import { ClockInNowAction, savedDataForClockIn } from '../../../redux/actions/MainActions';
 import { getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
+import { useTranslation } from 'react-i18next';
 
 let launchCamera = _launchCamera;
 
@@ -28,6 +29,7 @@ const SelfieToClockIn = ({navigation}: any) => {
     const authState = useSelector((state: any) => state.auth);
     const dispatch = useDispatch();
     const singleTask = useSelector((state: any) => state.getSingleTask)
+    const { t } = useTranslation();
 
     const handleRetakePhoto = () => {
             const options = {
@@ -41,17 +43,17 @@ const SelfieToClockIn = ({navigation}: any) => {
 
     const handleResponse = (response: any) => {
       if (response.didCancel) {
-        Alert.alert('Cancelled', 'User cancelled image picker');
+        Alert.alert(t('Cancelled'), t('User cancelled image picker'));
       } else if (response.errorCode) {
-        Alert.alert('Error', response.errorMessage);
+        Alert.alert(t('Error'), response.errorMessage);
       } else {
         // let imageUri = response.uri || response.assets?.[0]?.uri;
         const timeValues = {
                 id: authState?.authData.data?._id,
                 date: getFormattedDate(),
                 timeIn: getFormattedTime(),
-                longitude: '24.8607',
-                latitude: '67.0011',
+                longitude: data?.longitude,
+                latitude: data?.latitude,
                 image: {
                   uri: response.assets?.[0]?.uri,
                   name: response.assets?.[0]?.fileName,
@@ -86,7 +88,7 @@ const SelfieToClockIn = ({navigation}: any) => {
 
   return (
     <View>
-      <NormalHeader onPress={() => navigation.goBack()} title="Selfie To Clock In" />
+      <NormalHeader onPress={() => navigation.goBack()} title={t("Selfie To Clock In")} />
       <ScrollView>
       <WhiteContainers mrgnTop={2} marginHorizontal={4}>
         <View style={{ padding: responsiveWidth(2) }}>
@@ -101,7 +103,7 @@ const SelfieToClockIn = ({navigation}: any) => {
               <View style={{ padding: responsiveWidth(1), paddingVertical: responsiveHeight(3) }}>
                 <SmallAppButton
                   onPress={() => handleRetakePhoto()}
-                  title="ReTake Photo"
+                  title={t("ReTake Photo")}
                   width={70}
                   btnColor="#5B2ED4"
                   icon="rotate" />
@@ -110,7 +112,7 @@ const SelfieToClockIn = ({navigation}: any) => {
           </ImageBackground>
 
           <View>
-            <NormalText mrgnTop={1.5} txtColour={APPCOLORS.DARK_GRAY} title="Clock In Notes (Optional)" fontSize={1.5} />
+            <NormalText mrgnTop={1.5} txtColour={APPCOLORS.DARK_GRAY} title={t("Clock In Notes (Optional)")} fontSize={1.5} />
             <TextInput
               style={{
                 height: responsiveHeight(15), // Fixed height to prevent resizing
@@ -122,7 +124,7 @@ const SelfieToClockIn = ({navigation}: any) => {
                 backgroundColor: '#fff',
                 textAlignVertical: 'top', // Align text to the top
               }}
-              placeholder="Clock-in Notes"
+              placeholder={t("Clock-in Notes")}
               onChangeText={(text) => setClockInNotes(text)}
               value={clockInNotes}
               multiline={true} // Allows multiple lines but not resizable
@@ -132,7 +134,7 @@ const SelfieToClockIn = ({navigation}: any) => {
       </WhiteContainers><WhiteContainers mrgnTop={1}>
           <AppButton
             onPress={() => clockinHandler()}
-            title={loadingState ? "Waiting..." : "Clock In"}
+            title={loadingState ? t("Waiting...") : t("Clock In")}
             // disabled={loadingState}
             />
         </WhiteContainers>
@@ -140,12 +142,12 @@ const SelfieToClockIn = ({navigation}: any) => {
 
 
 {/* Modal */}
-            <ClockInSuccessModal isModalVisible={isModalVisible} imageSource={AppImages.personBox}  title="Clock-In Successful!" subTitle="You’re all set! Your clock-in was successful. Head over to your dashboard to see your assigned tasks."
+            <ClockInSuccessModal isModalVisible={isModalVisible} imageSource={AppImages.personBox}  title={t("Clock-In Successful!")} subTitle={t("You’re all set! Your clock-in was successful. Head over to your dashboard to see your assigned tasks.")}
             onPress={()=> {
                         setModalVisible(false);
                         navigation.navigate('ClockedIn');
                     }}
-                    btnTitle="Go To Clock In Page" />
+                    btnTitle={t("Go To Clock In Page")} />
     </View>
   );
 };

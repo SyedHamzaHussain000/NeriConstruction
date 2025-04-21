@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ImageBackground, TextInput, Image, Platform, PermissionsAndroid, Alert } from 'react-native'
+import { View, Text, ImageBackground, TextInput, Image, Platform, PermissionsAndroid, Alert, ActivityIndicator } from 'react-native'
 import NormalHeader from '../../../components/AppHeaders/NormalHeader'
 import WhiteContainers from '../../../components/WhiteContainers';
 import {AppImages} from '../../../assets/AppImages';
@@ -14,38 +14,19 @@ import { baseUrl, endPoints } from '../../../utils/Api_endPoints';
 import { useSelector } from 'react-redux';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as base64 from 'base64-js';
+import { useTranslation } from 'react-i18next';
 // import Share from 'react-native-share';
-import Geolocation from '@react-native-community/geolocation';
 
 const ClockedInDetails = ({navigation}: any) => {
     const [isModalVisible, setModalVisible] = useState<Boolean>(false);
     const [isLoading, setIsLoading] = useState<Boolean>(false);
+    const [loading, setLoading] = useState<Boolean>(false);
     const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
     const [details, setDetails] = useState({});
     const authState = useSelector((state: any) => state.auth);
-    const [coordinates, setCoordinates] = useState({lat: '', long: ''})
-
-    async function requestStoragePermission() {
-      if (Platform.OS === 'android') {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            {
-              title: 'Storage Permission',
-              message: 'App needs access to your storage to download and manage files.',
-              buttonNeutral: 'Ask Me Later',
-              buttonNegative: 'Cancel',
-              buttonPositive: 'OK',
-            }
-          );
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        } catch (err) {
-          console.warn(err);
-          return false;
-        }
-      }
-      return true;
-    }
+    const mainState = useSelector((state: any) => state.main?.clockInData);
+    const data = mainState
+    const { t } = useTranslation();
 
     const handleExportPDF = async () => {
       try {
@@ -84,26 +65,29 @@ const ClockedInDetails = ({navigation}: any) => {
             // });
             console.log('ios')
           } else {
-            Alert.alert('Download Complete', `PDF saved to Downloads as ${fileName}`);
+            Alert.alert(t('Download Complete'), `${t('PDF saved to Downloads as')} ${fileName}`);
             navigation.navigate('TabBar')
           }
         } else {
-          Alert.alert('Error', 'Failed to save the PDF');
+          Alert.alert(t('Error'), t('Failed to save the PDF'));
         }
     
       } catch (err) {
         console.warn('Error downloading PDF:', err?.message);
-        Alert.alert('Error', 'Failed to download PDF');
+        Alert.alert(t('Error'), t('Failed to download PDF'));
       } finally {
         setIsLoading(false);
       }
     };
 
     const getData = async (id) => {
+      setLoading(true)
       try {
          const res = await axios.get(`${baseUrl}${endPoints.attendanceTotal}?attendanceId=${id}`);
          setDetails(res.data?.data)
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
         console.log(error)
       }
     }
@@ -112,84 +96,40 @@ const ClockedInDetails = ({navigation}: any) => {
       getData(todayTimeIn?.timeInTimeOutData?.data[0]?._id)
     }, [todayTimeIn?.timeInTimeOutData]);
 
-    const requestLocationPermission = async () => {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Location Access Required',
-            message: 'This App needs to Access your location',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        );
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-      }
-      return true;
-    }
-  
-    const getCurrentLocation = async () => {
-      const hasPermission = await requestLocationPermission();
-      if (!hasPermission){
-        console.log('no per')
-      }else {
-        Geolocation.getCurrentPosition(
-          position => {
-            console.log('Latitude:', position.coords.latitude);
-            console.log('Longitude:', position.coords.longitude);
-            setCoordinates({lat: position.coords.latitude, long: position.coords.longitude})
-          },
-          error => {
-            console.log('Location error:', error.message);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 10000,
-          }
-        );
-      }
-    }
-  
-    useEffect(() => {
-      getCurrentLocation()
-    }, [])
-
     
   return (
     <View>
-      <NormalHeader onPress={() => navigation.goBack()} title="Details" />
-      <WhiteContainers mrgnTop={2} marginHorizontal={4}>
+      <NormalHeader onPress={() => navigation.goBack()} title={t("Details")} />
+    {loading ? <ActivityIndicator size={50} color="blue" /> : <WhiteContainers mrgnTop={2} marginHorizontal={4}>
          <View style={{ flexDirection: 'row', gap: responsiveHeight(1), marginHorizontal: responsiveWidth(1), paddingBottom: 10, marginTop: 5, alignItems: 'center' }}>
                   <AntDesign name="calendar" size={20} color={APPCOLORS.ICON_TEXT_COLOUR} />
                   <BoldText title={details?.date} fontSize={2} fntWeight="700" />
                 </View>
         <View style={{borderWidth: 1.5, borderColor: '#EAEFCA', borderRadius: 15, padding: responsiveWidth(2)}}>
         <View style={{marginHorizontal: responsiveWidth(3)}}>
-        <NormalText txtColour={APPCOLORS.DARK_GRAY} title="Selfie Clock In" fontSize={1.5} fntWeight='bold'  />
+        <NormalText txtColour={APPCOLORS.DARK_GRAY} title={t("Selfie Clock In")} fontSize={1.5} fntWeight='bold'  />
         </View>
         <View style={{padding: responsiveWidth(2)}}>
             <ImageBackground source={{uri: `${baseUrl}/${details?.image}`}} imageStyle={{ borderRadius: 15}} style={{width: '100%', height: responsiveHeight(45)}}>
                     <View style={{flex: 1, justifyContent: 'flex-end', paddingHorizontal: responsiveWidth(3)}}>
                     <View style={{gap: 3, paddingBottom: responsiveHeight(2)}}>
-                    <NormalText txtColour={APPCOLORS.WHITE} title={`Lat : ${coordinates?.lat || 'N/A'}`} fontSize={1.5} fntWeight='bold'/>
-                    <NormalText txtColour={APPCOLORS.WHITE} title={`Long : ${coordinates?.long || 'N/A'}`} fontSize={1.5} fntWeight='bold'/>
+                    <NormalText txtColour={APPCOLORS.WHITE} title={`Lat : ${data?.latitude || 'N/A'}`} fontSize={1.5} fntWeight='bold'/>
+                    <NormalText txtColour={APPCOLORS.WHITE} title={`Long : ${data?.longitude || 'N/A'}`} fontSize={1.5} fntWeight='bold'/>
                     <NormalText txtColour={APPCOLORS.WHITE} title={details?.createdAt} fontSize={1.6} fntWeight='bold'/>
                     </View>
                     </View>
             </ImageBackground>
       
         <View>
-            <NormalText mrgnTop={1.5} txtColour={APPCOLORS.DARK_GRAY} title="Clock-In Notes" fontSize={1.5} />
+            <NormalText mrgnTop={1.5} txtColour={APPCOLORS.DARK_GRAY} title={t("Clock-In Notes")} fontSize={1.5} />
             <View style={{width: responsiveWidth(6), height: responsiveHeight(0.4), marginTop: 8, borderRadius: 20, backgroundColor: APPCOLORS.DARK_GRAY}} />
         <View style={{ flexDirection: 'row', marginTop: responsiveHeight(1), justifyContent: 'space-between', padding: responsiveHeight(1), paddingLeft: 0, borderRadius: responsiveHeight(1) }}>
                 <View>
-                  <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={1.6} title="Total Hours" />
+                  <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={1.6} title={t("Total Hours")} />
                   <BoldText txtColour={APPCOLORS.ClockInBold} fntWeight="600" fontSize={1.8} title={details?.shiftHours} />
                 </View>
                 <View>
-                  <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={1.6} title="Clock in & Out" />
+                  <NormalText txtColour={APPCOLORS.DARK_GRAY} fontSize={1.6} title={t("Clock in & Out")} />
                   <BoldText txtColour={APPCOLORS.ClockInBold} fntWeight="600" fontSize={1.8} title={`${details?.timeIn} — ${details?.timeOut}`} />
                 </View>
               </View>
@@ -207,23 +147,23 @@ const ClockedInDetails = ({navigation}: any) => {
       </View>
       </View>
       </View>
-      </WhiteContainers>
+      </WhiteContainers>}
 
-      <WhiteContainers mrgnTop={1}>
+     {!loading && <WhiteContainers mrgnTop={1}>
       <AppButton
         onPress={()=> handleExportPDF()}
-        title={isLoading ? "Waiting..." : 'Export As PDF'}
+        title={isLoading ? t("Waiting...") : t('Export As PDF')}
         disabled={isLoading}
         />
-            </WhiteContainers>
+            </WhiteContainers>}
 
 {/* Modal */}
-            <ClockInSuccessModal isModalVisible={isModalVisible} imageSource={AppImages.download}  title="Export As PDF Successful!" subTitle="Your clock-in data has been exported as a PDF. You can now download it." 
+            <ClockInSuccessModal isModalVisible={isModalVisible} imageSource={AppImages.download}  title={t("Export As PDF Successful!")} subTitle={t("Your clock-in data has been exported as a PDF. You can now download it.")} 
             onPress={()=> {
                         setModalVisible(false);
                         // navigation.navigate('Calender');
                     }} 
-                    btnTitle='Close Message' />
+                    btnTitle={t('Close Message')} />
     </View>
   )
 }

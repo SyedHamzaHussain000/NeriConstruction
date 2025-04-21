@@ -10,21 +10,23 @@ import AppButton from '../../../components/DailyUse/AppButton';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ClockInCards from '../../../components/DailyUse/ClockInCards';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const ClockedOut = ({ navigation }: { navigation: any }) => {
   const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
   const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
-    const singleTask = useSelector((state: any) => state.getSingleTask)
+  const singleTask = useSelector((state: any) => state.getSingleTask)
+  const { t } = useTranslation();
 
   const data = [
     {
       id: 1,
-      title1: 'Today',
+      title1: t('Today'),
       title2: '00:00 Hrs',
     },
     {
       id: 2,
-      title1: 'This Pay Period',
+      title1: t('This Pay Period'),
       title2: '32:00 Hrs',
     },
   ];
@@ -40,12 +42,12 @@ const ClockedOut = ({ navigation }: { navigation: any }) => {
           }}>
           <View>
             <BoldText
-              title="Let’s Clock-In!"
+              title={t("Let’s Clock-In!")}
               fontSize={3}
               txtColour={APPCOLORS.WHITE}
             />
             <BoldText
-              title="Don’t miss your clock in schedule"
+              title={t("Don’t miss your clock in schedule")}
               fontSize={2}
               txtColour={'#D9D6FE'}
             />
@@ -61,8 +63,8 @@ const ClockedOut = ({ navigation }: { navigation: any }) => {
         </View>
         <WhiteContainers position='absolute' top='16' marginBottom='5'>
           <View style={{ width: responsiveWidth(90) }}>
-            <BoldText title="Total Working Hour" fontSize={2} />
-            <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
+            <BoldText title={t("Total Working Hour")} fontSize={2} />
+          <NormalText title={`${t('Paid Period')} ${singleTask?.singleTaskData?.startDate || 0} ${singleTask?.singleTaskData?.endDate || 0}`} fontSize={1.5} />
           </View>
           <View style={{ width: responsiveWidth(90), flexDirection: 'row' }}>
             <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
@@ -75,7 +77,7 @@ const ClockedOut = ({ navigation }: { navigation: any }) => {
               </View>
             )} />
           </View>
-          <AppButton title="Clocked Out" onPress={() => navigation.navigate('ClockedInDetails')} height={8} fntSize={1.8} />
+          <AppButton title={t("Clocked Out")} onPress={() => navigation.navigate('ClockedInDetails')} height={8} fntSize={1.8} />
         </WhiteContainers>
       </View>
       <ScrollView contentContainerStyle={{ padding: 10, flexGrow: 1 }} showsVerticalScrollIndicator={false}>

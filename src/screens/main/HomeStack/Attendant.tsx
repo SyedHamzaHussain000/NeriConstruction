@@ -14,15 +14,25 @@ import { ClockInNowAction, getTimeInAndTimeOutAction, savedDataForClockIn } from
 import { getFormattedDate, getFormattedTime } from '../../../utils/DateAndTimeFormater';
 import { baseUrl } from '../../../utils/Api_endPoints';
 import Geolocation from '@react-native-community/geolocation';
-
-const scheduleData = [
-  {text: 'CLOCK IN', time: '09:00', width: responsiveWidth(45)},
-  {text: 'CLOCK OUT', time: '05:00', width: responsiveWidth(45)},
-]
+import { useTranslation } from 'react-i18next';
 
 let launchCamera = _launchCamera;
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+};
+
 const Attendant = ({ navigation }: { navigation: any }) => {
+  const { t } = useTranslation();
+  const scheduleData = [
+    {text: t('CLOCK IN'), time: '09:00', width: responsiveWidth(45)},
+    {text: t('CLOCK OUT'), time: '05:00', width: responsiveWidth(45)},
+  ]
     const timeInAndTimeOut = useSelector((state: any) => state.getTimeInTimeOut);
       const mainState = useSelector((state: any) => state.main);
     const authState = useSelector((state: any) => state.auth);
@@ -37,7 +47,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
       try {
         const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert('Permission Denied', 'Camera permission is required');
+          Alert.alert(t('Permission Denied'), t('Camera permission is required'));
           Linking.openSettings();
           return false;
         }
@@ -70,7 +80,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
 
   const handleResponse = (response: any) => {
     if (response.didCancel) {
-      Alert.alert('Cancelled', 'User cancelled image picker');
+      Alert.alert(t('Cancelled'), t('User cancelled image picker'));
     } else if (response.errorCode) {
       Alert.alert('Error', response.errorMessage);
     } else {
@@ -101,11 +111,11 @@ const Attendant = ({ navigation }: { navigation: any }) => {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
-            title: 'Location Access Required',
-            message: 'This App needs to Access your location',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
+            title: t('Location Access Required'),
+            message: t('This App needs to Access your location'),
+            buttonNeutral: t('Ask Me Later'),
+            buttonNegative: t('Cancel'),
+            buttonPositive: t('OK'),
           }
         );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
@@ -152,12 +162,12 @@ const Attendant = ({ navigation }: { navigation: any }) => {
 
   return (
     <View>
-      <NormalHeader onPress={() => navigation.goBack()} title="Clock In Area" />
+      <NormalHeader onPress={() => navigation.goBack()} title={t("Clock In Area")} />
       {loading ? <ActivityIndicator size={50} color="blue" /> : <WhiteContainers mrgnTop={2}>
         <View style={{ backgroundColor: APPCOLORS.ClockInBg, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', padding: responsiveHeight(2), borderRadius: responsiveHeight(2) }}>
           <View>
-            <NormalText txtColour={APPCOLORS.WHITE} fntWeight="600" fontSize={2.2} title="You are in the clock-in area!" />
-            <NormalText width={60} txtColour={APPCOLORS.GREYISHWHITE} fntWeight="600" fontSize={2} title="Now you can press clock in in this area" />
+            <NormalText txtColour={APPCOLORS.WHITE} fntWeight="600" fontSize={2.2} title={t("You are in the clock-in area!")} />
+            <NormalText width={60} txtColour={APPCOLORS.GREYISHWHITE} fntWeight="600" fontSize={2} title={t("Now you can press clock in in this area")} />
           </View>
           <Image
             source={AppImages.clock}
@@ -168,7 +178,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
             }}
           />
         </View>
-        <NormalText mrgnTop={2} txtColour={APPCOLORS.BLACK} fntWeight="700" fontSize={2.2} title="MY PROFILE" />
+        <NormalText mrgnTop={2} txtColour={APPCOLORS.BLACK} fntWeight="700" fontSize={2.2} title={t("MY PROFILE")} />
         <View style={{flexDirection: 'row', borderRadius: 14, backgroundColor: APPCOLORS.LIGHTWHITE, borderWidth: 1, borderColor:APPCOLORS.GRAY_BORDER,  padding: responsiveHeight(1.5), marginTop: responsiveHeight(1.5)}}>
           <Image source={employeeData?.personalData?.profileImage 
             ? { uri: `${baseUrl}/${employeeData.personalData.profileImage}` } 
@@ -182,7 +192,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
           />
           </View>
           
-          <NormalText txtColour={APPCOLORS.THEMEBLUETEXT} title="29 September 2024" mrgnTop={0.5} fontSize={1.5} />
+          <NormalText txtColour={APPCOLORS.THEMEBLUETEXT} title={formatDate(employeeData?.personalData?.DOB)} mrgnTop={0.5} fontSize={1.5} />
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
           <Image
@@ -193,7 +203,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
         </View>
         </View>
       
-        <NormalText mrgnTop={2} txtColour={APPCOLORS.BLACK} fntWeight="700" fontSize={2.2} title="SCHEDULE" />
+        <NormalText mrgnTop={2} txtColour={APPCOLORS.BLACK} fntWeight="700" fontSize={2.2} title={t("SCHEDULE")} />
 
         <FlatList 
           data={scheduleData}
@@ -215,7 +225,7 @@ const Attendant = ({ navigation }: { navigation: any }) => {
      {!loading && <View style={{height:responsiveHeight(30), justifyContent: 'flex-end'}}>
         <AppButton
         onPress={()=> selfieHandler()}
-        title={mainState?.loadingState ? "Waiting..." : 'Selfie To Clock In'}
+        title={mainState?.loadingState ? t("Waiting...") : t('Selfie To Clock In')}
         disabled={mainState?.loadingState || !coordinates.lat}
         />
         </View>}

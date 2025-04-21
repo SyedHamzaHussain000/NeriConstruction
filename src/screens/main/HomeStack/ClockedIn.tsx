@@ -12,21 +12,23 @@ import ClockInCards from '../../../components/DailyUse/ClockInCards';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDateToHrs } from '../../../utils/DateAndTimeFormater';
 import { takeABreakAction } from '../../../redux/actions/MainActions';
+import { useTranslation } from 'react-i18next';
 
-const data = [
-    {
-      id: 1,
-      title1: 'Today',
-      title2: '00:00 Hrs',
-    },
-    {
-      id: 2,
-      title1: 'This Pay Period',
-      title2: '09:00 Hrs',
-    },
-  ];
 
 const ClockedIn = ({navigation}: any) => {
+      const { t } = useTranslation();
+  const data = [
+      {
+        id: 1,
+        title1: t('Today'),
+        title2: '00:00 Hrs',
+      },
+      {
+        id: 2,
+        title1: t('This Pay Period'),
+        title2: '09:00 Hrs',
+      },
+    ];
   const weeklyTimeInTimeOut = useSelector((state: any) => state.getWeeklyTimeinTimeout);
   const timeInAndTimeOut = useSelector((state: any) => state.getTimeInTimeOut);
   const [todayHrs, setTodayHrs] = useState('');
@@ -55,12 +57,12 @@ const ClockedIn = ({navigation}: any) => {
                   }}>
                   <View>
                     <BoldText
-                      title="Let’s Clock-In!"
+                      title={t("Let’s Clock-In!")}
                       fontSize={3}
                       txtColour={APPCOLORS.WHITE}
                     />
                     <BoldText
-                      title="Don’t miss your clock in schedule"
+                      title={t("Don’t miss your clock in schedule")}
                       fontSize={2}
                       txtColour={'#D9D6FE'}
                     />
@@ -77,7 +79,7 @@ const ClockedIn = ({navigation}: any) => {
                 <WhiteContainers position='absolute' top='16' marginBottom='5'>
           <View style={{ width: responsiveWidth(90) }}>
             <BoldText title="Total Working Hour" fontSize={2} />
-            <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
+            <NormalText title={`${t('Paid Period')} ${singleTask?.singleTaskData?.startDate || 0} ${singleTask?.singleTaskData?.endDate || 0}`} fontSize={1.5} />
           </View>
           <View style={{ width: responsiveWidth(88), flexDirection: 'row' }}>
             <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
@@ -91,8 +93,8 @@ const ClockedIn = ({navigation}: any) => {
             )} />
           </View>
           <View style={{flexDirection: 'row', gap: 16, }}>
-          <SmallAppButton title={loading ? "Waiting" : "Take A Break"}  onPress={() => dispatch(takeABreakAction(todayTimeIn.timeInTimeOutData?.data[0], navigation))} height={8} fntSize={1.8} btnColor={APPCOLORS.WHITE} borderWidth={1} borderColor={APPCOLORS.ClockInBg} txtColor={APPCOLORS.ClockInBg} width={42} borderRadious={49} height={6.4} />
-          <SmallAppButton title="Clock Out" onPress={() => navigation.navigate('TakeABreak')} height={8} fntSize={1.8} btnColor={APPCOLORS.BLACK} width={42} borderRadious={49} height={6.4}/>
+          <SmallAppButton title={loading ? t("Waiting") : t("Take A Break")}  onPress={() => dispatch(takeABreakAction(todayTimeIn.timeInTimeOutData?.data[0], navigation))} height={8} fntSize={1.8} btnColor={APPCOLORS.WHITE} borderWidth={1} borderColor={APPCOLORS.ClockInBg} txtColor={APPCOLORS.ClockInBg} width={42} borderRadious={49} height={6.4} />
+          <SmallAppButton title={t("Clock Out")} onPress={() => navigation.navigate('TakeABreak')} height={8} fntSize={1.8} btnColor={APPCOLORS.BLACK} width={42} borderRadious={49} height={6.4}/>
           </View>
         </WhiteContainers>
               </View>

@@ -13,21 +13,24 @@ import ClockInConfirmModal from '../../../components/HomeComp/ClockInConfirmModa
 import ClockInSuccessModal from '../../../components/HomeComp/ClockInSuccessModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { clockOutAction } from '../../../redux/actions/MainActions';
+import { useTranslation } from 'react-i18next';
 
-const data = [
-    {
-      id: 1,
-      title1: 'Today',
-      title2: '00:00 Hrs',
-    },
-    {
-      id: 2,
-      title1: 'This Pay Period',
-      title2: '32:00 Hrs',
-    },
-  ];
+
 
 const TakeABreak = ({navigation}: any) => {
+        const { t } = useTranslation();
+        const data = [
+          {
+            id: 1,
+            title1: t('Today'),
+            title2: '00:00 Hrs',
+          },
+          {
+            id: 2,
+            title1: t('This Pay Period'),
+            title2: '32:00 Hrs',
+          },
+        ];
         const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState<Boolean>(false);
         const [isSuccessModalVisible, setIsSuccessModalVisible] = useState<Boolean>(false);
         const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
@@ -48,12 +51,12 @@ const TakeABreak = ({navigation}: any) => {
                   }}>
                   <View>
                     <BoldText
-                      title="Let’s Clock-In!"
+                      title={t("Let’s Clock-In!")}
                       fontSize={3}
                       txtColour={APPCOLORS.WHITE}
                     />
                     <BoldText
-                      title="Don’t miss your clock in schedule"
+                      title={t("Don’t miss your clock in schedule")}
                       fontSize={2}
                       txtColour={'#D9D6FE'}
                     />
@@ -69,8 +72,8 @@ const TakeABreak = ({navigation}: any) => {
                 </View>
                 <WhiteContainers position='absolute' top='16' marginBottom='5'>
           <View style={{ width: responsiveWidth(90) }}>
-            <BoldText title="Total Working Hour" fontSize={2} />
-            <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} />
+            <BoldText title={t("Total Working Hour")} fontSize={2} />
+            <NormalText title={`${t('Paid Period')} ${singleTask?.singleTaskData?.startDate || 0} ${singleTask?.singleTaskData?.endDate || 0}`} fontSize={1.5} />
           </View>
           <View style={{ width: responsiveWidth(88), flexDirection: 'row' }}>
             <FlatList contentContainerStyle={{ gap: responsiveHeight(2), marginBottom: responsiveHeight(2), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
@@ -84,8 +87,8 @@ const TakeABreak = ({navigation}: any) => {
             )} />
           </View>
           <View style={{flexDirection: 'row', gap: 16, }}>
-          <SmallAppButton title="Back To Work" onPress={() => navigation.navigate('ClockedIn')} height={8} fntSize={1.8} btnColor={APPCOLORS.ClockInBg} txtColor={APPCOLORS.WHITE} width={42} borderRadious={49} height={6.4} />
-          <SmallAppButton title="Clock Out" onPress={() => setIsConfirmationModalVisible(true)} height={8} fntSize={1.8} btnColor={APPCOLORS.BLACK} width={42} borderRadious={49} height={6.4}/>
+          <SmallAppButton title={t("Back To Work")} onPress={() => navigation.navigate('ClockedIn')} height={8} fntSize={1.8} btnColor={APPCOLORS.ClockInBg} txtColor={APPCOLORS.WHITE} width={42} borderRadious={49} height={6.4} />
+          <SmallAppButton title={t("Clock Out")} onPress={() => setIsConfirmationModalVisible(true)} height={8} fntSize={1.8} btnColor={APPCOLORS.BLACK} width={42} borderRadious={49} height={6.4}/>
           </View>
         </WhiteContainers>
               </View>
@@ -103,10 +106,10 @@ const TakeABreak = ({navigation}: any) => {
         </View>
       </ScrollView>
 
-      <ClockInConfirmModal isModalVisible={isConfirmationModalVisible} disabled={loading} imageSource={AppImages.timer} yesBtnTitle={loading ? 'Waiting...' : 'Yes, Clock Out'} noBtnTitle='No, Let me check' yesBtnOnPress={() => {
+      <ClockInConfirmModal isModalVisible={isConfirmationModalVisible} disabled={loading} imageSource={AppImages.timer} yesBtnTitle={loading ? t('Waiting...') : t('Yes, Clock Out')} noBtnTitle={t('No, Let me check')} yesBtnOnPress={() => {
         dispatch(clockOutAction(todayTimeIn?.timeInTimeOutData?.data[0]?._id, setIsConfirmationModalVisible, setIsSuccessModalVisible))
-      }} noBtnOnPress={() => setIsConfirmationModalVisible(false)}   title="Confirm Clockout" subTitle="Once you clock out, you won’t be able to edit this time. Please double-check your hours before proceeding."  />
-      <ClockInSuccessModal isModalVisible={isSuccessModalVisible} imageSource={AppImages.timer} btnTitle='Close Message'  title="Clockout Successful!" subTitle="You’ve officially clocked out for the day. Thank you for your hard work! Time to relax and enjoy your break." 
+      }} noBtnOnPress={() => setIsConfirmationModalVisible(false)}   title={t("Confirm Clockout")} subTitle={t("Once you clock out, you won’t be able to edit this time. Please double-check your hours before proceeding.")}  />
+      <ClockInSuccessModal isModalVisible={isSuccessModalVisible} imageSource={AppImages.timer} btnTitle={t('Close Message')}  title={t("Clockout Successful!")} subTitle={t("You’ve officially clocked out for the day. Thank you for your hard work! Time to relax and enjoy your break.")} 
       onPress={() => {
         setIsSuccessModalVisible(false);
         navigation.navigate('ClockedOut');

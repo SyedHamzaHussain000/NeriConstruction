@@ -87,14 +87,14 @@ const Language = ({navigation}: any) => {
   <View style={{height:responsiveHeight(10), }}/>
 
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:5}}>
-            <BoldText title={employeeData?.personalDataLoadingState ? "Loading..." : `${employeeData?.personalData?.firstName} ${employeeData?.personalData?.lastName}`} fontSize={2.5} textAligm={'center'}/>
+            <BoldText title={employeeData?.personalDataLoadingState ? t("Loading...") : `${employeeData?.personalData?.firstName} ${employeeData?.personalData?.lastName}`} fontSize={2.5} textAligm={'center'}/>
             <MaterialIcons
              name={"verified"}
              size={responsiveFontSize(2.5)}
              color={APPCOLORS.ICON_TEXT_COLOUR}
             />
         </View> 
-        <BoldText title={employeeData?.personalDataLoadingState ? "Loading..." : employeeData?.personalData?.designation} txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={2} textAligm={'center'}/>
+        <BoldText title={employeeData?.personalDataLoadingState ? t("Loading...") : employeeData?.personalData?.designation} txtColour={APPCOLORS.ICON_TEXT_COLOUR} fontSize={2} textAligm={'center'}/>
 
         <View style={{marginHorizontal: responsiveWidth(6), marginTop: responsiveHeight(2)}}>
         <BoldText title={t('Languages')} fontSize={2}/>
@@ -115,15 +115,15 @@ const Language = ({navigation}: any) => {
             if(isSelectedLanguage.language === 'English'){
                 i18n.changeLanguage('en')
                 dispatch(savingLanguageAction('en'))
-                Alert.alert('Language changed successfully')
+                navigation.navigate('TabBar')
             }else if(isSelectedLanguage.language === 'Spanish'){
                 i18n.changeLanguage('es')
                 dispatch(savingLanguageAction('es'))
-                Alert.alert('Language changed successfully')
+                navigation.navigate('TabBar')
             }else if(isSelectedLanguage.language === 'French'){
                 i18n.changeLanguage('fr')
                 dispatch(savingLanguageAction('fr'))
-                Alert.alert('Language changed successfully')
+                navigation.navigate('TabBar')
             }
         }}
         title={t('Save')}
