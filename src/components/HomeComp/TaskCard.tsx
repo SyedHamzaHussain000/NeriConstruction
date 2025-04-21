@@ -11,8 +11,10 @@ import AppButton from '../DailyUse/AppButton';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import SmallButtonsOrBg from '../DailyUse/SmallButtonsOrBg';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useTranslation } from 'react-i18next';
 
 const TaskCard = ({ title, status, priority, dueDate, comments, onPress }: any) => {
+    const { t } = useTranslation();
   return (
     <TouchableOpacity
     onPress={onPress}
@@ -71,7 +73,7 @@ const TaskCard = ({ title, status, priority, dueDate, comments, onPress }: any) 
               color={APPCOLORS.WHITE}
             />
           }
-          btnColor={priority === 'High' ? '#F95555' : '#FFA500'}
+          btnColor={priority === t('High') ? '#F95555' : '#FFA500'}
           width={25}
           height={4}
           title={priority}

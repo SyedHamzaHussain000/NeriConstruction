@@ -8,6 +8,7 @@ import { baseUrl, endPoints, errHandler } from '../../utils/Api_endPoints';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllTasksByEmployeeAction, getSingleTaskAction } from '../../redux/actions/MainActions';
+import { useTranslation } from 'react-i18next';
 
 function formatCustomDate(date) {
   const day = date.getDate();
@@ -28,6 +29,7 @@ const CommentSection = ({commentsData, taskData}) => {
   const authState = useSelector((state: any) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch()
+   const { t } = useTranslation();
 
   // Function to add a new comment
   const addComment = async (employeeId, taskId) => {
@@ -52,7 +54,7 @@ const CommentSection = ({commentsData, taskData}) => {
                  setIsLoading(false);
              }
     }else{
-      Alert.alert('Comment is required');
+      Alert.alert(t('Comment is required'));
     }
   };
 
@@ -82,7 +84,7 @@ const CommentSection = ({commentsData, taskData}) => {
         <Image source={AppImages.pfp} style={{width: 40, height: 40}} />
         <TextInput
           style={styles.input}
-          placeholder="Write a comment..."
+          placeholder={t("Write a comment...")}
           value={newComment}
           onChangeText={(text) => setNewComment(text)}
           multiline={true} // Allows multiple lines
@@ -91,7 +93,7 @@ const CommentSection = ({commentsData, taskData}) => {
         />
         <View style={styles.btnContainer}>
         <TouchableOpacity disabled={isLoading} onPress={() => addComment(authState?.authData?.data?._id, taskData?._id)} style={styles.sendButton}>
-         {isLoading ? <Text style={{color: '#fff'}}>Wait</Text> : <FontAwesome name="send" size={17} color="#fff" />}
+         {isLoading ? <Text style={{color: '#fff'}}>{t('Wait')}</Text> : <FontAwesome name="send" size={17} color="#fff" />}
         </TouchableOpacity>
         </View>
       </View>

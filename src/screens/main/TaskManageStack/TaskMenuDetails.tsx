@@ -24,6 +24,7 @@ import { formatDate } from '../../../utils/DateAndTimeFormater';
 import { baseUrl, endPoints, errHandler } from '../../../utils/Api_endPoints';
 import { getAllTasksByEmployeeAction, getSingleTaskAction } from '../../../redux/actions/MainActions';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const data = [
   {
@@ -55,6 +56,7 @@ const TaskMenuDetails = ({navigation, route}: any) => {
   const dispatch = useDispatch()
    const todayTimeIn = useSelector((state: any) => state.getTimeInTimeOut);
    const authData = useSelector((state: any) => state.auth?.authData);
+   const { t } = useTranslation();
  
   useEffect(() => {
     dispatch(getSingleTaskAction(taskId))
@@ -80,7 +82,7 @@ const TaskMenuDetails = ({navigation, route}: any) => {
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
-      <NormalHeader title="Task Details" onPress={()=> navigation.goBack()}/>
+      <NormalHeader title={t("Task Details")} onPress={()=> navigation.goBack()}/>
 
       <View style={{padding: 20}}>
        {singleTask?.taskLoadingState ? <ActivityIndicator color='blue' size={50} /> : <WhiteContainers>
@@ -93,24 +95,24 @@ const TaskMenuDetails = ({navigation, route}: any) => {
                   width: responsiveWidth(85),
                   alignItems: 'center',
                 }}>
-                <BoldText title="Create On Boarding Screen" fontSize={2} />
+                <BoldText title={t("Create On Boarding Screen")} fontSize={2} />
                 <SmallButtonsOrBg
-                  title={singleTask?.singleTaskData?.status}
+                  title={singleTask?.singleTaskData?.status === "Finish" ? t('Finish') : t('In Progress')}
                   btnColor={APPCOLORS.GRAY_BORDER}
                   height={4}
                   icon={<Ionicons name='time' size={12} color={APPCOLORS.DARK_GRAY} />}
                   txtColorr={APPCOLORS.DARK_GRAY}
                   onPress={() => {
                     Alert.alert(
-                      'Change Status',
-                      `Task Current Status is: ${singleTask?.singleTaskData?.status}`,
+                      t('Change Status'),
+                      `${t('Task Current Status is')}: ${singleTask?.singleTaskData?.status === "Finish" ? t('Finish') : t('In Progress')}`,
                       [
                         {
-                          text: `Change to ${singleTask?.singleTaskData?.status === "In Progress" ? "Finish" : "In Progress"}`,
+                          text: `${t('Change to')} ${singleTask?.singleTaskData?.status === "In Progress" ? t("Finish") : t("In Progress")}`,
                           onPress: () => changeStatus(),
                         },
                         {
-                          text: 'Cancel',
+                          text: t('Cancel'),
                           style: 'cancel',
                           onPress: () => console.log('User cancelled'),
                         },
@@ -121,7 +123,7 @@ const TaskMenuDetails = ({navigation, route}: any) => {
                 />
               </View>
               <NormalText 
-              title={`Created ${formatDate(new Date(singleTask?.singleTaskData?.createdAt))}`}
+              title={`${t('Created')} ${formatDate(new Date(singleTask?.singleTaskData?.createdAt))}`}
                fontSize={1.8} />
             </View>
           </View>
@@ -138,7 +140,7 @@ const TaskMenuDetails = ({navigation, route}: any) => {
             marginTop: 10,
             justifyContent: 'center',
             alignItems: 'center',
-            height: responsiveHeight(30),}}><Text style={{fontSize: 20}}>Image Not Found</Text></View>}
+            height: responsiveHeight(30),}}><Text style={{fontSize: 20}}>{t('Image Not Found')}</Text></View>}
 
           <View style={{flexDirection: 'row', gap: 10}}>
             {/* <Image
@@ -172,9 +174,9 @@ const TaskMenuDetails = ({navigation, route}: any) => {
 
           <View style={{flexDirection: 'row', gap: 10, marginTop: 10}}>
             <View style={{gap: 5}}>
-              <BoldText title="Priority" fontSize={2} />
+              <BoldText title={t("Priority")} fontSize={2} />
               <SmallButtonsOrBg
-                title={singleTask?.singleTaskData?.priority}
+                title={t(singleTask?.singleTaskData?.priority)}
                 icon={
                   <FontAwesome
                     name="flag"
@@ -188,7 +190,7 @@ const TaskMenuDetails = ({navigation, route}: any) => {
             </View>
 
             <View style={{gap: 5}}>
-              <BoldText title="Difficulty" fontSize={2} />
+              <BoldText title={t("Difficulty")} fontSize={2} />
               <SmallButtonsOrBg
                 txtColorr={APPCOLORS.BLACK}
                 // title="Very Easy (Less Than a Day)"
@@ -201,7 +203,7 @@ const TaskMenuDetails = ({navigation, route}: any) => {
           </View>
 
           <View style={{marginTop: 20}}>
-            <BoldText title="Assignee" fontSize={2} />
+            <BoldText title={t("Assignee")} fontSize={2} />
 
             <View
               style={{
@@ -219,9 +221,9 @@ const TaskMenuDetails = ({navigation, route}: any) => {
               />
 
               <View>
-                <BoldText title='Admin' fontSize={2} />
+                <BoldText title={t('Admin')} fontSize={2} />
                 <BoldText
-                  title="Sr Front End Developer"
+                  title={t("Sr Front End Developer")}
                   fontSize={2}
                   txtColour={APPCOLORS.ICON_TEXT_COLOUR}
                 />
@@ -229,7 +231,7 @@ const TaskMenuDetails = ({navigation, route}: any) => {
             </View>
           </View>
 
-          <BoldText title='Comment Section' fontSize={2} mrgnTop={2}/>
+          <BoldText title={t('Comment Section')} fontSize={2} mrgnTop={2}/>
 
          <CommentSection commentsData={singleTask?.singleTaskData?.comments} taskData={singleTask?.singleTaskData} />
 
@@ -239,9 +241,9 @@ const TaskMenuDetails = ({navigation, route}: any) => {
           <View style={{padding: 8}}>
 
              <View style={{ width: responsiveWidth(95) }}>
-                        <BoldText title="Total Working Hour" fontSize={2} />
+                        <BoldText title={t("Total Working Hour")} fontSize={2} />
                         {/* <NormalText title="Paid Period 1 Sept 2024 - 30 Sept 2024" fontSize={1.5} /> */}
-                        <NormalText title={`Paid Period ${singleTask?.singleTaskData?.startDate || 0} ${singleTask?.singleTaskData?.endDate || 0}`} fontSize={1.5} />
+                        <NormalText title={`${t('Paid Period')} ${singleTask?.singleTaskData?.startDate || 0} ${singleTask?.singleTaskData?.endDate || 0}`} fontSize={1.5} />
                       </View>
                       <View style={{ width: responsiveWidth(82), flexDirection: 'row' }}>
                         <FlatList contentContainerStyle={{ gap: responsiveHeight(1), marginBottom: responsiveHeight(1), alignItems: 'center', justifyContent: 'center', marginTop: responsiveHeight(2), width: '100%' }} horizontal data={data} renderItem={({ item, index }) => (
@@ -258,7 +260,7 @@ const TaskMenuDetails = ({navigation, route}: any) => {
         <View style={{marginTop:20}}>
         <AppButton
         onPress={()=> navigation.navigate("ClockIn", {data: singleTask?.singleTaskData})}
-        title='Check In Now'
+        title={t('Check In Now')}
         width={85}
         />
         </View>

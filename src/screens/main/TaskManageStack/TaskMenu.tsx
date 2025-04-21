@@ -20,12 +20,12 @@ import Geolocation from '@react-native-community/geolocation';
 import { useTranslation } from "react-i18next";
 
 const TaskMenu = ({navigation}: any) => {
-  const [selectedTab, setSelectedTab] = useState("All");
+  const { t } = useTranslation();
+  const [selectedTab, setSelectedTab] = useState(t("All"));
   const dispatch = useDispatch()
   const authData = useSelector((state: any) => state.auth?.authData);
   const taskData = useSelector((state: any) => state.getAllTasksByEmployee);
-  const [tasks, setTasks] = useState({inprogress: [], finish: [], pending: []})
-  const { t } = useTranslation();
+  const [tasks, setTasks] = useState({inprogress: [], finish: [], pending: [], all: []})
 
   useEffect(() => {
     dispatch(getAllTasksByEmployeeAction(authData?.data?._id))
@@ -35,14 +35,14 @@ const TaskMenu = ({navigation}: any) => {
     const inprogData = taskData?.allTaskData?.filter((item: any) => item.status === 'In Progress')
     const finishData = taskData?.allTaskData?.filter((item: any) => item.status === 'Finish')
     const pendingData = taskData?.allTaskData?.filter((item: any) => item.status === 'Pending')
-    setTasks({inprogress: inprogData, finish: finishData, pending: pendingData})
+    setTasks({inprogress: inprogData, finish: finishData, pending: pendingData, all: taskData?.allTaskData})
   }, [taskData])
 
   const allTasks = {
-    All: taskData?.allTaskData,
-    Pending: tasks.pending,
-    InProgress: tasks.inprogress,
-    Finish: tasks.finish,
+    [t('All')]: taskData?.allTaskData,
+    [t('Pending')]: tasks.pending,
+    [t('InProgress')]: tasks.inprogress,
+    [t('Finish')]: tasks.finish,
   };
 
   const requestLocationPermission = async () => {
@@ -50,11 +50,11 @@ const TaskMenu = ({navigation}: any) => {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: 'Location Access Required',
-          message: 'This App needs to Access your location',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
+          title: t('Location Access Required'),
+          message: t('This App needs to Access your location'),
+          buttonNeutral: t('Ask Me Later'),
+          buttonNegative: t('Cancel'),
+          buttonPositive: t('OK'),
         }
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
@@ -88,44 +88,43 @@ const TaskMenu = ({navigation}: any) => {
     getCurrentLocation()
   }, [])
 
-  console.log(allTasks)
   return (
     <View style={styles.container}>
       {/* Header Section */}
-      <View style={[styles.ContainerHeader,selectedTab !== 'All' && {backgroundColor: 'lightwhite', padding: 0}]}>
-      {selectedTab === 'All' && <View style={styles.headerContent}>
+      <View style={[styles.ContainerHeader,selectedTab !== t('All') && {backgroundColor: 'lightwhite', padding: 0}]}>
+      {selectedTab === t('All') && <View style={styles.headerContent}>
           <View>
-            <BoldText title="My Jobs " fontSize={3} txtColour={APPCOLORS.WHITE} />
-            <BoldText title="Let’s tackle your to do list" fontSize={2} txtColour={"#D9D6FE"} />
+            <BoldText title={t("My Jobs")} fontSize={3} txtColour={APPCOLORS.WHITE} />
+            <BoldText title={t("Let’s tackle your to do list")} fontSize={2} txtColour={"#D9D6FE"} />
           </View>
           <Image source={AppImages.board} style={styles.headerImage} />
         </View>}
 
         <View style={{width: responsiveWidth(100)}}>
-        {selectedTab === 'Pending' && <NormalHeader onPress={() => navigation.navigate('ClockIn')} title="Pendings Task" />}
-        {selectedTab === 'InProgress' && <NormalHeader onPress={() => navigation.navigate('ClockIn')} title="In Progress Task" />}
-       {selectedTab === 'Finish' && <NormalHeader onPress={() => navigation.navigate('ClockIn')} title="Finish Task" />}
+        {selectedTab === t('Pending') && <NormalHeader onPress={() => navigation.navigate('ClockIn')} title={t("Pendings Task")} />}
+        {selectedTab === t('InProgress') && <NormalHeader onPress={() => navigation.navigate('ClockIn')} title={t("In Progress Task")} />}
+       {selectedTab === t('Finish') && <NormalHeader onPress={() => navigation.navigate('ClockIn')} title={t("Finish Task")} />}
         </View>
         {/* Summary Section */}
-        <WhiteContainers mrgnTop={selectedTab === 'All' ? 0 : 5.5}>
+        <WhiteContainers mrgnTop={selectedTab === t('All') ? 0 : 5.5}>
           <View style={{ width: responsiveWidth(85) }}>
-            <BoldText title="Summary of Your Work" fontSize={2} />
-            <NormalText title="Your current task progress" fontSize={2} />
+            <BoldText title={t("Summary of Your Work")} fontSize={2} />
+            <NormalText title={t("Your current task progress")} fontSize={2} />
             <View style={styles.bannerContainer}>
               <BannerBoxes
-                cardType="All"
-                number={allTasks?.All?.length}
+                cardType={t("All")}
+                number={tasks?.all?.length}
                 bgColor={APPCOLORS.ICON_TEXT_COLOUR}
                 icon={<Entypo name={"list"} size={responsiveFontSize(1.2)} color={APPCOLORS.WHITE} />}
               />
               <BannerBoxes
-                cardType="In Progress"
+                cardType={t("In Progress")}
                 number={tasks?.inprogress?.length}
                 bgColor={APPCOLORS.DARK_ORANGE}
                 icon={<Ionicons name={"time-outline"} size={responsiveFontSize(1.2)} color={APPCOLORS.WHITE} />}
               />
               <BannerBoxes
-                cardType="Finish"
+                cardType={t("Finish")}
                 number={tasks?.finish?.length}
                 bgColor={APPCOLORS.DARK_GRAY}
                 icon={<Entypo name={"check"} size={responsiveFontSize(1.2)} color={APPCOLORS.WHITE} />}
@@ -137,14 +136,14 @@ const TaskMenu = ({navigation}: any) => {
 
       {/* Custom Tabs */}
       <View style={styles.tabContainer}>
-        {["All",  "InProgress", "Finish"].map((tab) => (
+        {[t("All"),  t("InProgress"), t("Finish")].map((tab) => (
           <TouchableOpacity
           key={tab}
           style={[styles.tabButton, selectedTab === tab && styles.activeTab]}
           onPress={() => setSelectedTab(tab)}
           >
             <Text style={[styles.tabText, selectedTab === tab && styles.activeTabText]}>
-              {tab === "All" ? "All" : tab === "InProgress" ? "In Progress" : tab === "Pending" ? "Pending" : "Finish"}{" "}
+              {tab === t("All") ? t("All") : tab === t("InProgress") ? t("In Progress") : tab === t("Pending") ? t("Pending") : t("Finish")}{" "}
               <Text style={[styles.numberText, selectedTab !== tab && {color: '#b3b3b3'}]}>{allTasks[tab]?.length}</Text>
             </Text>
           </TouchableOpacity>
@@ -161,7 +160,7 @@ const TaskMenu = ({navigation}: any) => {
             <TaskCard title={item.task || item.taskTitle} onPress={() => {
               const taskId = item._id;
               navigation.navigate('TaskMenuDetails', {taskId: taskId})
-            }} status={item.status} priority={item.priority} dueDate={item.date} comments={item.comments?.length || 0} />
+            }} status={item.status === 'Finish' ? t('Finish') : t("In Progress")} priority={t(item.priority)} dueDate={item.date} comments={item.comments?.length || 0} />
           )}
         /> : <View><Text style={{textAlign: 'center'}}>{t('No Data Found')}</Text></View>}
       </View>
