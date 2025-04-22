@@ -30,6 +30,7 @@ export const endPoints = {
     yearlyAgenda: '/api/task/getYearlyTask',
     attendanceTotal: '/api/attendance/getAttendanceByAttendanceId',
     downloadPDF: '/api/attendance/pdf',
+    notifications: '/api/notification/getAllNotificationByEmployeeId',
 };
 
 export const errHandler = async (err: any,) => {

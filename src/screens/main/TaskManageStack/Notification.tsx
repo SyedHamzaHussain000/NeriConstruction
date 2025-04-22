@@ -1,10 +1,13 @@
-import React from 'react';
-import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import { APPCOLORS } from '../../../utils/APPCOLORS';
 import NormalHeader from '../../../components/AppHeaders/NormalHeader';
 import { responsiveHeight, responsiveWidth } from '../../../utils/Responsive';
 import { AppImages } from '../../../assets/AppImages';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { baseUrl, endPoints } from '../../../utils/Api_endPoints';
 
 const DATA = [
     {
@@ -32,29 +35,47 @@ const DATA = [
 
   const ChatListItem = ({ item }: any) => (
     <View style={styles.item}>
-      <Image source={item.image} style={styles.image} />
+      <Image source={AppImages.file} style={styles.image} />
       <View style={styles.textContainer}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.time}>{item.time}</Text>
+        <Text style={styles.title}>{item.message}</Text>
+        {/* <Text style={styles.time}>{item.time}</Text> */}
         </View>
-        <Text style={styles.subtitle}>{item.subtitle}</Text>
+        {/* <Text style={styles.subtitle}>{item.subtitle}</Text> */}
       </View>
     </View>
   );
 
 const Notification = ({navigation}: any) => {
       const { t } = useTranslation();
+      const authData = useSelector((state: any) => state.auth?.authData);
+      const [isLoading, setIsLoading] = useState(false);
+      const [allNotifications, setAllNotifications] = useState([]);
+
+      const getAllNotifications = async (id: any) => {
+        setIsLoading(true);
+        try {
+          const res = await axios.get(`${baseUrl}${endPoints.notifications}?employeeId=${id}`);
+          setAllNotifications(res.data?.data);
+          setIsLoading(false);
+        } catch (error) {
+          setIsLoading(false);
+        }
+      };
+
+      useEffect(() => {
+        getAllNotifications(authData?.data?._id)
+      }, [authData]);
+
   return (
     <View style={{flex: 1, backgroundColor: APPCOLORS.WHITE}}>
       <NormalHeader onPress={() => navigation.goBack()} title={t("Notifcations")} />
 
     <View>
-      <FlatList
-      data={DATA}
-      keyExtractor={(item) => item.id}
+      {isLoading ? <ActivityIndicator size={50} color='blue' /> : !!allNotifications?.length ?  <FlatList
+      data={allNotifications}
       renderItem={({ item }) => <ChatListItem item={item} />}
-      />
+      /> : <View><Text style={{textAlign: 'center'}}>{t("No Data Found")}</Text></View>}
       </View>
     </View>
   )
